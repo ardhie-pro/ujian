@@ -1,0 +1,178 @@
+@extends('layouts.main')
+
+@section('title', 'Laporan Jawaban User')
+
+@section('content')
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <!-- Judul Halaman -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-flex align-items-center justify-content-between">
+                        <div class="page-title">
+                            <h4 class="mb-0 font-size-18">
+                                📊 Laporan Jawaban User — <span class="text-primary">Kode: {{ $kode }}</span>
+                            </h4>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button id="btnExportExcel" class="btn btn-success">
+                                <i class="mdi mdi-file-excel"></i> Export ke Excel
+                            </button>
+                            <a href="{{ route('laporan.index') }}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left"></i> Kembali
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔍 Filter Modul -->
+            @if (count($data) > 1)
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <select id="filterModul" class="form-select">
+                            <option value="">Tampilkan Semua Modul</option>
+                            @foreach ($data as $modul => $detail)
+                                <option value="{{ $modul }}">{{ $modul }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            @endif
+
+            <!-- 📘 Laporan Tiap Modul -->
+            @forelse ($data as $modul => $detail)
+                <div class="card mb-4 laporan-modul" data-modul="{{ $modul }}">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Modul: {{ $modul }}</h5>
+                        <span class="badge bg-light text-dark">
+                            Total Poin: <strong>{{ $detail['total_poin'] }}</strong>
+                        </span>
+                    </div>
+
+                    @if (isset($detail['rekap']))
+                        <div class="rekap alert alert-info mb-4">
+                            <h6 class="mb-3">📋 Rekapitulasi Hasil:</h6>
+                            <div class="row text-center">
+                                <div class="col-md-3 col-6 mb-2">
+                                    <strong>Total Soal:</strong>
+                                    <div class="fs-5 total-soal">{{ $detail['rekap']['total_soal'] }}</div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-2">
+                                    <strong>Dijawab:</strong>
+                                    <div class="fs-5 dijawab">{{ $detail['rekap']['dijawab'] }}</div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-2 text-success">
+                                    <strong>Benar:</strong>
+                                    <div class="fs-5 benar">{{ $detail['rekap']['benar'] }}</div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-2 text-danger">
+                                    <strong>Salah:</strong>
+                                    <div class="fs-5 salah">{{ $detail['rekap']['salah'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center align-middle laporan-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 60px;">No</th>
+                                    <th>Jawaban User</th>
+                                    <th>Kunci Jawaban</th>
+                                    <th style="width: 100px;">Poin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($detail['soal'] as $row)
+                                    <tr>
+                                        <td>{{ $row['no'] }}</td>
+                                        <td class="@if ($row['status'] == 'salah') bg-danger text-white 
+                                            @elseif($row['status'] == 'benar') bg-success text-white @endif">
+                                            {{ $row['jawaban_user'] ?? '-' }}
+                                        </td>
+                                        <td>{{ $row['jawaban_benar'] ?? '-' }}</td>
+                                        <td>{{ $row['poin'] ?: '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @empty
+                <div class="alert alert-warning mt-4">
+                    Tidak ada jawaban yang dapat ditampilkan.
+                </div>
+            @endforelse
+
+        </div>
+    </div>
+
+    <!-- 🧠 Script Filter + Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const filter = document.getElementById('filterModul');
+            const btnExport = document.getElementById('btnExportExcel');
+
+            // 🔍 Filter Modul
+            if (filter) {
+                filter.addEventListener('change', function() {
+                    const selected = this.value.toLowerCase();
+                    document.querySelectorAll('.laporan-modul').forEach(card => {
+                        const modul = card.dataset.modul.toLowerCase();
+                        card.style.display = selected === '' || modul === selected ? '' : 'none';
+                    });
+                });
+            }
+
+            // 📤 Export Semua Modul (rekap + tabel)
+            btnExport.addEventListener('click', function() {
+                const allCards = document.querySelectorAll('.laporan-modul');
+                if (allCards.length === 0) {
+                    alert('⚠️ Tidak ada data untuk diekspor!');
+                    return;
+                }
+
+                const wb = XLSX.utils.book_new();
+
+                allCards.forEach(card => {
+                    const modul = card.dataset.modul || 'Tanpa Modul';
+                    const rekapDiv = card.querySelector('.rekap');
+                    const table = card.querySelector('table');
+
+                    // Ambil data rekap (jika ada)
+                    const rekapData = [];
+                    if (rekapDiv) {
+                        const total = rekapDiv.querySelector('.total-soal')?.textContent || '-';
+                        const dijawab = rekapDiv.querySelector('.dijawab')?.textContent || '-';
+                        const benar = rekapDiv.querySelector('.benar')?.textContent || '-';
+                        const salah = rekapDiv.querySelector('.salah')?.textContent || '-';
+                        rekapData.push(["📋 Rekapitulasi Hasil"]);
+                        rekapData.push(["Total Soal", total]);
+                        rekapData.push(["Dijawab", dijawab]);
+                        rekapData.push(["Benar", benar]);
+                        rekapData.push(["Salah", salah]);
+                        rekapData.push([]); // spasi baris
+                    }
+
+                    // Buat sheet dari data rekap + tabel
+                    const wsRekap = XLSX.utils.aoa_to_sheet(rekapData);
+                    const wsTable = XLSX.utils.table_to_sheet(table);
+                    XLSX.utils.sheet_add_json(wsRekap, XLSX.utils.sheet_to_json(wsTable, { header: 1 }), { origin: -1 });
+
+                    // Tambahkan ke workbook
+                    XLSX.utils.book_append_sheet(wb, wsRekap, modul.substring(0, 31));
+                });
+
+                const tanggal = new Date().toISOString().slice(0, 10);
+                const filename = `Laporan_Semua_Modul_{{ $kode }}_${tanggal}.xlsx`;
+
+                XLSX.writeFile(wb, filename);
+                alert('✅ Semua tabel + rekap berhasil diekspor ke Excel!');
+            });
+        });
+    </script>
+@endsection

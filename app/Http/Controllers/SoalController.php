@@ -1,0 +1,238 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\KunciJawaban;
+use App\Models\SoalMultipleChoice;
+use App\Models\KelompokSoal;
+use App\Models\SoalModul;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+
+class SoalController extends Controller
+{
+    public function index(Request $request)
+    {
+        $modul = $request->query('modul');
+        $type_template = $request->query('type_template');
+
+        if (!$modul) {
+            return redirect()->back()->with('error', 'Modul tidak ditemukan.');
+        }
+
+        if (!$type_template) {
+            return redirect()->back()->with('error', 'Type template tidak ditemukan.');
+        }
+
+        $data2 = SoalMultipleChoice::where('modul', $modul)->orderBy('no')->get();
+        $data = SoalModul::where('modul', $modul)->orderBy('no')->get();
+        $kelompok = KelompokSoal::all(); // ambil data untuk select dropdown
+        $galeri = DB::table('img_soal_random')->orderByDesc('id')->get();
+
+        if ($type_template === 'angka-hilang') {
+            return view('admin.tambah-soal', compact('data', 'modul', 'kelompok'));
+        } elseif ($type_template === 'multiple-chois') {
+            return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri'));
+        } elseif ($type_template === 'tanpa-kembali') {
+            return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri'));
+        } else {
+            return redirect()->back()->with('error', 'Type template tidak valid.');
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'no' => 'required',
+            'modul' => 'required',
+            'kelompok' => 'required',
+            'soal2' => 'nullable',
+            'j1' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j2' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j3' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j4' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j5' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+        ]);
+
+        $data = $validated;
+
+        // upload gambar opsional
+        foreach (['j1', 'j2', 'j3', 'j4', 'j5'] as $col) {
+            if ($request->hasFile($col)) {
+                $path = $request->file($col)->store('soal_images', 'public');
+                $data[$col] = 'storage/' . $path;
+            }
+        }
+
+        SoalModul::create($data);
+        return back()->with('success', 'Soal berhasil ditambahkan!');
+    }
+    public function update(Request $request, $id)
+    {
+        $soal = SoalModul::findOrFail($id);
+
+        $validated = $request->validate([
+            'no' => 'required',
+            'modul' => 'required',
+            'kelompok' => 'required',
+            'soal2' => 'nullable',
+            'j1' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j2' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j3' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j4' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'j5' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+        ]);
+
+        $data = $validated;
+
+        // 🟢 Jika ada gambar baru, upload dan ganti
+        foreach (['j1', 'j2', 'j3', 'j4', 'j5'] as $col) {
+            if ($request->hasFile($col)) {
+                // Hapus file lama (opsional, bisa di-skip kalau mau keep)
+                if (!empty($soal->$col) && file_exists(public_path($soal->$col))) {
+                    unlink(public_path($soal->$col));
+                }
+
+                $path = $request->file($col)->store('soal_images', 'public');
+                $data[$col] = 'storage/' . $path;
+            } else {
+                // Kalau gak diubah, tetap pakai gambar lama
+                $data[$col] = $soal->$col;
+            }
+        }
+
+        $soal->update($data);
+
+        return redirect()
+            ->route('soal.index')
+            ->with('success', 'Soal berhasil diperbarui!');
+    }
+
+
+    public function destroy($id)
+    {
+        $item = SoalModul::findOrFail($id);
+        foreach (['j1', 'j2', 'j3', 'j4', 'j5'] as $col) {
+            if ($item->$col && file_exists(public_path($item->$col))) {
+                unlink(public_path($item->$col));
+            }
+        }
+        $item->delete();
+        return back()->with('success', 'Soal berhasil dihapus!');
+    }
+
+    public function show($modul, $type_template)
+    {
+        // 🟦 ambil data soal tergantung type template
+        if ($type_template === 'angka-hilang') {
+            $data = DB::table('soal_modul')
+                ->where('modul', $modul)
+                ->orderBy('no', 'asc')
+                ->get(['no', 'soal2 as soal']);
+        } elseif ($type_template === 'multiple-chois') {
+            $data = DB::table('soal_multiple_choice')
+                ->where('modul', $modul)
+                ->orderBy('no', 'asc')
+                ->get(['no', 'soal']);
+        } elseif ($type_template === 'tanpa-kembali') {
+            $data = DB::table('soal_multiple_choice')
+                ->where('modul', $modul)
+                ->orderBy('no', 'asc')
+                ->get(['no', 'soal']);
+        } else {
+            return redirect()->back()->with('error', 'Type template tidak valid.');
+        }
+
+        // 🟨 KHUSUS untuk type_template === 'tanpa-kembali'
+        if ($type_template === 'tanpa-kembali') {
+            // Ambil semua kunci jawaban yang sudah tersimpan
+            $kunci = \App\Models\KunciJawaban::where('modul_jawaban', $modul)->get();
+
+            // Buat array dengan key kombinasi "no_opsi"
+            $existingPoin = [];
+            foreach ($kunci as $item) {
+                $key = $item->nomor_jawaban . '_' . $item->jawaban_benar;
+                $existingPoin[$key] = $item->poin_jawaban;
+            }
+
+            // Render view khusus tanpa-kembali
+            return view('admin.kunci_jawaban_tanpa-kembali', compact('data', 'modul', 'type_template', 'existingPoin'));
+        }
+
+        // 🟩 Selain itu, tetap pakai format lama
+        $kunci = \App\Models\KunciJawaban::where('modul_jawaban', $modul)
+            ->get()
+            ->keyBy('nomor_jawaban');
+
+        $existingPoin = $kunci->mapWithKeys(function ($item) {
+            return [$item->nomor_jawaban => $item->poin_jawaban];
+        });
+
+        return view('admin.kunci_jawaban', compact('data', 'modul', 'type_template', 'kunci', 'existingPoin'));
+    }
+    public function simpan(Request $request)
+    {
+        $modul = $request->modul_jawaban;
+        $jawabanBenar = $request->jawaban_benar;
+        $poinJawaban = $request->poin_jawaban;
+
+        foreach ($jawabanBenar as $nomor => $jawaban) {
+            // cek apakah sudah ada data untuk modul + nomor soal ini
+            $existing = KunciJawaban::where('modul_jawaban', $modul)
+                ->where('nomor_jawaban', $nomor)
+                ->first();
+
+            if ($existing) {
+                // update hanya kalau ada input baru
+                $existing->update([
+                    'jawaban_benar' => $jawaban ?: $existing->jawaban_benar,
+                    'poin_jawaban'  => $poinJawaban[$nomor] ?: $existing->poin_jawaban,
+                ]);
+            } else {
+                // buat baru kalau belum ada
+                KunciJawaban::create([
+                    'modul_jawaban' => $modul,
+                    'jawaban_benar' => $jawaban,
+                    'poin_jawaban'  => $poinJawaban[$nomor] ?? 0,
+                    'nomor_jawaban' => $nomor,
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Kunci jawaban berhasil disimpan / diperbarui!');
+    }
+    public function simpanTanpaKembali(Request $request)
+    {
+        $modul = $request->modul_jawaban;
+        $poinJawaban = $request->poin_jawaban;
+
+        foreach ($poinJawaban as $nomor => $opsiList) {
+            foreach ($opsiList as $opsi => $poin) {
+                // lewati kalau kosong atau null
+                if ($poin === null || $poin === '') continue;
+
+                // cek apakah sudah ada data untuk modul + nomor + opsi ini
+                $existing = \App\Models\KunciJawaban::where('modul_jawaban', $modul)
+                    ->where('nomor_jawaban', $nomor)
+                    ->where('jawaban_benar', $opsi)
+                    ->first();
+
+                if ($existing) {
+                    $existing->update([
+                        'poin_jawaban' => $poin,
+                    ]);
+                } else {
+                    \App\Models\KunciJawaban::create([
+                        'modul_jawaban' => $modul,
+                        'nomor_jawaban' => $nomor,
+                        'jawaban_benar' => $opsi,
+                        'poin_jawaban'  => $poin,
+                    ]);
+                }
+            }
+        }
+
+        // 🟢 langsung redirect ke halaman yang sama biar data ke-refresh
+        return back()->with('success', 'Kunci jawaban berhasil disimpan / diperbarui!');
+    }
+}
