@@ -97,19 +97,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <form action="{{ route('soal.generate') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="modul" value="{{ $modul }}">
-                                <select name="kelompok" required>
-                                    <option value="">-- Pilih Kelompok --</option>
-                                    @foreach ($kelompok as $k)
-                                        <option value="{{ $k->judul }}">{{ $k->judul }}</option>
-                                    @endforeach
-                                </select>
-                                <input type="number" name="jumlah" placeholder="Masukkan jumlah soal" min="1"
-                                    class="form-control">
-                                <button type="submit" class="btn btn-success mt-2">Generate Otomatis</button>
-                            </form>
+
                             <div class="card-body">
                                 <h4 class="card-title">
                                     Daftar Soal
@@ -211,12 +199,52 @@
                                     </tbody>
 
                                 </table>
+
                             </div>
+
                         </div>
                     </div>
                     <!-- end col -->
                 </div>
                 <!-- End Row -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card shadow p-4 mt-4">
+                            <h5 class="card-title mb-3">🎯 Generate Soal Otomatis</h5>
+
+                            <form action="{{ route('soal.generate') }}" method="POST">
+                                @csrf
+
+                                <input type="hidden" name="modul" value="{{ $modul }}">
+
+                                <div class="mb-3">
+                                    <label for="kelompok" class="form-label fw-bold">Pilih Kelompok Soal</label>
+                                    <select name="kelompok" id="kelompok" class="form-select" required>
+                                        <option value="">-- Pilih Kelompok --</option>
+                                        @foreach ($kelompok as $k)
+                                            <option value="{{ $k->judul }}">{{ $k->judul }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="jumlah" class="form-label fw-bold">Jumlah Soal</label>
+                                    <input type="number" name="jumlah" id="jumlah" placeholder="Masukkan jumlah soal"
+                                        min="1" class="form-control" required>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button type="submit" class="btn btn-success">
+                                        🚀 Generate Otomatis
+                                    </button>
+
+
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
                 <!-- Modal Tambah -->
                 <!-- Modal Tambah -->
                 <div class="modal fade bs-example-modal-lg" id="addModal" tabindex="-1" role="dialog">
@@ -229,7 +257,7 @@
                             <div class="modal-body">
                                 <form action="{{ route('soal.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <input type="text" name="modul" value="{{ $modul }}">
+                                    <input type="hidden" name="modul" value="{{ $modul }}">
                                     <div class="mb-3">
                                         <label>No Soal</label>
                                         <input type="text" name="no" class="form-control" required>

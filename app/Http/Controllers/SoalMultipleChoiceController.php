@@ -76,7 +76,7 @@ class SoalMultipleChoiceController extends Controller
 
         // 🔹 Arahkan ke view sesuai tipe template
         switch ($soal->type_template) {
-             case 'data-nama':
+            case 'data-nama':
                 return view('utama.pages-data', compact('modul', 'ambilmodul'));
             case 'istirahat':
                 return view('utama.break', compact('modul', 'ambilmodul', 'waktu'));

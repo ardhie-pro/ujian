@@ -11,17 +11,32 @@ use App\Http\Controllers\KelompokSoalController;
 use App\Http\Controllers\SoalController;
 use App\Http\Controllers\TarikModulController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
 
-Route::get('/test-word', function () {
-    $phpWord = \PhpOffice\PhpWord\IOFactory::load(storage_path('app/public/test.docx'));
-    dd('Berhasil load Word!');
-});
+
 Route::get('/menunggu-konfirmasi', function () {
     return view('auth.menunggu-konfirmasi');
 })->name('menunggu.konfirmasi');
+
 Route::get('/akses', function () {
     return view('utama.sits');
 });
+Route::get('/download-template-soal', function () {
+    // Path ke file template Word kamu di folder resources/views/template
+    $path = resource_path('views/template/soal.docx');
+
+    // Pastikan file-nya ada
+    if (!file_exists($path)) {
+        abort(404, '⚠️ Template tidak ditemukan di: ' . $path);
+    }
+
+    // Kirim file untuk di-download
+    return Response::download(
+        $path,
+        'Template_Soal.docx',
+        ['Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    );
+})->name('download.template.soal');
 Route::get('/', [KodeLoginController::class, 'index'])->name('kode.login');
 Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
 
@@ -33,6 +48,7 @@ Route::middleware(['auth', 'role:review,admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
+
 
     // dasboard Admin
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');

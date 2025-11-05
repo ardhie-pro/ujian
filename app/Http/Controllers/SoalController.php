@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DOMDocument;
 use App\Models\KunciJawaban;
 use App\Models\SoalMultipleChoice;
 use App\Models\KelompokSoal;
@@ -243,14 +244,37 @@ class SoalController extends Controller
 
     public function destroy($id)
     {
-        $item = SoalModul::findOrFail($id);
+        // 🔎 Coba cari di SoalModul dulu
+        $item = SoalModul::find($id);
+
+        // Jika tidak ada di SoalModul, cari di SoalMultipleChoice
+        if (!$item) {
+            $item = SoalMultipleChoice::find($id);
+            $source = 'multiple';
+        } else {
+            $source = 'modul';
+        }
+
+        // Jika tetap tidak ada di kedua tabel
+        if (!$item) {
+            return back()->with('error', '❌ Soal tidak ditemukan di database!');
+        }
+
+        // 🧹 Hapus file-file gambar jika ada
         foreach (['j1', 'j2', 'j3', 'j4', 'j5'] as $col) {
-            if ($item->$col && file_exists(public_path($item->$col))) {
-                unlink(public_path($item->$col));
+            if (!empty($item->$col)) {
+                $path = public_path($item->$col);
+                if (file_exists($path)) {
+                    unlink($path);
+                }
             }
         }
+
+        // 🗑️ Hapus data dari database
         $item->delete();
-        return back()->with('success', 'Soal berhasil dihapus!');
+
+        // ✅ Kirim notifikasi sukses
+        return back()->with('success', "Soal dari tabel {$source} berhasil dihapus!");
     }
 
     public function show($modul, $type_template)
@@ -371,37 +395,101 @@ class SoalController extends Controller
     public function importWord(Request $request)
     {
         $request->validate([
-            'word_file' => 'required|file|mimes:docx',
+            'word_file' => 'required|file|mimes:docx|max:20480',
         ]);
 
         $file = $request->file('word_file');
         $phpWord = IOFactory::load($file->getPathName());
+        $sections = $phpWord->getSections();
 
-        // Convert seluruh isi file Word ke HTML
-        $htmlWriter = IOFactory::createWriter($phpWord, 'HTML');
-        ob_start();
-        $htmlWriter->save('php://output');
-        $html = ob_get_clean();
+        $currentData = [];
+        $count = 0;
 
-        // Opsional: bersihkan tag tambahan bawaan Word
-        $html = preg_replace('/<!DOCTYPE.+?>/i', '', $html);
-        $html = preg_replace('/<html[^>]*>|<\/html>|<body[^>]*>|<\/body>/i', '', $html);
-        $html = trim($html);
-        dd($html);
+        foreach ($sections as $section) {
+            $elements = $section->getElements();
 
-        // Simpan ke DB (contoh 1 soal saja dulu)
-        \App\Models\SoalMultipleChoice::create([
-            'no' => 1,
-            'modul' => 'default',
-            'soal' => $html, // ini sudah HTML full
-            'pembahasan' => null,
-            'j1' => null,
-            'j2' => null,
-            'j3' => null,
-            'j4' => null,
-            'j5' => null,
-        ]);
+            foreach ($elements as $element) {
+                if (!method_exists($element, 'getRows')) continue; // hanya tabel
 
-        return back()->with('success', '✅ File Word berhasil diubah ke HTML lengkap (termasuk gambar)!');
+                foreach ($element->getRows() as $row) {
+                    $cells = $row->getCells();
+                    if (count($cells) < 2) continue;
+
+                    // Ambil key (kolom kiri)
+                    $keyElement = $cells[0]->getElements()[0] ?? null;
+                    $key = $keyElement && method_exists($keyElement, 'getText')
+                        ? strtolower(trim(strip_tags($keyElement->getText())))
+                        : null;
+
+                    if (!$key) continue;
+
+                    // Ambil value (kolom kanan)
+                    $valElements = $cells[1]->getElements();
+                    $content = '';
+
+                    foreach ($valElements as $v) {
+                        if (method_exists($v, 'getText')) {
+                            $content .= '<p>' . e($v->getText()) . '</p>';
+                        } elseif (method_exists($v, 'getImageStringData')) {
+                            $ext = $v->getImageExtension() ?? 'png';
+                            $dataImg = base64_decode($v->getImageStringData());
+                            $imgName = 'soal_' . uniqid() . '.' . $ext;
+                            $path = 'public/soal_images/' . $imgName;
+                            Storage::put($path, $dataImg);
+                            $url = url('storage/soal_images/' . $imgName);
+                            $content .= "<img src='{$url}' alt='gambar' style='max-width:400px;display:block;margin:6px 0;'>";
+                        }
+                    }
+
+                    // Jika ketemu "no" baru → simpan data sebelumnya
+                    if ($key === 'no' && !empty($currentData)) {
+                        SoalMultipleChoice::create([
+                            'no' => strip_tags($currentData['no'] ?? null), // 🧱 plain text
+                            'soal' => ($currentData['soal'] ?? '') . ($currentData['gambar (opsional)'] ?? ''),
+                            'modul' => strip_tags($currentData['modul'] ?? 'default'), // 🧩 plain text
+                            'pembahasan' => $currentData['pembahasan'] ?? null,
+                            'j1' => $currentData['j1'] ?? null,
+                            'j2' => $currentData['j2'] ?? null,
+                            'j3' => $currentData['j3'] ?? null,
+                            'j4' => $currentData['j4'] ?? null,
+                            'j5' => $currentData['j5'] ?? null,
+                        ]);
+                        $count++;
+                        $currentData = [];
+                    }
+
+                    // Simpan hasil (no dan modul → plain text)
+                    if (in_array($key, ['no', 'modul'])) {
+                        $textOnly = '';
+                        foreach ($valElements as $v) {
+                            if (method_exists($v, 'getText')) {
+                                $textOnly .= ' ' . trim($v->getText());
+                            }
+                        }
+                        $currentData[$key] = trim($textOnly);
+                    } else {
+                        $currentData[$key] = trim($content);
+                    }
+                }
+            }
+        }
+
+        // Simpan soal terakhir
+        if (!empty($currentData)) {
+            SoalMultipleChoice::create([
+                'no' => strip_tags($currentData['no'] ?? null),
+                'soal' => ($currentData['soal'] ?? '') . ($currentData['gambar (opsional)'] ?? ''),
+                'modul' => strip_tags($currentData['modul'] ?? 'default'),
+                'pembahasan' => $currentData['pembahasan'] ?? null,
+                'j1' => $currentData['j1'] ?? null,
+                'j2' => $currentData['j2'] ?? null,
+                'j3' => $currentData['j3'] ?? null,
+                'j4' => $currentData['j4'] ?? null,
+                'j5' => $currentData['j5'] ?? null,
+            ]);
+            $count++;
+        }
+
+        return back()->with('success', "✅ Berhasil import {$count} soal lengkap tanpa HTML di kolom no & modul!");
     }
 }

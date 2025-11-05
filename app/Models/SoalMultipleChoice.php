@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SoalMultipleChoice extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $table = 'soal_multiple_choice';
 

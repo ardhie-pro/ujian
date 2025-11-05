@@ -12,6 +12,7 @@
                     <div class="page-title-box d-flex align-items-center justify-content-between">
                         <div class="page-title">
                             <h4 class="mb-0 font-size-18">Form Modul</h4>
+
                         </div>
                     </div>
                 </div>
@@ -76,12 +77,7 @@
                                             <button type="button" id="batalBtn" class="btn btn-secondary">Batal</button>
                                         </div>
                                     </form>
-                                    <form action="{{ route('soal.importWord') }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <input type="file" name="word_file" accept=".docx" required>
-                                        <button type="submit" class="btn btn-primary">Upload Soal Word</button>
-                                    </form>
+
 
                                 </div>
                             </div>
@@ -231,8 +227,7 @@
                                                     <form action="{{ route('soal.destroy', $item->id) }}" method="POST"
                                                         class="d-inline">
                                                         @csrf @method('DELETE')
-                                                        <button onclick="return confirm('Yakin hapus?')"
-                                                            class="btn btn-danger btn-sm">Hapus</button>
+                                                        <button class="btn btn-danger btn-sm">Hapus</button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -283,13 +278,8 @@
             <div class="container-fluid mt-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white d-flex justify-content-between">
-                        <h5 class="mb-0">📷 Manajemen Galeri</h5>
-                        <form action="{{ route('admin.galeri.store') }}" method="POST" enctype="multipart/form-data"
-                            class="d-flex">
-                            @csrf
-                            <input type="file" name="img" class="form-control form-control-sm me-2" required>
-                            <button class="btn btn-light btn-sm">Tambah</button>
-                        </form>
+                        <h5 class="mb-0">Template Soal</h5>
+
                     </div>
 
                     <div class="card-body">
@@ -298,34 +288,17 @@
                         @endif
 
                         <div class="row">
-                            @foreach ($galeri as $item)
-                                <div class="col-md-3 mb-4">
-                                    <div class="card shadow-sm">
-                                        <img src="{{ asset('storage/' . $item->img) }}" class="card-img-top"
-                                            alt="img">
-                                        <div class="card-body text-center">
-                                            <small class="d-block text-muted mb-2">
-                                                <input type="text" class="form-control form-control-sm text-center"
-                                                    readonly value="{{ asset('storage/' . $item->img) }}"
-                                                    onclick="navigator.clipboard.writeText(this.value); alert('Link disalin!');">
-                                            </small>
-                                            <form action="{{ route('admin.galeri.update', $item->id) }}" method="POST"
-                                                enctype="multipart/form-data" class="d-inline">
-                                                @csrf
-                                                <input type="file" name="img"
-                                                    class="form-control form-control-sm mb-2">
-                                                <button class="btn btn-warning btn-sm">Ubah</button>
-                                            </form>
-                                            <form action="{{ route('admin.galeri.delete', $item->id) }}" method="POST"
-                                                class="d-inline" onsubmit="return confirm('Yakin ingin hapus?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger btn-sm">Hapus</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                            <form action="{{ route('soal.importWord') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="word_file" accept=".docx" required>
+                                <button type="submit" class="btn btn-primary">Upload Soal Word</button>
+                            </form>
+                            <div class="mt-3 text-center">
+                                <p class="text-muted mb-2">Butuh contoh format Word-nya?</p>
+                                <a href="{{ route('download.template.soal') }}" class="btn btn-success">
+                                    📥 Download Template Soal (Word)
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
