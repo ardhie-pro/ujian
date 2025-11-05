@@ -6,7 +6,10 @@ use App\Models\KunciJawaban;
 use App\Models\SoalMultipleChoice;
 use App\Models\KelompokSoal;
 use App\Models\SoalModul;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\Element\Image;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class SoalController extends Controller
@@ -67,6 +70,135 @@ class SoalController extends Controller
         SoalModul::create($data);
         return back()->with('success', 'Soal berhasil ditambahkan!');
     }
+
+    public function generateSoal(Request $request)
+    {
+        $validated = $request->validate([
+            'jumlah' => 'required|integer|min:1',
+            'kelompok' => 'required|string',
+            'modul' => 'required|string',
+        ]);
+
+        $kelompok = KelompokSoal::where('judul', $validated['kelompok'])->firstOrFail();
+
+        // Cek apakah semua soal_text null -> pakai gambar
+        $allTextNull = empty($kelompok->soal1_text)
+            && empty($kelompok->soal2_text)
+            && empty($kelompok->soal3_text)
+            && empty($kelompok->soal4_text)
+            && empty($kelompok->soal5_text);
+
+        $soalMap = $allTextNull ? [
+            'A' => $kelompok->soal1_img,
+            'B' => $kelompok->soal2_img,
+            'C' => $kelompok->soal3_img,
+            'D' => $kelompok->soal4_img,
+            'E' => $kelompok->soal5_img,
+        ] : [
+            'A' => $kelompok->soal1_text,
+            'B' => $kelompok->soal2_text,
+            'C' => $kelompok->soal3_text,
+            'D' => $kelompok->soal4_text,
+            'E' => $kelompok->soal5_text,
+        ];
+
+        // Validasi minimal
+        foreach ($soalMap as $k => $v) {
+            if (is_null($v) || $v === '') {
+                return back()->with('error', "Kolom soal {$k} kosong. Isi semua atau set semua dari sumber lain (text/img).");
+            }
+        }
+
+        // Pastikan proses tidak timeout
+        set_time_limit(0);
+
+        DB::beginTransaction();
+        try {
+            for ($i = 1; $i <= $validated['jumlah']; $i++) {
+                // 1) acak key dan ambil nilai
+                $keys = array_keys($soalMap);
+                shuffle($keys);
+
+                $shuffled = [];
+                foreach ($keys as $k) {
+                    $shuffled[$k] = $soalMap[$k];
+                }
+
+                // 2) pilih satu key asli yang hilang (jawaban benar)
+                $missingKeys = array_keys($soalMap); // ['A','B','C','D','E']
+                $missingKey = $missingKeys[array_rand($missingKeys)];
+                $missingValue = $soalMap[$missingKey];
+
+                // 3) hapus entry yang hilang dari versi acak
+                unset($shuffled[$missingKey]);
+
+                // 4) siapkan array nilai yang tersisa (4 item)
+                $remainingValues = array_values($shuffled); // 4 items
+
+                // 5) buat array final panjang 5 yang berisi 4 gambar + 1 null di posisi acak
+                $final = array_fill(0, 5, null); // index 0..4
+                $nullPos = rand(0, 4); // posisi kosong acak
+                $idx = 0;
+                for ($pos = 0; $pos < 5; $pos++) {
+                    if ($pos === $nullPos) {
+                        $final[$pos] = null;
+                    } else {
+                        $final[$pos] = $remainingValues[$idx] ?? null;
+                        $idx++;
+                    }
+                }
+
+                if ($allTextNull) {
+                    // Mode gambar: simpan j1..j5 sesuai posisi final (salah satu null)
+                    $soal = SoalModul::create([
+                        'no' => $i,
+                        'modul' => $validated['modul'],
+                        'kelompok' => $validated['kelompok'],
+                        'soal2' => null,
+                        'j1' => $final[0],
+                        'j2' => $final[1],
+                        'j3' => $final[2],
+                        'j4' => $final[3],
+                        'j5' => $final[4],
+                    ]);
+                } else {
+                    // Mode teks: seperti sebelumnya (soal2 berisi string acak)
+                    $soal2 = implode('', array_values($shuffled));
+                    $soal = SoalModul::create([
+                        'no' => $i,
+                        'modul' => $validated['modul'],
+                        'kelompok' => $validated['kelompok'],
+                        'soal2' => $soal2,
+                        'j1' => $soalMap['A'],
+                        'j2' => $soalMap['B'],
+                        'j3' => $soalMap['C'],
+                        'j4' => $soalMap['D'],
+                        'j5' => $soalMap['E'],
+                    ]);
+                }
+
+                // Simpan kunci jawaban (simpan key yang dihapus, misal 'B')
+                KunciJawaban::create([
+                    'modul_jawaban' => $validated['modul'],
+                    'jawaban_benar' => $missingKey,
+                    'poin_jawaban' => null,
+                    'nomor_jawaban' => $i,
+                ]);
+
+                // Tambahkan delay agar server tidak error kalau jumlah besar
+                usleep(100000); // 0.1 detik per soal
+            }
+
+            DB::commit();
+            $mode = $allTextNull ? 'gambar (acak, satu slot null acak)' : 'teks';
+            return back()->with('success', "{$validated['jumlah']} soal ({$mode}) berhasil digenerate dengan kunci jawaban!");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal generate soal: ' . $e->getMessage());
+        }
+    }
+
+
     public function update(Request $request, $id)
     {
         $soal = SoalModul::findOrFail($id);
@@ -234,5 +366,42 @@ class SoalController extends Controller
 
         // 🟢 langsung redirect ke halaman yang sama biar data ke-refresh
         return back()->with('success', 'Kunci jawaban berhasil disimpan / diperbarui!');
+    }
+
+    public function importWord(Request $request)
+    {
+        $request->validate([
+            'word_file' => 'required|file|mimes:docx',
+        ]);
+
+        $file = $request->file('word_file');
+        $phpWord = IOFactory::load($file->getPathName());
+
+        // Convert seluruh isi file Word ke HTML
+        $htmlWriter = IOFactory::createWriter($phpWord, 'HTML');
+        ob_start();
+        $htmlWriter->save('php://output');
+        $html = ob_get_clean();
+
+        // Opsional: bersihkan tag tambahan bawaan Word
+        $html = preg_replace('/<!DOCTYPE.+?>/i', '', $html);
+        $html = preg_replace('/<html[^>]*>|<\/html>|<body[^>]*>|<\/body>/i', '', $html);
+        $html = trim($html);
+        dd($html);
+
+        // Simpan ke DB (contoh 1 soal saja dulu)
+        \App\Models\SoalMultipleChoice::create([
+            'no' => 1,
+            'modul' => 'default',
+            'soal' => $html, // ini sudah HTML full
+            'pembahasan' => null,
+            'j1' => null,
+            'j2' => null,
+            'j3' => null,
+            'j4' => null,
+            'j5' => null,
+        ]);
+
+        return back()->with('success', '✅ File Word berhasil diubah ke HTML lengkap (termasuk gambar)!');
     }
 }

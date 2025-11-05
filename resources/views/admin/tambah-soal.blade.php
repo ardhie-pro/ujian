@@ -5,7 +5,6 @@
 @section('content')
     <div class="page-content">
         <div class="container-fluid">
-
             <!-- start page title -->
             <div class="row">
                 <div class="col-12">
@@ -17,7 +16,6 @@
                 </div>
             </div>
             <!-- end page title -->
-
             <!-- Start Page-content-Wrapper -->
             <div class="page-content-wrapper">
                 <div class="row">
@@ -96,12 +94,22 @@
                         };
                     });
                 </script>
-
-
-
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
+                            <form action="{{ route('soal.generate') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="modul" value="{{ $modul }}">
+                                <select name="kelompok" required>
+                                    <option value="">-- Pilih Kelompok --</option>
+                                    @foreach ($kelompok as $k)
+                                        <option value="{{ $k->judul }}">{{ $k->judul }}</option>
+                                    @endforeach
+                                </select>
+                                <input type="number" name="jumlah" placeholder="Masukkan jumlah soal" min="1"
+                                    class="form-control">
+                                <button type="submit" class="btn btn-success mt-2">Generate Otomatis</button>
+                            </form>
                             <div class="card-body">
                                 <h4 class="card-title">
                                     Daftar Soal
@@ -147,35 +155,35 @@
                                                 </td>
                                                 <td>
                                                     @if ($item->j1)
-                                                        <img src="{{ asset($item->j1) }}" width="60">
+                                                        <img src="{{ asset('storage/' . $item->j1) }}" width="60">
                                                     @else
                                                         -
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if ($item->j2)
-                                                        <img src="{{ asset($item->j2) }}" width="60">
+                                                        <img src="{{ asset('storage/' . $item->j2) }}" width="60">
                                                     @else
                                                         -
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if ($item->j3)
-                                                        <img src="{{ asset($item->j3) }}" width="60">
+                                                        <img src="{{ asset('storage/' . $item->j3) }}" width="60">
                                                     @else
                                                         -
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if ($item->j4)
-                                                        <img src="{{ asset($item->j4) }}" width="60">
+                                                        <img src="{{ asset('storage/' . $item->j4) }}" width="60">
                                                     @else
                                                         -
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if ($item->j5)
-                                                        <img src="{{ asset($item->j5) }}" width="60">
+                                                        <img src="{{ asset('storage/' . $item->j5) }}" width="60">
                                                     @else
                                                         -
                                                     @endif
@@ -221,7 +229,7 @@
                             <div class="modal-body">
                                 <form action="{{ route('soal.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <input type="hidden" name="modul" value="{{ $modul }}">
+                                    <input type="text" name="modul" value="{{ $modul }}">
                                     <div class="mb-3">
                                         <label>No Soal</label>
                                         <input type="text" name="no" class="form-control" required>

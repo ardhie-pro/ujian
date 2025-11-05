@@ -76,6 +76,13 @@
                                             <button type="button" id="batalBtn" class="btn btn-secondary">Batal</button>
                                         </div>
                                     </form>
+                                    <form action="{{ route('soal.importWord') }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="file" name="word_file" accept=".docx" required>
+                                        <button type="submit" class="btn btn-primary">Upload Soal Word</button>
+                                    </form>
+
                                 </div>
                             </div>
                         </div>
@@ -290,7 +297,7 @@
                             <div class="alert alert-success">{{ session('success') }}</div>
                         @endif
 
-                         <div class="row">
+                        <div class="row">
                             @foreach ($galeri as $item)
                                 <div class="col-md-3 mb-4">
                                     <div class="card shadow-sm">

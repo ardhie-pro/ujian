@@ -12,6 +12,10 @@ use App\Http\Controllers\SoalController;
 use App\Http\Controllers\TarikModulController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/test-word', function () {
+    $phpWord = \PhpOffice\PhpWord\IOFactory::load(storage_path('app/public/test.docx'));
+    dd('Berhasil load Word!');
+});
 Route::get('/menunggu-konfirmasi', function () {
     return view('auth.menunggu-konfirmasi');
 })->name('menunggu.konfirmasi');
@@ -22,22 +26,22 @@ Route::get('/', [KodeLoginController::class, 'index'])->name('kode.login');
 Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
 
 Route::middleware(['auth', 'role:review,admin'])->group(function () {
-   // halaman review
+    // halaman review
     Route::get('/review', [App\Http\Controllers\ReviewController::class, 'index'])->name('review.index');
     Route::get('/review/{kode}', [App\Http\Controllers\ReviewController::class, 'show'])->name('review.show');
     Route::get('/review/{kode}/{modul}', [App\Http\Controllers\ReviewController::class, 'detail'])->name('review.detail');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-   
+
     // dasboard Admin
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
     Route::resource('kumpulan-modul', KumpulanModulController::class);
 
     // ✅ Halaman tabel user
     Route::get('/dashboard/users', [AdminController::class, 'users'])->name('admin.users');
-  Route::delete('/dashboard/users/delete/{id}', [AdminController::class, 'deleteUser'])
-    ->name('admin.deleteUser');
+    Route::delete('/dashboard/users/delete/{id}', [AdminController::class, 'deleteUser'])
+        ->name('admin.deleteUser');
     Route::post('/dashboard/galeri', [AdminController::class, 'galeriStore'])->name('admin.galeri.store');
     Route::post('/dashboard/galeri/update/{id}', [AdminController::class, 'galeriUpdate'])->name('admin.galeri.update');
     Route::delete('/dashboard/galeri/delete/{id}', [AdminController::class, 'galeriDelete'])->name('admin.galeri.delete');
@@ -62,7 +66,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // vie admin soal
     Route::get('/soal', [SoalController::class, 'index'])->name('soal.index');
+    Route::post('/soal/generate', [SoalController::class, 'generateSoal'])->name('soal.generate');
     Route::post('/soal', [SoalController::class, 'store'])->name('soal.store');
+    Route::post('/soal/import-word', [SoalController::class, 'importWord'])->name('soal.importWord');
     Route::put('/soal/{id}', [SoalController::class, 'update'])->name('soal.update');
     Route::delete('/soal/{id}', [SoalController::class, 'destroy'])->name('soal.destroy');
     // kunci jawaban
@@ -84,7 +90,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // kelompok soal routes
     Route::get('/kelompok-soal', [KelompokSoalController::class, 'index'])->name('kelompok-soal.index');
     Route::post('/kelompok-soal', [KelompokSoalController::class, 'store']);
-        Route::get('/kelompok-soal/{id}/edit', [KelompokSoalController::class, 'edit'])->name('kelompok-soal.edit');
+    Route::get('/kelompok-soal/{id}/edit', [KelompokSoalController::class, 'edit'])->name('kelompok-soal.edit');
     Route::resource('kelompok-soal', KelompokSoalController::class);
     Route::put('/kelompok-soal/{id}', [KelompokSoalController::class, 'update']);
     Route::delete('/kelompok-soal/{id}', [KelompokSoalController::class, 'destroy']);
