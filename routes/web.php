@@ -17,19 +17,16 @@ use Illuminate\Support\Facades\Response;
 Route::get('/menunggu-konfirmasi', function () {
     return view('auth.menunggu-konfirmasi');
 })->name('menunggu.konfirmasi');
-
 Route::get('/akses', function () {
     return view('utama.sits');
 });
 Route::get('/download-template-soal', function () {
     // Path ke file template Word kamu di folder resources/views/template
     $path = resource_path('views/template/soal.docx');
-
     // Pastikan file-nya ada
     if (!file_exists($path)) {
         abort(404, '⚠️ Template tidak ditemukan di: ' . $path);
     }
-
     // Kirim file untuk di-download
     return Response::download(
         $path,
@@ -37,8 +34,10 @@ Route::get('/download-template-soal', function () {
         ['Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
     );
 })->name('download.template.soal');
-Route::get('/', [KodeLoginController::class, 'index'])->name('kode.login');
-Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/', [KodeLoginController::class, 'index'])->name('kode.login');
+    Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
+});
 
 Route::middleware(['auth', 'role:review,admin'])->group(function () {
     // halaman review
@@ -48,12 +47,9 @@ Route::middleware(['auth', 'role:review,admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-
-
     // dasboard Admin
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
     Route::resource('kumpulan-modul', KumpulanModulController::class);
-
     // ✅ Halaman tabel user
     Route::get('/dashboard/users', [AdminController::class, 'users'])->name('admin.users');
     Route::delete('/dashboard/users/delete/{id}', [AdminController::class, 'deleteUser'])
@@ -61,16 +57,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/dashboard/galeri', [AdminController::class, 'galeriStore'])->name('admin.galeri.store');
     Route::post('/dashboard/galeri/update/{id}', [AdminController::class, 'galeriUpdate'])->name('admin.galeri.update');
     Route::delete('/dashboard/galeri/delete/{id}', [AdminController::class, 'galeriDelete'])->name('admin.galeri.delete');
-
     // ✅ Update user — pakai method updateUser (bukan update)
     Route::post('/dashboard/users/update/{user}', [AdminController::class, 'updateUser'])
         ->name('admin.updateUser');
-
     // buat kode
     Route::get('/generate-kode', [KodeGeneratorController::class, 'index'])->name('generate-kode.index');
     Route::post('/generate-kode', [KodeGeneratorController::class, 'store'])->name('generate-kode.store');
     Route::delete('/generate-kode/{id}', [KodeGeneratorController::class, 'destroy'])->name('generate-kode.destroy');
-
     // admin view soal multiple
     Route::prefix('soal-multiple')->name('soal-multiple.')->group(function () {
         Route::get('/', [SoalMultipleChoiceController::class, 'index'])->name('index');
@@ -79,9 +72,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::put('/{id}', [SoalMultipleChoiceController::class, 'update'])->name('update');
         Route::delete('/{id}', [SoalMultipleChoiceController::class, 'destroy'])->name('destroy');
     });
-
     // vie admin soal
     Route::get('/soal', [SoalController::class, 'index'])->name('soal.index');
+    Route::post('/soal/import-preview', [SoalController::class, 'importPreview'])->name('soal.importPreview');
+    Route::post('/soal/import-save', [SoalController::class, 'importSave'])->name('soal.importSave');
     Route::post('/soal/generate', [SoalController::class, 'generateSoal'])->name('soal.generate');
     Route::post('/soal', [SoalController::class, 'store'])->name('soal.store');
     Route::post('/soal/import-word', [SoalController::class, 'importWord'])->name('soal.importWord');
@@ -92,12 +86,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/kunci-jawaban/simpan', [SoalController::class, 'simpan'])->name('kunci-jawaban.simpan');
     Route::post('/kunci-jawaban/simpan-tanpa-kembali', [SoalController::class, 'simpanTanpaKembali'])
         ->name('kunci-jawaban.simpan-tanpa-kembali');
-
     // laporan 
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/{kode}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::get('/laporan/{kode}/{user_id}', [LaporanController::class, 'detail'])->name('laporan.detail');
-
     // tarikmodul routes
     Route::get('/tarik-modul', [TarikModulController::class, 'index'])->name('tarik-modul.index');
     Route::post('/tarik-modul', [TarikModulController::class, 'store'])->name('tarik-modul.store');
@@ -111,8 +103,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/kelompok-soal/{id}', [KelompokSoalController::class, 'update']);
     Route::delete('/kelompok-soal/{id}', [KelompokSoalController::class, 'destroy']);
 });
-
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -121,10 +111,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/get-soal-multiple/{modul}', [SoalMultipleChoiceController::class, 'getSoalByModul']);
 Route::get('/get-soal/{modul}/{no}', [AdminController::class, 'getSoal']);
 Route::post('/simpan-jawaban', [AdminController::class, 'simpanJawaban']);
-
 // mengambil soal dan jawaban terakhir apabila ke logout dan login lagi
 Route::get('/get-jawaban/{modul}/{kodeLogin}', [SoalMultipleChoiceController::class, 'getJawaban']);
-
 Route::get('/logouttest', [KodeLoginController::class, 'logoutTest'])->name('logouttest');
 Route::get('/ujian', [SoalMultipleChoiceController::class, 'ujian'])->name('ujian');
 Route::post('/next-modul', [SoalMultipleChoiceController::class, 'nextModul'])->name('next.modul');

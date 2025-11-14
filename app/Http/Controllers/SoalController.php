@@ -15,6 +15,26 @@ use Illuminate\Http\Request;
 
 class SoalController extends Controller
 {
+    public function importPreview(Request $request)
+    {
+        // Ambil isi CKEditor
+        $html = $request->import_soal;
+
+        // Misal parsing sederhana dulu
+        return response()->json([
+            'status' => 1,
+            'soal' => $html
+        ]);
+    }
+
+    public function importSave(Request $request)
+    {
+        // Simpan data soal ke DB
+        return response()->json([
+            'status' => 1
+        ]);
+    }
+
     public function index(Request $request)
     {
         $modul = $request->query('modul');
@@ -412,6 +432,7 @@ class SoalController extends Controller
                 if (!method_exists($element, 'getRows')) continue; // hanya tabel
 
                 foreach ($element->getRows() as $row) {
+
                     $cells = $row->getCells();
                     if (count($cells) < 2) continue;
 
@@ -425,28 +446,40 @@ class SoalController extends Controller
 
                     // Ambil value (kolom kanan)
                     $valElements = $cells[1]->getElements();
+
                     $content = '';
 
+                    // 🔥 Ambil semua teks + gambar base64 jadi satu HTML string
                     foreach ($valElements as $v) {
+                        dd($v);
                         if (method_exists($v, 'getText')) {
-                            $content .= '<p>' . e($v->getText()) . '</p>';
+                            $text = trim($v->getText());
+                            if ($text !== '') {
+                                $content .= '<p>' . e($text) . '</p>';
+                            }
                         } elseif (method_exists($v, 'getImageStringData')) {
                             $ext = $v->getImageExtension() ?? 'png';
-                            $dataImg = base64_decode($v->getImageStringData());
-                            $imgName = 'soal_' . uniqid() . '.' . $ext;
-                            $path = 'public/soal_images/' . $imgName;
-                            Storage::put($path, $dataImg);
-                            $url = url('storage/soal_images/' . $imgName);
-                            $content .= "<img src='{$url}' alt='gambar' style='max-width:400px;display:block;margin:6px 0;'>";
+                            $dataImg = $v->getImageStringData();
+
+                            // langsung embed base64
+                            $base64 = base64_encode(base64_decode($dataImg));
+                            $mime = match (strtolower($ext)) {
+                                'jpg', 'jpeg' => 'image/jpeg',
+                                'gif' => 'image/gif',
+                                'webp' => 'image/webp',
+                                default => 'image/png',
+                            };
+
+                            $content .= "<img src='data:{$mime};base64,{$base64}' alt='gambar' style='max-width:400px;display:block;margin:6px 0;'>";
                         }
                     }
 
                     // Jika ketemu "no" baru → simpan data sebelumnya
                     if ($key === 'no' && !empty($currentData)) {
                         SoalMultipleChoice::create([
-                            'no' => strip_tags($currentData['no'] ?? null), // 🧱 plain text
-                            'soal' => ($currentData['soal'] ?? '') . ($currentData['gambar (opsional)'] ?? ''),
-                            'modul' => strip_tags($currentData['modul'] ?? 'default'), // 🧩 plain text
+                            'no' => strip_tags($currentData['no'] ?? null),
+                            'soal' => $currentData['soal'] ?? '',
+                            'modul' => strip_tags($currentData['modul'] ?? 'default'),
                             'pembahasan' => $currentData['pembahasan'] ?? null,
                             'j1' => $currentData['j1'] ?? null,
                             'j2' => $currentData['j2'] ?? null,
@@ -458,7 +491,7 @@ class SoalController extends Controller
                         $currentData = [];
                     }
 
-                    // Simpan hasil (no dan modul → plain text)
+                    // Simpan hasil (no & modul → text only)
                     if (in_array($key, ['no', 'modul'])) {
                         $textOnly = '';
                         foreach ($valElements as $v) {
@@ -468,6 +501,7 @@ class SoalController extends Controller
                         }
                         $currentData[$key] = trim($textOnly);
                     } else {
+                        // kolom lain (soal, j1–j5, pembahasan)
                         $currentData[$key] = trim($content);
                     }
                 }
@@ -478,7 +512,7 @@ class SoalController extends Controller
         if (!empty($currentData)) {
             SoalMultipleChoice::create([
                 'no' => strip_tags($currentData['no'] ?? null),
-                'soal' => ($currentData['soal'] ?? '') . ($currentData['gambar (opsional)'] ?? ''),
+                'soal' => $currentData['soal'] ?? '',
                 'modul' => strip_tags($currentData['modul'] ?? 'default'),
                 'pembahasan' => $currentData['pembahasan'] ?? null,
                 'j1' => $currentData['j1'] ?? null,
@@ -490,6 +524,6 @@ class SoalController extends Controller
             $count++;
         }
 
-        return back()->with('success', "✅ Berhasil import {$count} soal lengkap tanpa HTML di kolom no & modul!");
+        return back()->with('success', "✅ Berhasil import {$count} soal! Semua gambar otomatis ter-embed base64 di kolom HTML.");
     }
 }

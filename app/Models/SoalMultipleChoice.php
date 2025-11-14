@@ -22,6 +22,7 @@ class SoalMultipleChoice extends Model
         'jawaban_benar',
         'modul',
         'pembahasan',
+        'check',
     ];
 
     /**

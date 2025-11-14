@@ -230,7 +230,7 @@ class SoalMultipleChoiceController extends Controller
     {
         $soal = \App\Models\SoalMultipleChoice::where('modul', $modul)
             ->orderBy('no', 'asc')
-            ->get(['no', 'soal', 'j1', 'j2', 'j3', 'j4', 'j5', 'pembahasan']); // ambil jawaban
+            ->get(['no', 'soal', 'j1', 'j2', 'j3', 'j4', 'j5', 'pembahasan', 'check']); // ambil jawaban
 
         return response()->json($soal);
     }

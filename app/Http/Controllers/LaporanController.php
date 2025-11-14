@@ -7,27 +7,27 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
-public function index()
-{
-    $data = DB::table('kode')
-        // Ambil nama peserta dari jawaban_user
-        ->leftJoin('jawaban_user', function ($join) {
-            $join->on('jawaban_user.user_id', '=', 'kode.kode')
-                 ->where('jawaban_user.modul', '=', 'Nama');
-        })
-        // Ambil nama modul dari kumpulan_modul
-        ->leftJoin('kumpulan_modul', 'kumpulan_modul.id', '=', 'kode.modul_id')
-        ->select(
-            'kode.*',
-            'jawaban_user.jawaban as nama_peserta',
-            'kumpulan_modul.nama as nama_modul'
-        )
-        ->orderByRaw("CASE WHEN kode.status = 0 THEN 0 ELSE 1 END") // status 0 di atas
-        ->orderBy('kode.id', 'desc')
-        ->get();
+    public function index()
+    {
+        $data = DB::table('kode')
+            // Ambil nama peserta dari jawaban_user
+            ->leftJoin('jawaban_user', function ($join) {
+                $join->on('jawaban_user.user_id', '=', 'kode.kode')
+                    ->where('jawaban_user.modul', '=', 'Nama-Peserta');
+            })
+            // Ambil nama modul dari kumpulan_modul
+            ->leftJoin('kumpulan_modul', 'kumpulan_modul.id', '=', 'kode.modul_id')
+            ->select(
+                'kode.*',
+                'jawaban_user.jawaban as nama_peserta',
+                'kumpulan_modul.nama as nama_modul'
+            )
+            ->orderByRaw("CASE WHEN kode.status = 0 THEN 0 ELSE 1 END") // status 0 di atas
+            ->orderBy('kode.id', 'desc')
+            ->get();
 
-    return view('admin.laporan.index', compact('data'));
-}
+        return view('admin.laporan.index', compact('data'));
+    }
 
 
 

@@ -1,494 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.main-soal')
 
-<head>
-    <meta charset="utf-8" />
-    <title>
-        CIBN | Citta Bhakti Nirbaya
-    </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-    <meta content="Themesbrand" name="author" />
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assetts//images/favicon.ico') }}" />
-
-    <!-- Plugins css -->
-    <link href="{{ asset('assetts//libs/bootstrap-editable/css/bootstrap-editable.css') }}" rel="stylesheet"
-        type="text/css" />
-
-    <!-- Bootstrap Css -->
-    <link href="{{ asset('assetts//css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
-    <!-- Icons Css -->
-    <link href="{{ asset('assetts//css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- App Css-->
-    <link href="{{ asset('assetts//css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-    <style>
-        #timerButton {
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-soal {
-            width: 45px;
-            height: 45px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            transition: 0.2s;
-            padding: 0;
-        }
-
-        .btn-soal:hover {
-            transform: scale(1.08);
-        }
-
-        .btn-answered {
-            background-color: #00e673;
-            /* biru Bootstrap */
-            color: white;
-        }
-
-        .btn-unanswered {
-            background-color: #adb5bd;
-            /* abu-abu */
-            color: white;
-        }
-
-        /* rapikan layout */
-        #side-menu {
-            padding-bottom: 1rem;
-        }
-
-        .menu-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-
-        #vertical-menu-btn {
-            display: none;
-        }
-
-        @media (max-width: 991px) {
-            #vertical-menu-btn {
-                display: inline-block;
-            }
-        }
-
-        .card {
-            border-radius: 16px;
-            background: #ffffff;
-        }
-
-        .card-body {
-            background-color: #fff;
-        }
-
-        .option-item {
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.05rem;
-            padding: 12px 15px;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .option-item:hover {
-            background-color: #f1f3f5;
-        }
-
-        .option-item input[type="radio"]:checked+span {
-            font-weight: 600;
-        }
-
-        input[type="radio"]:checked~label,
-        .option-item input[type="radio"]:checked {
-            accent-color: #0d6efd;
-        }
-
-        .badge {
-            border-radius: 8px;
-        }
-
-        @media (max-width: 576px) {
-            .card-body {
-                padding: 1.25rem;
-            }
-
-            .fs-5 {
-                font-size: 1rem !important;
-            }
-        }
-    </style>
-</head>
-
-<body data-topbar="colored">
-    <!-- <body data-layout="horizontal" data-topbar="colored"> -->
-
-    <!-- Begin page -->
-    <div id="layout-wrapper">
-        <header id="page-topbar">
-            <div class="navbar-header">
-                <div class="d-flex">
-                    <!-- LOGO -->
-                    <div class="navbar-brand-box">
-                        <a href="index.html" class="logo logo-dark">
-                            <span class="logo-sm">
-                                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}" alt=""
-                                    height="42" />
-                            </span>
-                            <span class="logo-lg">
-                                <img src="{{ asset('assetts/images/logo-dark.png') }}" alt="" height="44" />
-                            </span>
-                        </a>
-
-                        <a href="index.html" class="logo logo-light">
-                            <span class="logo-sm">
-                                <img src="{{ asset('assetts/images/logo-sm-light.png') }}" alt=""
-                                    height="42" />
-                            </span>
-                            <span class="logo-lg">
-                                <img src="{{ asset('assetts/images/logo-light.png') }}" alt="" height="44" />
-                            </span>
-                        </a>
+@section('title', 'Dashboard')
+@section('content2')
+    <div class="container mt-3">
+        <!-- MAIN SECTION -->
+        <div class="row mt-2 align-items-start" id="main-row">
+            <!-- LEFT: Question -->
+            <div class="col-lg-8" id="soal-col">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <nav aria-label="breadcrumb" class="mb-2 mb-md-0">
+                        <ol class="breadcrumb mb-0" id="breadcrumb-modul"></ol>
+                    </nav>
+                    <div class="timer-box">
+                        Waktu: <span id="liveTimer">00:00:00</span>
                     </div>
-
-                    <!-- Menu Icon -->
-
-                    <button type="button" class="btn px-3 font-size-24 header-item waves-effect d-block d-lg-none"
-                        id="vertical-menu-btn">
-                        <i class="mdi mdi-menu"></i>
-                    </button>
                 </div>
+                <div class="question-box mb-5" id="soal-container"></div>
+            </div>
 
-                <div class="d-flex">
-                    <div class="dropdown d-inline-block d-lg-none ms-2">
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                            aria-labelledby="page-header-search-dropdown">
-                            <form class="p-3">
-                                <div class="form-group m-0"></div>
-                            </form>
-                        </div>
+            <!-- RIGHT: Sidebar -->
+            <div class="col-lg-4 mt-3 mt-lg-0" id="sidebar-col">
+                <div class="sidebar-box">
+                    <div class="sidebar-title d-flex align-items-center justify-content-between px-2">
+                        <span> Nomor Soal Pengerjaan</span>
+                        <i class="bi bi-list" id="toggle-layout" style="cursor:pointer"></i>
                     </div>
-
-                    <!-- Notification Dropdown -->
-                    <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item noti-icon waves-effect"
-                            id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                            <i class="mdi mdi-bell"></i>
-                            <span class="badge bg-info rounded-pill">3</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                            aria-labelledby="page-header-notifications-dropdown">
-                            <h5 class="p-3 text-dark mb-0">Notifications (37)</h5>
-                            <div data-simplebar style="max-height: 230px">
-                                <a href="" class="text-reset notification-item">
-                                    <div class="d-flex mt-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-success rounded-circle font-size-16">
-                                                <i class="mdi mdi-cart"></i>
-                                            </span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h6 class="mb-1">Your order is placed</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">
-                                                    If several languages coalesce the grammar
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="" class="text-reset notification-item">
-                                    <div class="d-flex mt-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-warning rounded-circle font-size-16">
-                                                <i class="mdi mdi-message"></i>
-                                            </span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h6 class="mb-1">New Massage received</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">You have 87 unread message</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="" class="text-reset notification-item">
-                                    <div class="d-flex mt-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-info rounded-circle font-size-16">
-                                                <i class="mdi mdi-flag"></i>
-                                            </span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h6 class="mb-1">Your item is shipped</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">
-                                                    If several languages coalesce the grammar
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a href="" class="text-reset notification-item">
-                                    <div class="d-flex mt-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-primary rounded-circle font-size-16">
-                                                <i class="mdi mdi-cart"></i>
-                                            </span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h6 class="mb-1">Your Order is placed</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">
-                                                    It will seem like simplified English
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <a href="" class="text-reset notification-item">
-                                    <div class="d-flex mt-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-danger rounded-circle font-size-16">
-                                                <i class="mdi mdi-message"></i>
-                                            </span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h6 class="mb-1">New Massage received</h6>
-                                            <div class="font-size-12 text-muted">
-                                                <p class="mb-1">You have 87 unread message</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="p-2 d-grid">
-                                <a class="font-size-14 text-center" href="javascript:void(0)">View all</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User -->
-                    <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="rounded-circle header-profile-user"
-                                src="{{ asset('assetts/images/users/avatar-4.jpg') }}" alt="Header Avatar" />
-                        </button>
-
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <a class="dropdown-item" href="#"><i
-                                    class="mdi mdi-account-circle font-size-16 align-middle me-2 text-muted"></i>
-                                <span>Profile</span></a>
-                            <a class="dropdown-item" href="#"><i
-                                    class="mdi mdi-wallet font-size-16 align-middle text-muted me-2"></i>
-                                <span>My Wallet</span></a>
-                            <a class="dropdown-item d-block" href="#"><span
-                                    class="badge bg-success float-end">11</span><i
-                                    class="mdi mdi-wrench font-size-16 align-middle text-muted me-2"></i>
-                                <span>Settings</span></a>
-                            <a class="dropdown-item" href="#"><i
-                                    class="mdi mdi-lock-open-outline font-size-16 text-muted align-middle me-2"></i>
-                                <span>Lock screen</span></a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-primary" href="#"><i
-                                    class="mdi mdi-power font-size-16 align-middle me-2 text-primary"></i>
-                                <span>Logout</span></a>
-                        </div>
-                    </div>
-
-                    <!-- Setting -->
-                    <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
-                            <i class="mdi mdi-cog bx-spin"></i>
-                        </button>
-                    </div>
+                    <div class="grid-container" id="soal-buttons"></div>
                 </div>
             </div>
-        </header>
 
-        <!-- ========== Left Sidebar Start ========== -->
-        <div class="vertical-menu">
-            <div data-simplebar class="h-100">
-                <div class="user-details">
-                    <div class="d-flex">
-                        <div class="me-2">
-                            <img src="{{ asset('assetts/images/users/avatar-4.jpg') }}" alt=""
-                                class="avatar-md rounded-circle" />
-                        </div>
-                        <div class="user-info w-100">
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    Donald Johnson
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-account-circle text-muted me-2"></i>
-                                            Profile
-                                            <div class="ripple-wrapper me-2"></div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-cog text-muted me-2"></i> Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-lock-open-outline text-muted me-2"></i>
-                                            Lock screen</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-power text-muted me-2"></i> Logout</a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <p class="text-white-50 m-0">Administrator</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!--- Sidemenu -->
-                <div id="sidebar-menu">
-                    <!-- Left Menu Start -->
-                    <ul class="metismenu list-unstyled" id="side-menu">
-                        <li class="menu-title">Nomor Soal</li>
-
-                        <div class="container-fluid py-2">
-                            <div class="row g-2" id="soal-buttons"></div>
-
-                        </div>
-                    </ul>
-
-
-
-
-                </div>
-                <!-- Sidebar -->
-            </div>
-        </div>
-        <!-- Left Sidebar End -->
-
-        <!-- ============================================================== -->
-        <!-- Start right Content here -->
-        <!-- ============================================================== -->
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                    <!-- start page title -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="page-title-box d-flex align-items-center justify-content-between">
-                                <div class="page-title">
-                                    <h3 class="mb-0 font-size-18">
-                                        <button id="timerButton" class="btn btn-danger btn-header">
-                                            Waktu: <span id="liveTimer">00:00:00</span>
-                                        </button>
-
-                                    </h3>
-                                    <ol class="breadcrumb" id="breadcrumb-modul"></ol>
-                                </div>
-
-                                <div class="state-information d-none d-sm-block">
-                                    <div class="state-graph"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end page title -->
-
-                    <!-- Start Page-content-Wrapper -->
-                    <div class="page-content-wrapper">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-
-                                    <div class="card-body p-4" id="soal-container">
-                                        <div class="text-center text-muted">Memuat soal...</div>
-                                    </div>
-
-
-
-                                    <script>
-                                        function nextQuestion() {
-                                            const selected = document.querySelector(
-                                                'input[name="jawaban1"]:checked'
-                                            );
-                                            if (!selected) {
-                                                Swal.fire({
-                                                    icon: "warning",
-                                                    title: "Belum dijawab",
-                                                    text: "Silakan pilih salah satu jawaban terlebih dahulu!",
-                                                    confirmButtonColor: "#3085d6",
-                                                });
-                                                return;
-                                            }
-
-                                            Swal.fire({
-                                                icon: "success",
-                                                title: "Jawaban tersimpan!",
-                                                text: "Kamu memilih: " + selected.value,
-                                                confirmButtonColor: "#3085d6",
-                                            });
-                                        }
-                                    </script>
-
-
-
-                                    <!-- End Cardbody -->
-                                </div>
-                                <!-- End Card -->
-                            </div>
-                            <!-- End Col -->
-                        </div>
-                        <!-- End Row -->
-                    </div>
-                    <!-- End Page-content-wrapper -->
-                </div>
-                <!-- Container-fluid -->
-            </div>
-            <!-- End Page-content-wrapper -->
-
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-12 text-center">
-                            <script>
-                                document.write(new Date().getFullYear());
-                            </script>
-                            © CIBN
-                            <span class="d-none d-sm-inline-block">- Crafted with <i
-                                    class="mdi mdi-heart text-primary"></i> by
-                                Citta Bhakti Nirbaya.</span>
-                        </div>
-                    </div>
-                </div>
+            <footer>
+                <p class="text-left mb-5">
+                    Created By
+                    <a href="" class="text-decoration-none text-body">Citta Bhakti Nirbaya</a>
+                </p>
             </footer>
         </div>
-        <!-- end main content-->
     </div>
-    <!-- END layout-wrapper -->
 
-    <!-- Right Sidebar -->
+    <script>
+        const ambilModul = @json($ambilmodul);
+        const breadcrumb = document.getElementById("breadcrumb-modul");
+        breadcrumb.innerHTML = "";
 
-    <!-- /Right-bar -->
+        // Modul yang tidak ditampilkan
+        const skipList = ["Nama-Peserta", "istirahat"];
 
-    <!-- Right bar overlay-->
-    <div class="rightbar-overlay"></div>
+        let filtered = ambilModul.filter(modul => !skipList.includes(modul));
+
+        filtered.forEach((modul, index) => {
+
+            // Tambah separator jika bukan yang pertama
+            if (index > 0) {
+                const separator = document.createElement("span");
+                separator.innerHTML = "&nbsp;&gt;&nbsp;";
+                separator.classList.add("breadcrumb-separator");
+                breadcrumb.appendChild(separator);
+            }
+
+            // Elemen teks modul (bukan link)
+            const item = document.createElement("span");
+            item.textContent = modul;
+
+            // Styling item terakhir = aktif
+            if (index === filtered.length - 1) {
+                item.classList.add("breadcrumb-active");
+            } else {
+                item.classList.add("breadcrumb-item-text");
+            }
+
+            breadcrumb.appendChild(item);
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const toggleBtn = document.getElementById("toggle-layout");
+            const soalCol = document.getElementById("soal-col");
+            const sidebarCol = document.getElementById("sidebar-col");
+            const mainRow = document.getElementById("main-row");
+            const soalContainer = document.getElementById("soal-container");
+
+            // Simpan posisi asli
+            const originalNextElement = sidebarCol.nextElementSibling;
+
+            toggleBtn.addEventListener("click", function() {
+
+                const isFull = soalCol.classList.contains("col-12");
+
+                if (!isFull) {
+                    // 👉 MASUK MODE FULLSCREEN
+
+                    soalCol.classList.remove("col-lg-8");
+                    soalCol.classList.add("col-12");
+
+                    sidebarCol.classList.remove("col-lg-4");
+                    sidebarCol.classList.add("col-12", "mb-3");
+
+                    // 🔥 Pindahkan sidebar tepat di atas question-box
+                    soalContainer.parentNode.insertBefore(sidebarCol, soalContainer);
+
+                } else {
+                    // 👉 KEMBALI KE POSISI SEMULA
+
+                    soalCol.classList.remove("col-12");
+                    soalCol.classList.add("col-lg-8");
+
+                    sidebarCol.classList.remove("col-12", "mb-3");
+                    sidebarCol.classList.add("col-lg-4");
+
+                    // 🔥 Kembalikan ke kanan seperti awal
+                    if (originalNextElement) {
+                        mainRow.insertBefore(sidebarCol, originalNextElement);
+                    } else {
+                        mainRow.appendChild(sidebarCol);
+                    }
+                }
+            });
+
+        });
+    </script>
 
     <!-- JAVASCRIPT -->
-    <!-- ini ujian -->
     @php
         use App\Models\Kode;
         use Carbon\Carbon;
@@ -500,58 +131,48 @@
         $waktuSelesai = $kodeData ? Carbon::parse($kodeData->waktu, 'Asia/Jakarta')->format('Y-m-d H:i:s') : null;
     @endphp
     <script>
-        // Ambil waktu selesai dari session (format: "2025-10-19 15:55:00")
-        const waktuSelesaiStr = "{{ $waktuSelesai }}";
-        const modul = "{{ $modul }}";
-        const display = document.getElementById("liveTimer");
+        document.addEventListener("DOMContentLoaded", function() {
+            const display = document.getElementById("liveTimer");
+            if (!display) return;
 
-        // Pastikan format valid untuk JS
-        const [tanggal, jam] = waktuSelesaiStr.split(" ");
-        const waktuSelesai = new Date(`${tanggal}T${jam}+07:00`); // WIB (UTC+7)
+            // 🕒 Ambil waktu selesai dari session (format: Y-m-d H:i:s)
+            const waktuSelesaiString = "{{ $waktuSelesai }}";
+            const kodeLogin = "{{ session('kode_login') }}";
+            const modul = "{{ $modul }}";
 
-        console.log("Session waktu:", waktuSelesaiStr);
-        console.log("Parsed Date:", waktuSelesai);
+            // ⏰ Parse waktu selesai (anggap format lokal Asia/Jakarta)
+            const waktuSelesai = new Date(waktuSelesaiString.replace(" ", "T") + "+07:00");
 
-        // ⏱️ Fungsi update timer
-        function updateTimer() {
-            const now = new Date();
-            const remaining = waktuSelesai - now;
+            const timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
 
-            if (isNaN(remaining)) {
-                display.textContent = "Format waktu tidak valid";
-                return;
+            function updateTimer() {
+                const now = new Date();
+                const remaining = waktuSelesai - now;
+
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    tampilkanWaktuHabis();
+                    return;
+                }
+
+                const totalSeconds = Math.floor(remaining / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                display.textContent =
+                    `${hours.toString().padStart(2,"0")}:${minutes.toString().padStart(2,"0")}:${seconds.toString().padStart(2,"0")}`;
             }
 
-            if (remaining <= 0) {
-                clearInterval(timerInterval);
-                showWaktuHabis();
-                return;
-            }
+            function tampilkanWaktuHabis() {
+                // 🔒 cegah tombol back
+                history.pushState(null, null, document.URL);
+                window.onpopstate = () => history.pushState(null, null, document.URL);
 
-            const totalSeconds = Math.floor(remaining / 1000);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-
-            display.textContent =
-                `${hours.toString().padStart(2, "0")}:` +
-                `${minutes.toString().padStart(2, "0")}:` +
-                `${seconds.toString().padStart(2, "0")}`;
-        }
-
-        // Jalankan setiap 1 detik
-        const timerInterval = setInterval(updateTimer, 1000);
-        updateTimer();
-
-        // 🚨 Ketika waktu habis
-        function tampilkanWaktuHabis() {
-            // 🔒 cegah tombol back
-            history.pushState(null, null, document.URL);
-            window.onpopstate = () => history.pushState(null, null, document.URL);
-
-            // 🌕 overlay full-screen putih
-            const overlay = document.createElement("div");
-            overlay.style = `
+                // 🌕 overlay full-screen putih
+                const overlay = document.createElement("div");
+                overlay.style = `
         position: fixed;
         top: 0; left: 0;
         width: 100%; height: 100%;
@@ -562,7 +183,7 @@
         z-index: 9999;
     `;
 
-            overlay.innerHTML = `
+                overlay.innerHTML = `
         <style>
             .spinner {
                 position: relative;
@@ -598,18 +219,19 @@
             </div>
         </form>
     `;
-            document.body.appendChild(overlay);
+                document.body.appendChild(overlay);
 
-            // ⏳ auto-submit setelah 1 detik
-            setTimeout(() => {
-                document.getElementById("autoNextForm").submit();
-            }, 1000);
-        }
+                // ⏳ auto-submit setelah 1 detik
+                setTimeout(() => {
+                    document.getElementById("autoNextForm").submit();
+                }, 1000);
+            }
+        });
     </script>
 
 
-
     <script>
+        let tandaiSoal = {};
         document.addEventListener("DOMContentLoaded", function() {
             const kodeLogin = "{{ session('kode_login') }}";
             let modul = "{{ $modul ?? 'default' }}";
@@ -724,22 +346,23 @@
 
                 // Simpan mapping abjad asli biar tahu nanti yang dipilih user
                 soal.mapping = acakJawaban.map(j => j.abjad);
-                // contoh hasil: ["D","B","E","A","C"]
 
                 let html = `
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="card-title mb-0">Soal Nomor ${noSoal}</h4>
-        <span class="badge bg-primary fs-6">${i + 1} / ${total}</span>
+    <div class="question-header">
+        <h6>SOAL NOMER ${noSoal}</h6>
+        <button class="flag-btn ${tandaiSoal[soal.no] ? 'flagged-active' : ''}">
+    <i class="bi bi-flag"></i> ${tandaiSoal[soal.no] ? 'Sudah Ditandai' : 'Tandai Soal'}
+</button>
     </div>
-    <p class="text-muted mb-4">Pilihlah jawaban yang paling tepat.</p>
-    <div class="question-content">
-        <p class="fs-5">${soal.soal}</p>
-        <form id="form-soal-${i}" class="mt-4">
-            <div class="list-group">
+    <div class="question-body p-2">
+        ${soal.soal}
+    </div>
+    <form id="form-soal-${i}" class="mt-4">
+        <div class="list-group">
     `;
 
                 acakJawaban.forEach((j, idx) => {
-                    const tampilanAbjad = String.fromCharCode(65 + idx); // A, B, C, D, E untuk tampilan
+                    const tampilanAbjad = String.fromCharCode(65 + idx); // A, B, C, D, E
                     const checked = jawabanUser[noSoal] === j.abjad ? 'checked' : '';
 
                     html += `
@@ -750,26 +373,46 @@
                    value="${j.abjad}" 
                    ${checked}
                    onclick="jawab(${noSoal}, '${j.abjad}')">
-            ${tampilanAbjad}. ${j.text}
+            ${j.text}
         </label>`;
                 });
 
                 html += `
-            </div>
-            <div class="d-flex justify-content-between mt-4">
-                <button type="button" class="btn btn-outline-secondary" 
-                        onclick="prevQuestion()" ${i===0 ? 'disabled' : ''}>
-                    ← Sebelumnya
-                </button>
-                <button type="button" class="btn btn-primary" onclick="nextQuestion()">
-                    ${i === total - 1 ? 'Selesai' : 'Selanjutnya →'}
-                </button>
-            </div>
-        </form>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-flagged" 
+                    onclick="prevQuestion()" ${i===0 ? 'disabled' : ''}>
+                ← Sebelumnya
+            </button>
+            <button type="button" class="btn btn-answered" onclick="nextQuestion()">
+                ${i === total - 1 ? 'Selesai' : 'Selanjutnya →'}
+            </button>
+        </div>
+    </form>
     </div>`;
 
                 document.getElementById('soal-container').innerHTML = html;
+
+                // ✅ Tambahan event untuk tombol tandai
+                const flagButton = document.querySelector(".flag-btn");
+                flagButton.addEventListener("click", function() {
+                    const soalSekarang = soalList[i].no;
+                    tandaiSoal[soalSekarang] = !tandaiSoal[soalSekarang];
+
+                    // 🔁 Update tampilan tombol
+                    if (tandaiSoal[soalSekarang]) {
+                        flagButton.classList.add("flagged-active");
+                        flagButton.innerHTML = `<i class="bi bi-flag"></i> Sudah Ditandai`;
+                    } else {
+                        flagButton.classList.remove("flagged-active");
+                        flagButton.innerHTML = `<i class="bi bi-flag"></i> Tandai Soal`;
+                    }
+
+                    renderSidebar(); // tetap update warna di sidebar juga
+                });
+
             }
+
 
             // ✅ Sidebar soal
             function renderSidebar() {
@@ -777,16 +420,24 @@
                 if (!sidebar) return;
                 sidebar.innerHTML = "";
 
-                soalList.forEach((soal, idx) => {
-                    const active = idx === index ? "btn-primary" : "";
+                // 🔥 URUTKAN BERDASARKAN nomor soal (VIEW ONLY)
+                const sortedSoal = [...soalList].sort((a, b) => Number(a.no) - Number(b.no));
+
+                sortedSoal.forEach((soal, idx) => {
+                    const active = index === soalList.indexOf(soal) ? "btn-aktif" : "";
                     const sudahJawab = jawabanUser[soal.no] ? "btn-answered" : "btn-unanswered";
+                    const ditandai = tandaiSoal[soal.no] ? "btn-flagged" : "";
 
                     sidebar.innerHTML += `
-    <div class="col-3 d-flex justify-content-center mb-2">
-        <button class="btn btn-soal ${sudahJawab} ${active}" onclick="goToQuestion(${idx})">${soal.no}</button>
-    </div>`;
+            <div class="col-3 d-flex justify-content-center mb-2">
+                <button class="btn btn-soal ${ditandai} ${sudahJawab} ${active}"
+                        onclick="goToQuestion(${soalList.indexOf(soal)})">
+                    ${soal.no}
+                </button>
+            </div>`;
                 });
             }
+
 
             // ✅ Navigasi
             window.nextQuestion = function() {
@@ -805,7 +456,6 @@
                     renderSidebar();
                 }
             };
-
             window.goToQuestion = function(i) {
                 index = i;
                 renderSoal(index);
@@ -831,9 +481,9 @@
             // ✅ Panggil fungsi
             loadSoal(modul);
         });
-
+    </script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
-
             // 🔹 Fungsi Logout Otomatis
             function autoLogout() {
                 fetch("/logouttest", {
@@ -843,13 +493,21 @@
                     }
                 }).then(() => {
                     alert(
-                        "Anda terdeteksi melakukan tindakan yang tidak diizinkan. Anda akan logout otomatis."
+                        "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
                     );
                     window.location.href = "/";
                 }).catch(() => {
                     window.location.href = "/";
                 });
             }
+
+            // 🔹 Deteksi KELUAR FULLSCREEN
+            document.addEventListener("fullscreenchange", function() {
+                if (!document.fullscreenElement) {
+                    // User KELUAR dari fullscreen
+                    autoLogout();
+                }
+            });
 
             // 🔹 Cegah klik kanan
             document.addEventListener("contextmenu", e => {
@@ -860,26 +518,25 @@
 
             // 🔹 Cegah shortcut berbahaya
             document.addEventListener("keydown", e => {
-                // Kombinasi kunci yang dilarang
                 const forbidden = [
-                    (e.ctrlKey && e.key === "u"), // View source
-                    (e.ctrlKey && e.shiftKey && e.key === "i"), // DevTools
-                    (e.key === "F12"), // DevTools
-                    (e.ctrlKey && e.key === "c"), // Copy
-                    (e.ctrlKey && e.key === "p"), // Print
-                    (e.key === "PrintScreen") // Screenshot
+                    (e.ctrlKey && e.key === "u"),
+                    (e.ctrlKey && e.shiftKey && e.key === "i"),
+                    (e.key === "F12"),
+                    (e.ctrlKey && e.key === "c"),
+                    (e.ctrlKey && e.key === "p"),
+                    (e.key === "PrintScreen")
                 ];
                 if (forbidden.some(f => f)) {
                     e.preventDefault();
                     alert("Tindakan ini tidak diizinkan!");
                     try {
-                        navigator.clipboard.writeText(""); // Kosongkan clipboard
+                        navigator.clipboard.writeText("");
                     } catch {}
                     autoLogout();
                 }
             });
 
-            // 🔹 Jika user berpindah tab atau keluar dari jendela
+            // 🔹 Jika user berpindah tab atau keluar jendela
             window.addEventListener("blur", () => {
                 setTimeout(() => {
                     if (!document.hasFocus()) {
@@ -888,34 +545,12 @@
                 }, 500);
             });
 
-            // 🔹 Jika mouse keluar dari tab
+            // 🔹 Jika mouse keluar dari window
             document.addEventListener("mouseleave", () => {
                 autoLogout();
             });
 
         });
     </script>
-
-
-
-
-
     <!-- akhir ujian -->
-    <script src="{{ asset('assetts/libs/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/metismenu/metisMenu.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/jquery-sparkline/jquery.sparkline.min.js') }}"></script>
-    <!-- Plugins js -->
-    <script src="{{ asset('assetts/libs/moment/moment.js') }}"></script>
-    <script src="{{ asset('assetts/libs/bootstrap-editable/js/index.js') }}"></script>
-
-    <!--form-xeditable Init js-->
-    <script src="{{ asset('assetts/js/pages/form-xeditable.init.js') }}"></script>
-
-    <!-- App js -->
-    <script src="{{ asset('assetts/js/app.js') }}"></script>
-</body>
-
-</html>
+@endsection
