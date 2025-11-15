@@ -21,7 +21,7 @@
     <!-- Responsive datatable examples -->
     <link href="{{ asset('assetts/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
-
+    <link href="{{ asset('assetts/css/code.css') }}" rel="stylesheet" type="text/css" />
     <!-- Bootstrap Css -->
     <link href="{{ asset('assetts/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
@@ -39,7 +39,6 @@
     <div id="layout-wrapper">
 
         <header id="page-topbar">
-
             {{-- Header --}}
             @include('partials.header')
 

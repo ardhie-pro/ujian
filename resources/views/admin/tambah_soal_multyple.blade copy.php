@@ -1,0 +1,422 @@
+@extends('layouts.main')
+
+@section('title', 'Dashboard')
+
+@section('content')
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- CKEDITOR -->
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <style>
+        .hide {
+            display: none;
+        }
+    </style>
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-flex align-items-center justify-content-between">
+                        <div class="page-title">
+                            <h4 class="mb-0 font-size-18">Form Modul</h4>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <!-- Start Page-content-Wrapper -->
+            <div class="page-content-wrapper">
+                <div id="formTambahSoal" style="display:none;">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="mb-3">Tambah Soal</h5>
+
+                                    <form action="{{ route('soal-multiple.store') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="modul" value="{{ $modul }}">
+
+                                        <div class="mb-3">
+                                            <label>No Soal</label>
+                                            <input type="text" name="no" class="form-control" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Soal</label>
+                                            <textarea id="elm_soal" name="soal" rows="3"></textarea>
+                                        </div>
+
+                                        <hr>
+
+                                        <h6 class="fw-bold">Pilihan Jawaban</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban A</label>
+                                                <textarea name="j1" id="elm_j1"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban B</label>
+                                                <textarea name="j2" id="elm_j2"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban C</label>
+                                                <textarea name="j3" id="elm_j3"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban D</label>
+                                                <textarea name="j4" id="elm_j4"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban E</label>
+                                                <textarea name="j5" id="elm_j5"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Pembahasan</label>
+                                            <textarea id="elm_pembahasan" name="pembahasan" rows="3"></textarea>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                            <button type="button" id="batalBtn" class="btn btn-secondary">Batal</button>
+                                        </div>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="formEditSoal" style="display: none;">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="mb-3">Edit Soal</h5>
+
+                                    <form id="editSoalForm" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="id" id="edit_id">
+                                        <input type="hidden" name="modul" id="edit_modul">
+
+                                        <div class="mb-3">
+                                            <label>No Soal</label>
+                                            <input type="text" name="no" id="edit_no" class="form-control"
+                                                required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Soal</label>
+                                            <textarea id="edit_soal" name="soal" rows="3"></textarea>
+                                        </div>
+
+                                        <hr>
+
+                                        <h6 class="fw-bold">Pilihan Jawaban</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban A</label>
+                                                <textarea name="j1" id="edit_j1"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban B</label>
+                                                <textarea name="j2" id="edit_j2"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban C</label>
+                                                <textarea name="j3" id="edit_j3"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban D</label>
+                                                <textarea name="j4" id="edit_j4"></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label>Jawaban E</label>
+                                                <textarea name="j5" id="edit_j5"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Pembahasan</label>
+                                            <textarea id="edit_pembahasan" name="pembahasan" rows="3"></textarea>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            <button type="button" id="batalEditBtn"
+                                                class="btn btn-secondary">Batal</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    Daftar Modul
+                                </h4>
+                                <p class="card-title-desc">
+                                    Silahkan Bisa Menambahkan Dan Juga Meng Edit Data Modul Disini
+                                </p>
+                                <div class="mb-3">
+                                    <button type="button" id="tambahSoalBtn" class="btn btn-success">
+                                        + Tambah Soal
+                                    </button>
+                                </div>
+
+                                <table id="datatable-buttons"
+                                    class="table table-striped table-bordered dt-responsive nowrap"
+                                    style="
+                                                    border-collapse: collapse;
+                                                    border-spacing: 0;
+                                                    width: 100%;
+                                                ">
+                                    <thead>
+                                        <tr>
+                                            <th>NO</th>
+
+                                            <th>Soal</th>
+                                            <th>Pembahasan</th>
+
+                                            <th>Gambar 1</th>
+                                            <th>Gambar 2</th>
+                                            <th>Gambar 3</th>
+                                            <th>Gambar 4</th>
+                                            <th>Gambar 5</th>
+                                            <th>Aksi</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @forelse($data2 as $item)
+                                            <tr>
+                                                <td>{{ $item->no }}</td>
+
+                                                <td>
+                                                    {{ $item->soal }}
+                                                </td>
+                                                <td>
+                                                    {{ $item->pembahasan }}
+                                                </td>
+                                                <td>
+                                                    {{ $item->j1 }}
+                                                </td>
+                                                <td>
+                                                    {{ $item->j2 }}
+                                                </td>
+                                                <td>
+                                                    {{ $item->j3 }}
+                                                </td>
+                                                <td>
+                                                    {{ $item->j4 }}
+                                                </td>
+                                                <td>
+                                                    {{ $item->j5 }}
+                                                </td>
+
+                                                <td>
+                                                    <button type="button" class="btn btn-warning btn-sm"
+                                                        onclick="showEditForm('{{ $item->id }}', '{{ $item->modul }}', `{{ $item->soal }}`,`{{ $item->pembahasan }}`, `{{ $item->no }}`, `{{ $item->j1 }}`, `{{ $item->j2 }}`, `{{ $item->j3 }}`, `{{ $item->j4 }}`, `{{ $item->j5 }}`)">
+                                                        Edit
+                                                    </button>
+
+                                                    <form action="{{ route('soal.destroy', $item->id) }}" method="POST"
+                                                        class="d-inline">
+                                                        @csrf @method('DELETE')
+                                                        <button class="btn btn-danger btn-sm">Hapus</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="9" class="text-center">Belum ada soal untuk modul ini.
+                                                </td>
+                                            </tr>
+                                            <!-- Modal Edit -->
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- End Row -->
+                <!-- Modal Tambah -->
+                <!-- Modal Tambah -->
+                <div class="modal fade bs-example-modal-lg" id="addModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Tambah Soal</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('soal.store') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="modul" value="{{ $modul }}">
+                                    <div class="mb-3">
+                                        <label>No Soal</label>
+                                        <input type="text" name="no" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Soal</label>
+                                        <textarea name="soal2" class="form-control"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Page-content -->
+
+            {{-- <div class="container-fluid mt-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between">
+                        <h5 class="mb-0">Template Soal</h5>
+
+                    </div>
+
+                    <div class="card-body">
+                        @if (session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+
+                        <div class="row">
+                            <form action="{{ route('soal.importWord') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="word_file" accept=".docx" required>
+                                <button type="submit" class="btn btn-primary">Upload Soal Word</button>
+                            </form>
+                            <div class="mt-3 text-center">
+                                <p class="text-muted mb-2">Butuh contoh format Word-nya?</p>
+                                <a href="{{ route('download.template.soal') }}" class="btn btn-success">
+                                    📥 Download Template Soal (Word)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+
+
+
+            <form id="form-importsoal">
+                <div class="box-body" id="box-awal">
+                    <span id="form-pesan"></span>
+
+                    <div class="form-group">
+                        <label>Data Soal sesuai Format Pilihan Ganda</label>
+
+                        <textarea name="import_soal" id="import_soal"></textarea>
+
+                        <p class="help-block">
+                            Paste tabel soal dari file Word sesuai format yang ditentukan.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary pull-right">Import</button>
+                </div>
+            </form>
+
+
+            <!-- ================================ -->
+            <!-- KONFIRMASI SOAL -->
+            <!-- ================================ -->
+
+            <div class="row hide" id="box-konfirmasi">
+                <div class="col-md-12">
+
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <div class="box-title">Konfirmasi Daftar Soal <span id="judul-daftar-soal"></span></div>
+                        </div>
+
+                        <div class="box-body">
+
+                            <div class="callout callout-info">
+                                <h4>Konfirmasi</h4>
+                                <p>
+                                    Periksa kembali soal yang sudah diimport.
+                                    Jika sudah benar, klik tombol Simpan.
+                                </p>
+                            </div>
+
+                            <span id="form-pesan-konfirmasi"></span>
+
+                            <div id="daftar-soal" style="overflow-y:auto; height:500px;">
+                                <!-- hasil tabel soal ditampilkan disini -->
+                            </div>
+
+                        </div>
+
+                        <div class="box-footer">
+                            <button type="button" class="btn btn-default" id="batal">Batal</button>
+                            <button type="button" class="btn btn-primary pull-right" id="btn-konfirmasi">Simpan</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Container-Fluid -->
+        </div>
+        <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+        <script>
+            CKEDITOR.replace('import_soal');
+
+            $('#form-importsoal').on('submit', function(e) {
+                e.preventDefault();
+
+                let data = {
+                    import_soal: CKEDITOR.instances.import_soal.getData(),
+                    _token: "{{ csrf_token() }}"
+                };
+
+                $.ajax({
+                    url: "{{ route('soal.importPreview') }}",
+                    method: "POST",
+                    data: data,
+                    success: function(res) {
+                        if (res.status == 1) {
+                            // sembunyikan box awal
+                            $('#box-awal').addClass('hide');
+
+                            // tampilkan box konfirmasi
+                            $('#box-konfirmasi').removeClass('hide');
+
+                            // isi tabel HTML hasil parsing
+                            $('#daftar-soal').html(res.soal);
+                        } else {
+                            alert("Gagal import");
+                        }
+                    },
+                    error: function() {
+                        alert("Terjadi kesalahan server");
+                    }
+                });
+            });
+        </script>
+
+
+
+    @endsection

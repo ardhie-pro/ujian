@@ -189,7 +189,6 @@
         <div class="header-left">
             <img src="{{ asset('assetts/images/logo-dark.png') }}" alt="" />
         </div>
-
         <!-- Dropdown User -->
         <div class="dropdown mt-2 mt-md-0">
             <button class="btn d-flex align-items-center border-0 bg-transparent dropdown-toggle" type="button"

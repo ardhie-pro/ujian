@@ -48,6 +48,8 @@ Route::middleware(['auth', 'role:review,admin'])->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     // dasboard Admin
+    Route::post('user/status/{id}', [AdminController::class, 'approveUser'])
+        ->name('admin.updateUserStatus');
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
     Route::resource('kumpulan-modul', KumpulanModulController::class);
     // ✅ Halaman tabel user

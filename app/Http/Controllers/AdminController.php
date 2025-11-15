@@ -11,6 +11,14 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     // Halaman dasboard admin
+    public function approveUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->role = 'active'; // atau status lain sesuai kebutuhanmu
+        $user->save();
+
+        return back()->with('success', 'Status user berhasil diperbarui!');
+    }
     public function index()
     {
         $users = User::orderBy('id', 'asc')->get();
@@ -137,10 +145,10 @@ class AdminController extends Controller
         return back()->with('success', 'Gambar berhasil dihapus.');
     }
     public function deleteUser($id)
-{
-    $user = User::findOrFail($id);
-    $user->delete();
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
 
-    return redirect()->back()->with('success', 'User berhasil dihapus.');
-}
+        return redirect()->back()->with('success', 'User berhasil dihapus.');
+    }
 }
