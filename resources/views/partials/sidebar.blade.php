@@ -33,6 +33,12 @@
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
     }
 
+    .submenu a.active {
+        background: #F4C542 !important;
+        color: #0E2542 !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+
     /* Icon mengikuti warna text */
     #side-menu li a i {
         color: inherit !important;
@@ -65,6 +71,18 @@
     li.open .submenu {
         display: block !important;
     }
+
+    /* Parent menu ketika active */
+    .has-dropdown.active>a {
+        background: #F4C542 !important;
+        color: #0E2542 !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Jika class open → submenu muncul */
+    .has-dropdown.open .submenu {
+        display: block !important;
+    }
 </style>
 <div class="vertical-menu">
 
@@ -90,25 +108,71 @@
                         </a>
                     </li>
 
-                    <!-- Dropdown 1 -->
-                    <li class="has-dropdown">
+                    <li
+                        class="has-dropdown {{ Route::is('admin.akun') || Route::is('admin.user') || Route::is('kelompok-soal.*') ? 'active open' : '' }}">
                         <a href="#">
-                            <i class="mdi mdi-format-list-bulleted"></i>
-                            <span>Kolom Soal</span>
+                            <i class="mdi">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                    fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                                    <path
+                                        d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                                </svg>
+                            </i>
+                            <span>Akun</span>
                         </a>
 
-                        <div class="submenu">
-                            <a href="{{ route('kelompok-soal.index') }}">List Kelompok Soal</a>
-                            <a href="{{ route('kelompok-soal.create') }}">Tambah Kelompok</a>
+                        <div class="submenu {{ Route::is('admin.akun') || Route::is('admin.user') ? 'show' : '' }}">
+                            <a href="{{ route('admin.akun') }}" class="{{ Route::is('admin.akun') ? 'active' : '' }}">
+                                Admin / Review
+                            </a>
+
+                            <a href="{{ route('admin.user') }}" class="{{ Route::is('admin.user') ? 'active' : '' }}">
+                                User
+                            </a>
                         </div>
                     </li>
 
+                    <!-- Dropdown 1 -->
+
                     <li>
-                        <a href="{{ route('tarik-modul.index') }}"
-                            class="{{ Route::is('tarik-modul.*') ? 'active' : '' }}">
+                        <a href="{{ route('kelompok-soal.index') }}"
+                            class="{{ Route::is('kelompok-soal.*') ? 'active' : '' }}">
+                            <i class="mdi mdi-format-list-bulleted"></i>
+                            <span>Kolom Soal</span>
+                        </a>
+                    </li>
+
+
+
+                    <li class="has-dropdown 
+    {{ Route::is('tarik-modul.index') ? 'active open' : '' }}">
+                        <a href="#">
                             <i class="mdi mdi-download-box-outline"></i>
                             <span>Soal</span>
                         </a>
+
+                        <div class="submenu {{ Route::is('tarik-modul.index') ? 'show' : '' }}">
+                            <a href="{{ route('tarik-modul.index', ['type' => 'data-nama,istirahat']) }}"
+                                class="{{ request('type') === 'data-nama,istirahat' ? 'active' : '' }}">
+                                Data Nama & Istirahat
+                            </a>
+
+                            <a href="{{ route('tarik-modul.index', ['type' => 'multiple-chois']) }}"
+                                class="{{ request('type') === 'multiple-chois' ? 'active' : '' }}">
+                                Multiple Choice
+                            </a>
+
+                            <a href="{{ route('tarik-modul.index', ['type' => 'angka-hilang']) }}"
+                                class="{{ request('type') === 'angka-hilang' ? 'active' : '' }}">
+                                Soal Angka Hilang
+                            </a>
+
+                            <a href="{{ route('tarik-modul.index', ['type' => 'tanpa-kembali']) }}"
+                                class="{{ request('type') === 'tanpa-kembali' ? 'active' : '' }}">
+                                Tanpa Kembali
+                            </a>
+
+                        </div>
                     </li>
 
                     <!-- Dropdown 2 -->

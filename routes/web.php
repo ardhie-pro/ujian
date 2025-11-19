@@ -34,8 +34,13 @@ Route::get('/download-template-soal', function () {
         ['Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
     );
 })->name('download.template.soal');
+
+Route::get('/', function () {
+    return view('utama.landing-page');
+});
+
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/', [KodeLoginController::class, 'index'])->name('kode.login');
+    Route::get('/kode', [KodeLoginController::class, 'index'])->name('kode.login');
     Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
 });
 
@@ -51,6 +56,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('user/status/{id}', [AdminController::class, 'approveUser'])
         ->name('admin.updateUserStatus');
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/akun', [AdminController::class, 'akun'])->name('admin.akun');
+    Route::get('/user', [AdminController::class, 'user'])->name('admin.user');
+
+
     Route::resource('kumpulan-modul', KumpulanModulController::class);
     // ✅ Halaman tabel user
     Route::get('/dashboard/users', [AdminController::class, 'users'])->name('admin.users');

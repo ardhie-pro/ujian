@@ -28,23 +28,23 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ]);
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'status' => 'pending', // Tambahkan kalau mau tandai belum aktif
-    ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'status' => 'pending', // Tambahkan kalau mau tandai belum aktif
+        ]);
 
-    Auth::login($user);
+        Auth::login($user);
 
-    // 🔹 Langsung arahkan ke halaman menunggu konfirmasi
-    return redirect()->route('menunggu.konfirmasi');
-}
+        // 🔹 Langsung arahkan ke halaman menunggu konfirmasi
+        return redirect()->route('menunggu.konfirmasi');
+    }
 }

@@ -26,6 +26,25 @@ class AdminController extends Controller
         // Kirim ke view
         return view('admin.dashboard', compact('users'));
     }
+    public function akun()
+    {
+        $admins = User::where('status', 'admin')
+            ->orderBy('id', 'desc')
+            ->get(); // ← ini wajib
+
+        $reviews = User::where('status', 'review')
+            ->orderBy('id', 'desc')
+            ->get(); // ← ini juga
+
+        return view('admin.akun', compact('admins', 'reviews'));
+    }
+    public function user()
+    {
+        $userb = User::where('status', 'user')
+            ->orderBy('id', 'desc')
+            ->get(); // ← ini wajib
+        return view('admin.user', compact('userb'));
+    }
     // Ambil soal berdasarkan modul & nomor
     public function getSoal($modul, $no)
     {

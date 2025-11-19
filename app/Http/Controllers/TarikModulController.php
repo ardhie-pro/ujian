@@ -7,10 +7,23 @@ use App\Models\TarikModul;
 
 class TarikModulController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = TarikModul::latest()->get();
-        return view('admin.tambah-modul', compact('data'));
+        $type = $request->query('type'); // contoh: data-nama,istirahat
+
+        $query = TarikModul::latest();
+
+        if ($type) {
+            // Ubah string jadi array
+            $types = explode(',', $type);
+
+            // Cari semua type dalam array
+            $query->whereIn('type_template', $types);
+        }
+
+        $data = $query->get();
+
+        return view('admin.tambah-modul', compact('data', 'type'));
     }
 
     public function store(Request $request)

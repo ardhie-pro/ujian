@@ -10,7 +10,9 @@
 
     <style>
         body {
-            background-color: #fff;
+            background: url("{{ asset('assetts/images/wee.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            /* biar full 1 layar */
             min-height: 100vh;
             position: relative;
             overflow: hidden;
@@ -31,7 +33,6 @@
         .bg-bottom {
             margin-right: -330px;
             position: absolute;
-
             bottom: 0;
             right: 0;
             width: 800px;
@@ -39,12 +40,18 @@
             z-index: 0;
         }
 
-        /* Login Card */
+        /* Login Card - GLASS EFFECT */
         .login-box {
-            background: #fff;
-            border: 2px solid #0b4b8b;
-            border-radius: 8px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.094);
+            /* kaca */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            border: 1px solid rgba(11, 75, 139, 0.196);
+            /* biru transparan */
+            border-radius: 15px;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.20);
             max-width: 700px;
             margin: 120px auto;
             display: flex;
@@ -57,11 +64,12 @@
             width: 45%;
             text-align: center;
             padding: 20px;
-            border-right: 2px solid #0b4b8b;
+            border-right: 5px solid rgba(0, 59, 118, 0.4);
+            /* transparan agar cocok dengan efek kaca */
         }
 
         .login-left img {
-            width: 250px;
+            width: 170px;
             margin-bottom: 10px;
         }
 
@@ -74,6 +82,10 @@
         .login-right {
             width: 55%;
             padding: 30px 40px;
+            background: rgba(255, 255, 255, 0);
+            /* sedikit transparan */
+            border-radius: 0 15px 15px 0;
+            /* mengikuti bentuk card */
         }
 
         .login-right h4 {
@@ -83,9 +95,21 @@
             color: #333;
         }
 
+
+
         .form-control {
-            border-radius: 6px;
-            font-size: 14px;
+            background: rgba(255, 255, 255, 0);
+            /* transparan */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            border: 1px solid rgba(11, 75, 139, 0.242);
+            border-radius: 8px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+            color: #fff;
+            /* biar tulisan tetap terlihat */
         }
 
         .btn-login {
@@ -123,32 +147,24 @@
             .login-left {
                 width: 100%;
                 border-right: none;
+                border-bottom: 2px solid rgba(11, 75, 139, 0.4);
             }
 
             .login-right {
                 width: 100%;
+                border-radius: 0 0 15px 15px;
             }
 
             .bg-top {
                 margin-top: -145px;
-                position: absolute;
-                top: 0;
                 left: 0;
                 width: 200px;
-                height: auto;
-                z-index: 0;
             }
 
             .bg-bottom {
                 margin-right: -165px;
                 margin-bottom: -200px;
-                position: absolute;
-
-                bottom: 0;
-                right: 0;
                 width: 400px;
-                height: auto;
-                z-index: 0;
             }
         }
     </style>
@@ -156,13 +172,13 @@
 
 <body>
     <!-- Background Images -->
-    <img src="{{ asset('assetts/images/atas.png') }}" alt="bg top" class="bg-top" />
-    <img src="{{ asset('assetts/images/bawah.png') }}" alt="bg bottom" class="bg-bottom" />
+    {{-- <img src="{{ asset('assetts/images/atas.png') }}" alt="bg top" class="bg-top" />
+    <img src="{{ asset('assetts/images/bawah.png') }}" alt="bg bottom" class="bg-bottom" /> --}}
 
     <!-- Login Box -->
     <div class="login-box">
         <div class="login-left">
-            <img src="{{ asset('assetts/images/logo-sm-dark.png') }}" alt="CIBN Logo" />
+            <img src="{{ asset('assetts/images/cibn.png') }}" alt="CIBN Logo" />
         </div>
         <div class="login-right">
             <h4>Selamat Datang</h4>

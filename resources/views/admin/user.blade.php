@@ -142,36 +142,35 @@
         <h1>SELAMAT DATANG,</h1>
         <h2>ADMIN CITTA BHAKTI NIRBAYA</h2>
 
+        {{-- =====================  TABEL ADMIN  ===================== --}}
         <div class="wrapper mt-5">
-            <div class="title">Informasi Akun User Review Dan User</div>
+            <div class="title">Informasi Akun — User</div>
 
-            <div class="grid">
+            <div class="table-responsive mt-4">
+                <table class="table table-bordered">
+                    <thead style="background:#F4C542; color:#0E2542; font-weight:700;">
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
 
-                @foreach ($users as $user)
-                    @if ($user->status == 'pending')
-                        <form action="{{ route('admin.updateUser', $user->id) }}" method="POST" class="d-inline">
-                            @csrf
+                    <tbody>
+                        @php $noAdmin = 1; @endphp
 
-                            <div class="card p-5">
+                        @foreach ($userb as $user)
+                            <tr>
+                                <td>{{ $noAdmin++ }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
 
-                                <div class="row">
-                                    <div class="box">Nama : {{ $user->name }}</div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="box">Email : {{ $user->email }}</div>
-                                    <button type="submit" class="btn-custom">
-                                        💾 Simpan
-                                    </button>
-                                </div>
-
-                                <div class="row">
-                                    <div class="box">Password : {{ $user->password }}</div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="box">
-                                        Role :
+                                <td>
+                                    <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
+                                        @csrf
                                         <select name="role" class="form-select form-select-sm">
                                             <option value="active" {{ $user->role == 'active' ? 'selected' : '' }}>Active
                                             </option>
@@ -180,38 +179,37 @@
                                             <option value="suspended" {{ $user->role == 'suspended' ? 'selected' : '' }}>
                                                 Suspended</option>
                                         </select>
-                                    </div>
-                                </div>
+                                </td>
 
-                                <div class="row">
-                                    <div class="box">
-                                        Status :
-                                        <select name="status" class="form-select form-select-sm">
-                                            <option value="user" {{ $user->status == 'user' ? 'selected' : '' }}>User
-                                            </option>
-                                            <option value="review" {{ $user->status == 'review' ? 'selected' : '' }}>Review
-                                            </option>
-                                            <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
-                                            </option>
-                                            <option value="pending" {{ $user->status == 'pending' ? 'selected' : '' }}>
-                                                Pending
-                                            </option>
-                                        </select>
-                                    </div>
+                                <td>
+                                    <select name="status" class="form-select form-select-sm">
+                                        <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
+                                        </option>
+                                        <option value="review" {{ $user->status == 'review' ? 'selected' : '' }}>Review
+                                        </option>
+                                    </select>
+                                </td>
 
-                                    <button type="submit" class="btn-custom btn-danger-sm" style="margin-left: 5px;">
-                                        🗑️ Hapus
-                                    </button>
-                                </div>
+                                <td>
+                                    <button type="submit" class="btn btn-warning btn-sm">💾 Simpan</button>
+                                    </form>
 
-                            </div>
-
-                        </form>
-                    @endif
-                @endforeach
-
+                                    <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        <button class="btn btn-danger btn-sm">🗑️ Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
+
+        {{-- =====================  TABEL REVIEW  ===================== --}}
+
     </div>
+
 
 @endsection

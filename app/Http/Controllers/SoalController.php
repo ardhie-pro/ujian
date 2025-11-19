@@ -50,6 +50,9 @@ class SoalController extends Controller
 
         $data2 = SoalMultipleChoice::where('modul', $modul)->orderBy('no')->get();
         $data = SoalModul::where('modul', $modul)->orderBy('no')->get();
+        foreach ($data as $item) {
+            $item->kelompok_data = KelompokSoal::where('judul', $item->kelompok)->first();
+        }
         $kelompok = KelompokSoal::all(); // ambil data untuk select dropdown
         $galeri = DB::table('img_soal_random')->orderByDesc('id')->get();
 
