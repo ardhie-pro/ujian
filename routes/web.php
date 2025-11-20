@@ -56,6 +56,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('user/status/{id}', [AdminController::class, 'approveUser'])
         ->name('admin.updateUserStatus');
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/dashboard/generate-user', [AdminController::class, 'generateUser'])
+    ->name('admin.generateUser');
     Route::get('/akun', [AdminController::class, 'akun'])->name('admin.akun');
     Route::get('/user', [AdminController::class, 'user'])->name('admin.user');
 

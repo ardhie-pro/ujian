@@ -454,7 +454,7 @@ class SoalController extends Controller
 
                     // 🔥 Ambil semua teks + gambar base64 jadi satu HTML string
                     foreach ($valElements as $v) {
-                        dd($v);
+
                         if (method_exists($v, 'getText')) {
                             $text = trim($v->getText());
                             if ($text !== '') {

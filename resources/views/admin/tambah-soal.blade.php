@@ -258,47 +258,127 @@
                 + Tambah Soal
             </button>
 
-            @php
-                $firstKelompok = $data->first();
-            @endphp
+        @php
+    $first = $data->first();
+    $kd = $first->kelompok_data ?? null;
 
-            <tbody id="tbody-kelompok">
-                <tr>
-                    <td colspan="9">
-                        <div style="padding:10px; background:#f7f7f7; border:1px solid #ddd;">
-                            <strong>Kelompok Soal: {{ $firstKelompok->kelompok }}</strong>
+    $list = [
+        ['key' => 'A', 'text' => $kd->soal1_text ?? null, 'img' => $kd->soal1_img ?? null],
+        ['key' => 'B', 'text' => $kd->soal2_text ?? null, 'img' => $kd->soal2_img ?? null],
+        ['key' => 'C', 'text' => $kd->soal3_text ?? null, 'img' => $kd->soal3_img ?? null],
+        ['key' => 'D', 'text' => $kd->soal4_text ?? null, 'img' => $kd->soal4_img ?? null],
+        ['key' => 'E', 'text' => $kd->soal5_text ?? null, 'img' => $kd->soal5_img ?? null],
+    ];
+@endphp
 
-                            @if ($firstKelompok->kelompok_data)
-                                <table class="table table-bordered mt-2">
-                                    <tr>
-                                        <th>A</th>
-                                        <td>{{ $firstKelompok->kelompok_data->soal1_text ?? '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>B</th>
-                                        <td>{{ $firstKelompok->kelompok_data->soal2_text ?? '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>C</th>
-                                        <td>{{ $firstKelompok->kelompok_data->soal3_text ?? '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>D</th>
-                                        <td>{{ $firstKelompok->kelompok_data->soal4_text ?? '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>E</th>
-                                        <td>{{ $firstKelompok->kelompok_data->soal5_text ?? '-' }}</td>
-                                    </tr>
-                                </table>
+<style>
+    /* CONTAINER UTAMA */
+    .kolom-wrapper {
+        background: #e1b63b !important;
+        color: #0E2542 !important;
+        padding: 25px;
+        border-radius: 12px;
+        border: 2px solid #0E2542;
+        margin-bottom: 25px;
+    }
+
+    /* JUDUL */
+    .kolom-title {
+        width: 100%;
+        background: white;
+        border: 2px solid #0E2542;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 34px;     /* DIGEDEKAN */
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 25px;
+        color: #0E2542;
+    }
+
+    /* WRAPPER KOTAK OPSI */
+    .opsi-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    /* KOTAK UTAMA PUTIH */
+    .opsi-box {
+        flex: 1;
+        height: 150px;
+        background: white;
+        border: 2px solid #0E2542;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* GAMBAR */
+    .opsi-img {
+        max-height: 130px;
+        max-width: 100%;
+    }
+
+    /* LABEL A–E */
+    .opsi-label {
+        width: 100%;
+        border: 2px solid #0E2542;      /* BORDER BIRU */
+        border-radius: 10px;            /* ROUNDED SAMA */
+        padding: 5px;
+        margin-top: 8px;
+        font-weight: 800;
+        font-size: 22px;                /* DIGEDEKAN */
+        text-align: center;
+        color: #ffffffff;
+        background: #0E2542;
+    }
+</style>
+
+
+<tbody id="tbody-kelompok">
+<tr>
+    <td colspan="9">
+        
+        <div class="kolom-wrapper">
+
+            {{-- JUDUL --}}
+            <div class="kolom-title">
+                {{ $first->kelompok }}
+            </div>
+
+            {{-- OPSI --}}
+            <div class="opsi-container">
+                @foreach ($list as $item)
+                    <div style="flex:1;">
+
+                        {{-- KOTAK --}}
+                        <div class="opsi-box">
+                            @if ($item['text'])
+                                <h1>{{ $item['text'] }}</h1>
                             @else
-                                <em>Tidak ada data kelompok soal.</em>
+                                @if ($item['img'])
+                                    <img src="{{ asset('storage/' . $item['img']) }}" class="opsi-img">
+                                @else
+                                    -
+                                @endif
                             @endif
                         </div>
-                    </td>
-                </tr>
-            </tbody>
 
+                        {{-- LABEL A–E --}}
+                        <div class="opsi-label">{{ $item['key'] }}</div>
+
+                    </div>
+                @endforeach
+            </div>
+
+        </div>
+
+    </td>
+</tr>
+</tbody>
 
             <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap"
                 style="
@@ -354,7 +434,15 @@
                                 @endif
                             </td>
 
-                            <td>… tombol edit/hapus …</td>
+                            <td> <button type="button" class="btn btn-warning btn-sm"
+                onclick="showEditForm('{{ $item->id }}', '{{ $item->modul }}', '{{ $item->kelompok }}', `{{ $item->soal2 }}`, `{{ $item->no }}`)">
+                Edit
+            </button>
+
+            <form action="{{ route('soal.destroy', $item->id) }}" method="POST" class="d-inline">
+                @csrf @method('DELETE')
+                <button onclick="return confirm('Yakin hapus?')" class="btn btn-danger btn-sm">Hapus</button>
+            </form></td>
                         </tr>
                     @endforeach
                 </tbody>

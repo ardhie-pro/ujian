@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\SoalModul;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -169,5 +170,35 @@ class AdminController extends Controller
         $user->delete();
 
         return redirect()->back()->with('success', 'User berhasil dihapus.');
+    }
+    public function generateUser(Request $req)
+    {
+        $req->validate([
+            'jumlah' => 'required|integer|min:1|max:1000'
+        ]);
+
+        $hasil = [];
+
+        for ($i = 0; $i < $req->jumlah; $i++) {
+
+            $passwordPlain = Str::random(10);
+            $email = Str::lower(Str::random(8)) . '@gmail.com';
+            $username = 'user_' . Str::random(6);
+
+            $user = User::create([
+                'name' => $username,
+                'email' => $email,
+                'password' => Hash::make($passwordPlain),
+                'lihatpw' => $passwordPlain,
+                'role' => 'active',
+                'status' => 'user',
+            ]);
+
+            $hasil[] = $user;
+        }
+        $users = User::orderBy('id', 'asc')->get();
+
+        return view('admin.dashboard', compact('hasil', 'users'))
+            ->with('success', $req->jumlah . ' user berhasil dibuat!');
     }
 }

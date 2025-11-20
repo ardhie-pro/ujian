@@ -287,10 +287,10 @@
                             const s = data.soal;
 
                             document.getElementById("area-soal").innerHTML = `
-        
+
         <div class="question-content text-center border-1">
-          
-          <div class="container"> 
+
+          <div class="container">
             <div class="table-responsive">
               <h1 class="masuk-soal mt-5 p-2">
                 <strong>${kelompok.judul}</strong>
@@ -355,39 +355,39 @@
            s.soal2
            ? `<h1 class="fw-bold soal-2 text-primary-blue"><span>${s.soal2}</span></h1>`
            : `
-                                                                                                                                                                                        <div class="container text-center my-3">
-                                                                                                                                                                                          <div class="d-inline-flex flex-wrap justify-content-center align-items-center border border-2 border-dark rounded p-3" 
-                                                                                                                                                                                               style="max-width: 100%; gap: 10px;">
-                                                                                                                                                                                            ${
-                                                                                                                                                                                                [s.j1, s.j2, s.j3, s.j4]
-                                                                                                                                                                                                .filter(src => src)
-                                                                                                                                                                                                .map(src => `
+                                                                                                                                                                                                                                                                                                    <div class="container text-center my-3">
+                                                                                                                                                                                                                                                                                                      <div class="d-inline-flex flex-wrap justify-content-center align-items-center border border-2 border-dark rounded p-3"
+                                                                                                                                                                                                                                                                                                           style="max-width: 100%; gap: 10px;">
+                                                                                                                                                                                                                                                                                                        ${
+                                                                                                                                                                                                                                                                                                            [s.j1, s.j2, s.j3, s.j4]
+                                                                                                                                                                                                                                                                                                            .filter(src => src)
+                                                                                                                                                                                                                                                                                                            .map(src => `
             <div style="border: 2px solid #000; border-radius: 6px; padding: 5px; margin-bootom: 20px;">
-              <img 
-                src="${src}" 
-                alt="Gambar Soal" 
-                style="height: 5rem; width: auto; object-fit: contain;" 
+              <img
+                src="${src}"
+                alt="Gambar Soal"
+                style="height: 5rem; width: auto; object-fit: contain;"
                 class="img-fluid"
               />
             </div>
           `).join('')
-                                                                                                                                                                                            }
-                                                                                                                                                                                          </div>
-                                                                                                                                                                                        </div>
-                                                                                                                                                                                    `
+                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                `
        }
 
           <div class="container mb-5">
             <div class="row justify-content-center g-2">
               ${['A', 'B', 'C', 'D', 'E'].map((huruf) => `
-                                                                                                                                                                                            <div class="col-2">
-                                                                                                                                                                                              <button 
-                                                                                                                                                                                                class="btn-jawab" 
-                                                                                                                                                                                                onclick="jawab('${huruf}')">
-                                                                                                                                                                                                ${huruf}
-                                                                                                                                                                                              </button>
-                                                                                                                                                                                            </div>
-                                                                                                                                                                                        `).join('')}
+                                                                                                                                                                                                                                                                                                        <div class="col-2">
+                                                                                                                                                                                                                                                                                                          <button
+                                                                                                                                                                                                                                                                                                            class="btn-jawab"
+                                                                                                                                                                                                                                                                                                            onclick="jawab('${huruf}')">
+                                                                                                                                                                                                                                                                                                            ${huruf}
+                                                                                                                                                                                                                                                                                                          </button>
+                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                    `).join('')}
             </div>
           </div>
         </div>
@@ -432,7 +432,7 @@
             @endphp
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
-                    const display = document.getElementById("liveTimer");
+                    // const display = document.getElementById("liveTimer");perbaikan
                     if (!display) return;
 
                     // 🕒 Ambil waktu selesai dari session (format: Y-m-d H:i:s)
@@ -513,8 +513,8 @@
             <input type="hidden" name="kodeLogin" value="${kodeLogin}">
             <input type="hidden" name="modul" value="${modul}">
             <div class="spinner">
-                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}" 
-                     alt="logo" 
+                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}"
+                     alt="logo"
                      style="width: 60px; height: auto; z-index: 2;">
             </div>
         </form>
@@ -529,74 +529,74 @@
                 });
             </script>
             <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    // 🔹 Fungsi Logout Otomatis
-                    function autoLogout() {
-                        fetch("/logouttest", {
-                            method: "POST",
-                            headers: {
-                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                            }
-                        }).then(() => {
-                            alert(
-                                "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
-                            );
-                            window.location.href = "/";
-                        }).catch(() => {
-                            window.location.href = "/";
-                        });
-                    }
+                // document.addEventListener("DOMContentLoaded", function() {
+                //     // 🔹 Fungsi Logout Otomatis
+                //     function autoLogout() {
+                //         fetch("/logouttest", {
+                //             method: "POST",
+                //             headers: {
+                //                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                //             }
+                //         }).then(() => {
+                //             alert(
+                //                 "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
+                //             );
+                //             window.location.href = "/";
+                //         }).catch(() => {
+                //             window.location.href = "/";
+                //         });
+                //     }
 
-                    // 🔹 Deteksi KELUAR FULLSCREEN
-                    document.addEventListener("fullscreenchange", function() {
-                        if (!document.fullscreenElement) {
-                            // User KELUAR dari fullscreen
-                            autoLogout();
-                        }
-                    });
+                //     // 🔹 Deteksi KELUAR FULLSCREEN
+                //     document.addEventListener("fullscreenchange", function() {
+                //         if (!document.fullscreenElement) {
+                //             // User KELUAR dari fullscreen
+                //             autoLogout();
+                //         }
+                //     });
 
-                    // 🔹 Cegah klik kanan
-                    document.addEventListener("contextmenu", e => {
-                        e.preventDefault();
-                        alert("Klik kanan dinonaktifkan!");
-                        autoLogout();
-                    });
+                //     // 🔹 Cegah klik kanan
+                //     document.addEventListener("contextmenu", e => {
+                //         e.preventDefault();
+                //         alert("Klik kanan dinonaktifkan!");
+                //         autoLogout();
+                //     });
 
-                    // 🔹 Cegah shortcut berbahaya
-                    document.addEventListener("keydown", e => {
-                        const forbidden = [
-                            (e.ctrlKey && e.key === "u"),
-                            (e.ctrlKey && e.shiftKey && e.key === "i"),
-                            (e.key === "F12"),
-                            (e.ctrlKey && e.key === "c"),
-                            (e.ctrlKey && e.key === "p"),
-                            (e.key === "PrintScreen")
-                        ];
-                        if (forbidden.some(f => f)) {
-                            e.preventDefault();
-                            alert("Tindakan ini tidak diizinkan!");
-                            try {
-                                navigator.clipboard.writeText("");
-                            } catch {}
-                            autoLogout();
-                        }
-                    });
+                //     // 🔹 Cegah shortcut berbahaya
+                //     document.addEventListener("keydown", e => {
+                //         const forbidden = [
+                //             (e.ctrlKey && e.key === "u"),
+                //             (e.ctrlKey && e.shiftKey && e.key === "i"),
+                //             (e.key === "F12"),
+                //             (e.ctrlKey && e.key === "c"),
+                //             (e.ctrlKey && e.key === "p"),
+                //             (e.key === "PrintScreen")
+                //         ];
+                //         if (forbidden.some(f => f)) {
+                //             e.preventDefault();
+                //             alert("Tindakan ini tidak diizinkan!");
+                //             try {
+                //                 navigator.clipboard.writeText("");
+                //             } catch {}
+                //             autoLogout();
+                //         }
+                //     });
 
-                    // 🔹 Jika user berpindah tab atau keluar jendela
-                    window.addEventListener("blur", () => {
-                        setTimeout(() => {
-                            if (!document.hasFocus()) {
-                                autoLogout();
-                            }
-                        }, 500);
-                    });
+                //     // 🔹 Jika user berpindah tab atau keluar jendela
+                //     window.addEventListener("blur", () => {
+                //         setTimeout(() => {
+                //             if (!document.hasFocus()) {
+                //                 autoLogout();
+                //             }
+                //         }, 500);
+                //     });
 
-                    // 🔹 Jika mouse keluar dari window
-                    document.addEventListener("mouseleave", () => {
-                        autoLogout();
-                    });
+                //     // 🔹 Jika mouse keluar dari window
+                //     document.addEventListener("mouseleave", () => {
+                //         autoLogout();
+                //     });
 
-                });
+                // });
             </script>
 
 
