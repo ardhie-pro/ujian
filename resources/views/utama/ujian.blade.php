@@ -260,6 +260,7 @@
                         }
 
                         soalList = data;
+                        soalList.sort((a, b) => a.no - b.no);
 
                         // 🧠 Ambil jawaban user dari database
                         fetch(`/get-jawaban/${modul}/${kodeLogin}`)
@@ -492,74 +493,75 @@
         });
     </script>
     <script>
-        // document.addEventListener("DOMContentLoaded", function() { perbaikan
-        //     // 🔹 Fungsi Logout Otomatis
-        //     function autoLogout() {
-        //         fetch("/logouttest", {
-        //             method: "POST",
-        //             headers: {
-        //                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
-        //             }
-        //         }).then(() => {
-        //             alert(
-        //                 "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
-        //             );
-        //             window.location.href = "/";
-        //         }).catch(() => {
-        //             window.location.href = "/";
-        //         });
-        //     }
+        document.addEventListener("DOMContentLoaded", function() {
 
-        //     // 🔹 Deteksi KELUAR FULLSCREEN
-        //     document.addEventListener("fullscreenchange", function() {
-        //         if (!document.fullscreenElement) {
-        //             // User KELUAR dari fullscreen
-        //             autoLogout();
-        //         }
-        //     });
+            // 🔹 Fungsi Logout Otomatis
+            function autoLogout() {
+                fetch("/logouttest", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    }
+                }).then(() => {
+                    alert(
+                        "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
+                    );
+                    window.location.href = "/";
+                }).catch(() => {
+                    window.location.href = "/";
+                });
+            }
 
-        //     // 🔹 Cegah klik kanan
-        //     document.addEventListener("contextmenu", e => {
-        //         e.preventDefault();
-        //         alert("Klik kanan dinonaktifkan!");
-        //         autoLogout();
-        //     });
+            // 🔹 Deteksi KELUAR FULLSCREEN
+            document.addEventListener("fullscreenchange", function() {
+                if (!document.fullscreenElement) {
+                    // User KELUAR dari fullscreen
+                    autoLogout();
+                }
+            });
 
-        //     // 🔹 Cegah shortcut berbahaya
-        //     document.addEventListener("keydown", e => {
-        //         const forbidden = [
-        //             (e.ctrlKey && e.key === "u"),
-        //             (e.ctrlKey && e.shiftKey && e.key === "i"),
-        //             (e.key === "F12"),
-        //             (e.ctrlKey && e.key === "c"),
-        //             (e.ctrlKey && e.key === "p"),
-        //             (e.key === "PrintScreen")
-        //         ];
-        //         if (forbidden.some(f => f)) {
-        //             e.preventDefault();
-        //             alert("Tindakan ini tidak diizinkan!");
-        //             try {
-        //                 navigator.clipboard.writeText("");
-        //             } catch {}
-        //             autoLogout();
-        //         }
-        //     });
+            // 🔹 Cegah klik kanan
+            document.addEventListener("contextmenu", e => {
+                e.preventDefault();
+                alert("Klik kanan dinonaktifkan!");
+                autoLogout();
+            });
 
-        //     // 🔹 Jika user berpindah tab atau keluar jendela
-        //     window.addEventListener("blur", () => {
-        //         setTimeout(() => {
-        //             if (!document.hasFocus()) {
-        //                 autoLogout();
-        //             }
-        //         }, 500);
-        //     });
+            // 🔹 Cegah shortcut berbahaya
+            document.addEventListener("keydown", e => {
+                const forbidden = [
+                    (e.ctrlKey && e.key === "u"),
+                    (e.ctrlKey && e.shiftKey && e.key === "i"),
+                    (e.key === "F12"),
+                    (e.ctrlKey && e.key === "c"),
+                    (e.ctrlKey && e.key === "p"),
+                    (e.key === "PrintScreen")
+                ];
+                if (forbidden.some(f => f)) {
+                    e.preventDefault();
+                    alert("Tindakan ini tidak diizinkan!");
+                    try {
+                        navigator.clipboard.writeText("");
+                    } catch {}
+                    autoLogout();
+                }
+            });
 
-        //     // 🔹 Jika mouse keluar dari window
-        //     document.addEventListener("mouseleave", () => {
-        //         autoLogout();
-        //     });
+            // 🔹 Jika user berpindah tab atau keluar jendela
+            window.addEventListener("blur", () => {
+                setTimeout(() => {
+                    if (!document.hasFocus()) {
+                        autoLogout();
+                    }
+                }, 500);
+            });
 
-        // });
+            // 🔹 Jika mouse keluar dari window
+            document.addEventListener("mouseleave", () => {
+                autoLogout();
+            });
+
+        });
     </script>
     <!-- akhir ujian -->
 @endsection
