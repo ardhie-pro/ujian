@@ -2,6 +2,15 @@
 
 @section('title', 'Dashboard')
 @section('content2')
+
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+            grid-gap: 10px;
+            padding: 10px;
+        }
+    </style>
     <div class="container mt-3">
         <!-- MAIN SECTION -->
         <div class="row mt-2 align-items-start" id="main-row">
@@ -213,8 +222,8 @@
             <input type="hidden" name="kodeLogin" value="${kodeLogin}">
             <input type="hidden" name="modul" value="${modul}">
             <div class="spinner">
-                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}" 
-                     alt="logo" 
+                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}"
+                     alt="logo"
                      style="width: 60px; height: auto; z-index: 2;">
             </div>
         </form>
@@ -367,10 +376,10 @@
 
                     html += `
         <label class="list-group-item list-group-item-action option-item">
-            <input class="form-check-input me-2" 
-                   type="radio" 
+            <input class="form-check-input me-2"
+                   type="radio"
                    name="jawaban${noSoal}"
-                   value="${j.abjad}" 
+                   value="${j.abjad}"
                    ${checked}
                    onclick="jawab(${noSoal}, '${j.abjad}')">
             ${j.text}
@@ -380,7 +389,7 @@
                 html += `
         </div>
         <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn btn-flagged" 
+            <button type="button" class="btn btn-flagged"
                     onclick="prevQuestion()" ${i===0 ? 'disabled' : ''}>
                 ← Sebelumnya
             </button>
@@ -429,12 +438,12 @@
                     const ditandai = tandaiSoal[soal.no] ? "btn-flagged" : "";
 
                     sidebar.innerHTML += `
-            <div class="col-3 d-flex justify-content-center mb-2">
-                <button class="btn btn-soal ${ditandai} ${sudahJawab} ${active}"
-                        onclick="goToQuestion(${soalList.indexOf(soal)})">
-                    ${soal.no}
-                </button>
-            </div>`;
+           <div class="grid-item ${ditandai} ${sudahJawab} ${active}">
+    <button class="btn btn-soal ${ditandai} ${sudahJawab} ${active}"
+            onclick="goToQuestion(${soalList.indexOf(soal)})">
+        ${soal.no}
+    </button>
+</div>`;
                 });
             }
 
@@ -483,74 +492,74 @@
         });
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // 🔹 Fungsi Logout Otomatis
-            function autoLogout() {
-                fetch("/logouttest", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    }
-                }).then(() => {
-                    alert(
-                        "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
-                    );
-                    window.location.href = "/";
-                }).catch(() => {
-                    window.location.href = "/";
-                });
-            }
+        // document.addEventListener("DOMContentLoaded", function() { perbaikan
+        //     // 🔹 Fungsi Logout Otomatis
+        //     function autoLogout() {
+        //         fetch("/logouttest", {
+        //             method: "POST",
+        //             headers: {
+        //                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        //             }
+        //         }).then(() => {
+        //             alert(
+        //                 "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
+        //             );
+        //             window.location.href = "/";
+        //         }).catch(() => {
+        //             window.location.href = "/";
+        //         });
+        //     }
 
-            // 🔹 Deteksi KELUAR FULLSCREEN
-            document.addEventListener("fullscreenchange", function() {
-                if (!document.fullscreenElement) {
-                    // User KELUAR dari fullscreen
-                    autoLogout();
-                }
-            });
+        //     // 🔹 Deteksi KELUAR FULLSCREEN
+        //     document.addEventListener("fullscreenchange", function() {
+        //         if (!document.fullscreenElement) {
+        //             // User KELUAR dari fullscreen
+        //             autoLogout();
+        //         }
+        //     });
 
-            // 🔹 Cegah klik kanan
-            document.addEventListener("contextmenu", e => {
-                e.preventDefault();
-                alert("Klik kanan dinonaktifkan!");
-                autoLogout();
-            });
+        //     // 🔹 Cegah klik kanan
+        //     document.addEventListener("contextmenu", e => {
+        //         e.preventDefault();
+        //         alert("Klik kanan dinonaktifkan!");
+        //         autoLogout();
+        //     });
 
-            // 🔹 Cegah shortcut berbahaya
-            document.addEventListener("keydown", e => {
-                const forbidden = [
-                    (e.ctrlKey && e.key === "u"),
-                    (e.ctrlKey && e.shiftKey && e.key === "i"),
-                    (e.key === "F12"),
-                    (e.ctrlKey && e.key === "c"),
-                    (e.ctrlKey && e.key === "p"),
-                    (e.key === "PrintScreen")
-                ];
-                if (forbidden.some(f => f)) {
-                    e.preventDefault();
-                    alert("Tindakan ini tidak diizinkan!");
-                    try {
-                        navigator.clipboard.writeText("");
-                    } catch {}
-                    autoLogout();
-                }
-            });
+        //     // 🔹 Cegah shortcut berbahaya
+        //     document.addEventListener("keydown", e => {
+        //         const forbidden = [
+        //             (e.ctrlKey && e.key === "u"),
+        //             (e.ctrlKey && e.shiftKey && e.key === "i"),
+        //             (e.key === "F12"),
+        //             (e.ctrlKey && e.key === "c"),
+        //             (e.ctrlKey && e.key === "p"),
+        //             (e.key === "PrintScreen")
+        //         ];
+        //         if (forbidden.some(f => f)) {
+        //             e.preventDefault();
+        //             alert("Tindakan ini tidak diizinkan!");
+        //             try {
+        //                 navigator.clipboard.writeText("");
+        //             } catch {}
+        //             autoLogout();
+        //         }
+        //     });
 
-            // 🔹 Jika user berpindah tab atau keluar jendela
-            window.addEventListener("blur", () => {
-                setTimeout(() => {
-                    if (!document.hasFocus()) {
-                        autoLogout();
-                    }
-                }, 500);
-            });
+        //     // 🔹 Jika user berpindah tab atau keluar jendela
+        //     window.addEventListener("blur", () => {
+        //         setTimeout(() => {
+        //             if (!document.hasFocus()) {
+        //                 autoLogout();
+        //             }
+        //         }, 500);
+        //     });
 
-            // 🔹 Jika mouse keluar dari window
-            document.addEventListener("mouseleave", () => {
-                autoLogout();
-            });
+        //     // 🔹 Jika mouse keluar dari window
+        //     document.addEventListener("mouseleave", () => {
+        //         autoLogout();
+        //     });
 
-        });
+        // });
     </script>
     <!-- akhir ujian -->
 @endsection

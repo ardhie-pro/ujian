@@ -216,13 +216,7 @@
                         </div>
                     </div>
 
-                    <div class="col-6 text-end">
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-muted small">
-                                Lupa password?
-                            </a>
-                        @endif
-                    </div>
+
                 </div>
 
                 {{-- Tombol Login --}}

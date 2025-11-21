@@ -42,6 +42,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/kode', [KodeLoginController::class, 'index'])->name('kode.login');
     Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
+    Route::post('/akun/update', [KodeLoginController::class, 'update'])->name('akun.update');
 });
 
 Route::middleware(['auth', 'role:review,admin'])->group(function () {
@@ -57,7 +58,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.updateUserStatus');
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
     Route::post('/dashboard/generate-user', [AdminController::class, 'generateUser'])
-    ->name('admin.generateUser');
+        ->name('admin.generateUser');
     Route::get('/akun', [AdminController::class, 'akun'])->name('admin.akun');
     Route::get('/user', [AdminController::class, 'user'])->name('admin.user');
 
@@ -99,7 +100,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/kunci-jawaban/simpan', [SoalController::class, 'simpan'])->name('kunci-jawaban.simpan');
     Route::post('/kunci-jawaban/simpan-tanpa-kembali', [SoalController::class, 'simpanTanpaKembali'])
         ->name('kunci-jawaban.simpan-tanpa-kembali');
-    // laporan 
+    // laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/{kode}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::get('/laporan/{kode}/{user_id}', [LaporanController::class, 'detail'])->name('laporan.detail');

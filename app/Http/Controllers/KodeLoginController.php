@@ -2,14 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Kode;
 use App\Models\KumpulanModul;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class KodeLoginController extends Controller
 {
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'username' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:4',
+        ]);
+
+        $user->name = $request->username;
+        $user->email = $request->email;
+
+        // Password hash
+        $user->password = Hash::make($request->password);
+
+        // Password asli
+        $user->lihatpw = $request->password;
+
+        $user->save();
+
+        return back()->with('success', 'Akun berhasil diperbarui');
+    }
     public function index()
     {
         return view('utama.pages-code');
@@ -20,7 +45,7 @@ class KodeLoginController extends Controller
         $request->validate([
             'kode' => 'required|string'
         ]);
-    
+
 
         $kodeInput = strtoupper(trim($request->kode));
         $kode = \App\Models\Kode::where('kode', $kodeInput)->first();

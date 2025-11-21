@@ -209,6 +209,13 @@
                         </button>
                     </form>
                 </li>
+                <li>
+
+                    <button type="button" class="dropdown-item text-primary" id="btnChangeAccount">
+                        <i class="bi bi-key me-2"></i>Ganti Password Akun
+                    </button>
+
+                </li>
             </ul>
         </div>
     </div>
@@ -218,27 +225,73 @@
     <img src="{{ asset('assetts/images/bawah.png') }}" alt="bg bottom" class="bg-bottom" />
 
     <!-- Login Box -->
-    <div class="login-box">
-        <div class="login-right">
-            <h4 class="mb-5">Masukan Kode Pengerjaan</h4>
-            @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
+    <div id="formContainer">
+        <div class="login-box">
+            <div class="login-right">
+                <h4 class="mb-5">Masukan Kode Pengerjaan</h4>
+                @if (session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
 
-            <form action="{{ route('kode.check') }}" id="loginForm" method="POST">
-                @csrf
+                <form action="{{ route('kode.check') }}" id="loginForm" method="POST">
+                    @csrf
 
-                <div class="mb-3">
-                    <input type="text" name="kode" class="form-control" placeholder="Kode" />
-                </div>
+                    <div class="mb-3">
+                        <input type="text" name="kode" class="form-control" placeholder="Kode" />
+                    </div>
 
-                <button type="submit" class="btn btn-login">Mulai</button>
-            </form>
+                    <button type="submit" class="btn btn-login">Mulai</button>
+                </form>
+            </div>
         </div>
     </div>
 
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('btnChangeAccount').addEventListener('click', function() {
+
+            document.querySelector('.login-right h4').innerText = "Ganti Password & Akun";
+
+            document.getElementById('formContainer').innerHTML = `
+            <div class="login-box">
+            <div class="login-right">
+        <form action="{{ route('akun.update') }}" method="POST">
+            @csrf
+
+            <div class="mb-3">
+                <input type="text" name="username" class="form-control"
+                    value="{{ Auth::user()->name }}" placeholder="Username Baru" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="email" name="email" class="form-control"
+                    value="{{ Auth::user()->email }}" placeholder="Email Baru" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="password" name="password" value="{{ Auth::user()->lihatpw }}" id="pwInput" class="form-control"
+                    placeholder="Password Baru" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="checkbox" onclick="togglePw()"> Tampilkan Password
+            </div>
+
+
+            <button type="submit" class="btn btn-login">Simpan Perubahan</button>
+            </div>
+            </div>
+        </form>
+    `;
+        });
+
+        function togglePw() {
+            let pw = document.getElementById('pwInput');
+            pw.type = pw.type === 'password' ? 'text' : 'password';
+        }
+    </script>
 
 </body>
 

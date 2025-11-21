@@ -2,6 +2,24 @@
 
 @section('title', 'Dashboard')
 @section('content2')
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+            gap: 8px;
+            padding: 10px;
+        }
+
+        .soal-item {
+            width: 100%;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+    </style>
 
     <div class="container mt-3">
         <!-- MAIN SECTION -->
@@ -13,7 +31,7 @@
                         <ol class="breadcrumb mb-0" id="breadcrumb-modul"></ol>
                     </nav>
                     <div class="timer-box">
-                        Waktu: <span id="liveTimer">00:00:00</span>
+                        <span id="liveTimer">00:00:00</span>
                     </div>
                 </div>
                 <div class="question-box mb-5" id="soal-container"></div>
@@ -184,8 +202,8 @@
             <input type="hidden" name="kodeLogin" value="${kodeLogin}">
             <input type="hidden" name="modul" value="${modul}">
             <div class="spinner">
-                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}" 
-                     alt="logo" 
+                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}"
+                     alt="logo"
                      style="width: 60px; height: auto; z-index: 2;">
             </div>
         </form>
@@ -262,6 +280,7 @@
                         }
 
                         soalList = data;
+                        soalList.sort((a, b) => a.no - b.no);
 
                         // 🔹 Ambil jawaban user dari server
                         fetch(`/get-jawaban/${modul}/${kodeLogin}`)
@@ -308,10 +327,9 @@
                     // ✅ tambahan
 
                     sidebar.innerHTML += `
-            <div class="col-3 d-flex justify-content-center mb-2">
-                <button class="btn btn-soal ${sudahJawab} ${active} " 
-                        onclick="goToQuestion(${idx})">${soal.no}</button>
-            </div>`;
+            <button class="btn btn-soal soal-item ${sudahJawab} ${active}"
+        onclick="goToQuestion(${idx})">${soal.no}</button>
+`;
                 });
             }
 
@@ -418,10 +436,10 @@
                     html += `
             <label class="list-group-item list-group-item-action option-item">
                 <input type="hidden" name="kodeLogin" value="${kodeLogin}" />
-                <input 
-                    class="form-check-input me-2" 
+                <input
+                    class="form-check-input me-2"
                     type="${isCheckbox ? "checkbox" : "radio"}"
-                    name="jawaban${noSoal}${isCheckbox ? "[]" : ""}" 
+                    name="jawaban${noSoal}${isCheckbox ? "[]" : ""}"
                     value="${item.abjad}" ${checked}
                     onclick="jawab(${noSoal}, '${item.abjad}', ${isCheckbox})"
                 />
@@ -459,74 +477,74 @@
 
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // 🔹 Fungsi Logout Otomatis
-            function autoLogout() {
-                fetch("/logouttest", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    }
-                }).then(() => {
-                    alert(
-                        "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
-                    );
-                    window.location.href = "/";
-                }).catch(() => {
-                    window.location.href = "/";
-                });
-            }
+        // document.addEventListener("DOMContentLoaded", function() { perbaikan
+        //     // 🔹 Fungsi Logout Otomatis
+        //     function autoLogout() {
+        //         fetch("/logouttest", {
+        //             method: "POST",
+        //             headers: {
+        //                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        //             }
+        //         }).then(() => {
+        //             alert(
+        //                 "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
+        //             );
+        //             window.location.href = "/";
+        //         }).catch(() => {
+        //             window.location.href = "/";
+        //         });
+        //     }
 
-            // 🔹 Deteksi KELUAR FULLSCREEN
-            document.addEventListener("fullscreenchange", function() {
-                if (!document.fullscreenElement) {
-                    // User KELUAR dari fullscreen
-                    autoLogout();
-                }
-            });
+        //     // 🔹 Deteksi KELUAR FULLSCREEN
+        //     document.addEventListener("fullscreenchange", function() {
+        //         if (!document.fullscreenElement) {
+        //             // User KELUAR dari fullscreen
+        //             autoLogout();
+        //         }
+        //     });
 
-            // 🔹 Cegah klik kanan
-            document.addEventListener("contextmenu", e => {
-                e.preventDefault();
-                alert("Klik kanan dinonaktifkan!");
-                autoLogout();
-            });
+        //     // 🔹 Cegah klik kanan
+        //     document.addEventListener("contextmenu", e => {
+        //         e.preventDefault();
+        //         alert("Klik kanan dinonaktifkan!");
+        //         autoLogout();
+        //     });
 
-            // 🔹 Cegah shortcut berbahaya
-            document.addEventListener("keydown", e => {
-                const forbidden = [
-                    (e.ctrlKey && e.key === "u"),
-                    (e.ctrlKey && e.shiftKey && e.key === "i"),
-                    (e.key === "F12"),
-                    (e.ctrlKey && e.key === "c"),
-                    (e.ctrlKey && e.key === "p"),
-                    (e.key === "PrintScreen")
-                ];
-                if (forbidden.some(f => f)) {
-                    e.preventDefault();
-                    alert("Tindakan ini tidak diizinkan!");
-                    try {
-                        navigator.clipboard.writeText("");
-                    } catch {}
-                    autoLogout();
-                }
-            });
+        //     // 🔹 Cegah shortcut berbahaya
+        //     document.addEventListener("keydown", e => {
+        //         const forbidden = [
+        //             (e.ctrlKey && e.key === "u"),
+        //             (e.ctrlKey && e.shiftKey && e.key === "i"),
+        //             (e.key === "F12"),
+        //             (e.ctrlKey && e.key === "c"),
+        //             (e.ctrlKey && e.key === "p"),
+        //             (e.key === "PrintScreen")
+        //         ];
+        //         if (forbidden.some(f => f)) {
+        //             e.preventDefault();
+        //             alert("Tindakan ini tidak diizinkan!");
+        //             try {
+        //                 navigator.clipboard.writeText("");
+        //             } catch {}
+        //             autoLogout();
+        //         }
+        //     });
 
-            // 🔹 Jika user berpindah tab atau keluar jendela
-            window.addEventListener("blur", () => {
-                setTimeout(() => {
-                    if (!document.hasFocus()) {
-                        autoLogout();
-                    }
-                }, 500);
-            });
+        //     // 🔹 Jika user berpindah tab atau keluar jendela
+        //     window.addEventListener("blur", () => {
+        //         setTimeout(() => {
+        //             if (!document.hasFocus()) {
+        //                 autoLogout();
+        //             }
+        //         }, 500);
+        //     });
 
-            // 🔹 Jika mouse keluar dari window
-            document.addEventListener("mouseleave", () => {
-                autoLogout();
-            });
+        //     // 🔹 Jika mouse keluar dari window
+        //     document.addEventListener("mouseleave", () => {
+        //         autoLogout();
+        //     });
 
-        });
+        // });
     </script>
 
 @endsection
