@@ -191,4 +191,42 @@
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            @if ($rekapGlobal['total_soal'] > 0)
+                const ctx = document.getElementById('chartAngkaHilang').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Total Soal', 'Dijawab', 'Benar', 'Salah'],
+                        datasets: [{
+                            label: 'Jumlah',
+                            data: [
+                                {{ $rekapGlobal['total_soal'] }},
+                                {{ $rekapGlobal['dijawab'] }},
+                                {{ $rekapGlobal['benar'] }},
+                                {{ $rekapGlobal['salah'] }}
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            @endif
+        });
+    </script>
 @endsection
