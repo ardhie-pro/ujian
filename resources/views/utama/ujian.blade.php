@@ -10,6 +10,16 @@
             grid-gap: 10px;
             padding: 10px;
         }
+
+        .question-box {
+            max-width: 100%;
+        }
+
+        .question-body img,
+        .question-body table {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
     <div class="container mt-3">
         <!-- MAIN SECTION -->

@@ -19,6 +19,16 @@
             border-radius: 8px;
             font-weight: 600;
         }
+
+        .question-box {
+            max-width: 100%;
+        }
+
+        .question-body img,
+        .question-body table {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 
     <div class="container mt-3">
@@ -414,7 +424,6 @@
         </div>
         <div class="question-body p-2">
             ${soal.soal}
-            <img src="https://yatimmandiri.org/news/wp-content/uploads/2023/05/1-1-scaled.jpg" class="img-fluid">
         </div>
         <form id="form-soal-${i}" class="mt-4">
             <div class="list-group">
