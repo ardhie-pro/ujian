@@ -180,7 +180,7 @@
     @endphp
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // const display = document.getElementById("liveTimer");
+            const display = document.getElementById("liveTimer");
             if (!display) return;
 
             // 🕒 Ambil waktu selesai dari session (format: Y-m-d H:i:s)
@@ -535,7 +535,7 @@
     </script>
 
 
-    {{-- <script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
 
             // 🔹 Fungsi Logout Otomatis
@@ -605,6 +605,6 @@
             });
 
         });
-    </script> --}}
+    </script>
 
 @endsection

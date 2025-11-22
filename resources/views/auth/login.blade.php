@@ -200,23 +200,15 @@
                     <label class="form-label" for="password">Password</label>
                     <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
                         name="password" placeholder="Masukkan password" required />
+
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
-                {{-- Remember Me & Forgot Password --}}
-                <div class="row mb-3 align-items-center">
-                    <div class="col-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="remember_me" name="remember" />
-                            <label class="form-check-label" for="remember_me">
-                                Ingat saya
-                            </label>
-                        </div>
-                    </div>
-
-
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="show_pass">
+                    <label class="form-check-label" for="show_pass">Lihat password</label>
                 </div>
 
                 {{-- Tombol Login --}}
@@ -231,7 +223,12 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+        document.getElementById('show_pass').addEventListener('change', function() {
+            const pw = document.getElementById('password');
+            pw.type = this.checked ? 'text' : 'password';
+        });
+    </script>
 </body>
 
 </html>

@@ -153,6 +153,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>Paswword</th>
                             <th>Role</th>
                             <th>Status</th>
                             <th>Aksi</th>
@@ -167,6 +168,7 @@
                                 <td>{{ $noAdmin++ }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->lihatpw }}</td>
 
                                 <td>
                                     <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
@@ -218,6 +220,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>Password</th>
                             <th>Role</th>
                             <th>Status</th>
                             <th>Aksi</th>
@@ -232,6 +235,8 @@
                                 <td>{{ $noReview++ }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->lihatpw }}</td>
+
 
                                 <td>
                                     <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">

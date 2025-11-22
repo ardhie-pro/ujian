@@ -142,6 +142,46 @@
         <h1>SELAMAT DATANG,</h1>
         <h2>ADMIN CITTA BHAKTI NIRBAYA</h2>
 
+        <div class="wrapper mt-5">
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
+            <form action="{{ route('admin.generateUser') }}" method="POST">
+                @csrf
+                <label>Jumlah User yang Ingin Dibuat:</label>
+                <input type="number" name="jumlah" class="form-control" required>
+                <button type="submit" class="btn btn-primary mt-2">Generate</button>
+            </form>
+        </div>
+
+        @if (isset($hasil) && count($hasil) > 0)
+            <div class="wrapper mt-5">
+                <h3 class="mt-4">Hasil Generate User</h3>
+                <table id="tabelHasil" class="table table-bordered mt-2">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Password (Asli)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($hasil as $i => $u)
+                            <tr>
+                                <td>{{ $i + 1 }}</td>
+                                <td>{{ $u->name }}</td>
+                                <td>{{ $u->email }}</td>
+                                <td>{{ $u->lihatpw }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+        @endif
+
         {{-- =====================  TABEL ADMIN  ===================== --}}
         <div class="wrapper mt-5">
             <div class="title">Informasi Akun — User</div>
@@ -153,6 +193,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>Password</th>
                             <th>Role</th>
                             <th>Status</th>
                             <th>Aksi</th>
@@ -167,6 +208,7 @@
                                 <td>{{ $noAdmin++ }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->lihatpw }}</td>
 
                                 <td>
                                     <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
@@ -183,9 +225,14 @@
 
                                 <td>
                                     <select name="status" class="form-select form-select-sm">
-                                        <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
+                                        <option value="user" {{ $user->status == 'user' ? 'selected' : '' }}>User
                                         </option>
                                         <option value="review" {{ $user->status == 'review' ? 'selected' : '' }}>Review
+                                        </option>
+                                        <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
+                                        </option>
+                                        <option value="pending" {{ $user->status == 'pending' ? 'selected' : '' }}>
+                                            Pending
                                         </option>
                                     </select>
                                 </td>
@@ -197,7 +244,11 @@
                                     <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
-                                        <button class="btn btn-danger btn-sm">🗑️ Hapus</button>
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Yakin mau hapus user ini?')">
+                                            🗑️ Hapus
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -210,6 +261,40 @@
         {{-- =====================  TABEL REVIEW  ===================== --}}
 
     </div>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- Buttons -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+
+    <!-- JSZip (untuk Excel) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- PDFMake (untuk PDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#tabelHasil').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy',
+                    'excel',
+                    'pdf',
+                    'print'
+                ]
+            });
+        });
+    </script>
 
 
 @endsection

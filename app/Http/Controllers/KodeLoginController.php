@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Kode;
@@ -82,10 +84,21 @@ class KodeLoginController extends Controller
     }
     public function logoutTest()
     {
-        // Hapus semua session ujian
+        // ambil id user yang sedang login
+        $userId = Auth::id();
+
+        // update kolom status jadi pending
+        DB::table('users')->where('id', $userId)->update([
+            'status' => 'pending'
+        ]);
+
+        // hapus session ujian
         Session::flush();
 
-        // Arahkan kembali ke halaman utama
+        // logout auth agar login habis
+        Auth::logout();
+
+        // redirect ke halaman utama
         return redirect('/')->with('success', 'Anda telah keluar dari ujian.');
     }
 }

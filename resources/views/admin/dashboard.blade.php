@@ -141,44 +141,7 @@
     <div class="page-content">
         <h1>SELAMAT DATANG,</h1>
         <h2>ADMIN CITTA BHAKTI NIRBAYA</h2>
-        <div class="wrapper mt-5">
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
 
-            <form action="{{ route('admin.generateUser') }}" method="POST">
-                @csrf
-                <label>Jumlah User yang Ingin Dibuat:</label>
-                <input type="number" name="jumlah" class="form-control" required>
-                <button type="submit" class="btn btn-primary mt-2">Generate</button>
-            </form>
-        </div>
-
-        @if (isset($hasil) && count($hasil) > 0)
-            <div class="wrapper mt-5">
-                <h3 class="mt-4">Hasil Generate User</h3>
-                <table class="table table-bordered mt-2">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Password (Asli)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($hasil as $i => $u)
-                            <tr>
-                                <td>{{ $i + 1 }}</td>
-                                <td>{{ $u->name }}</td>
-                                <td>{{ $u->email }}</td>
-                                <td>{{ $u->lihatpw }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
 
         <div class="wrapper mt-5">
             <div class="title">Informasi Akun User Review Dan User</div>

@@ -196,9 +196,10 @@ class AdminController extends Controller
 
             $hasil[] = $user;
         }
-        $users = User::orderBy('id', 'asc')->get();
 
-        return view('admin.dashboard', compact('hasil', 'users'))
+        $userb = User::orderBy('id', 'asc')->get();
+
+        return view('admin.user', compact('hasil', 'userb'))
             ->with('success', $req->jumlah . ' user berhasil dibuat!');
     }
 }
