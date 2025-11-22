@@ -108,15 +108,13 @@
                 </div>
             @endforelse
 
-            @if (isset($detail['rekap']))
+            @if ($rekapGlobal['total_soal'] > 0)
                 <div class="card mb-4">
                     <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">
-                            📊 Grafik Rekap — {{ $modul }} (Angka Hilang)
-                        </h5>
+                        <h5 class="mb-0">📊 Grafik Rekap — Angka Hilang (Gabungan Semua Modul)</h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="chart_{{ $modul }}" height="120"></canvas>
+                        <canvas id="chartAngkaHilang" height="120"></canvas>
                     </div>
                 </div>
             @endif
