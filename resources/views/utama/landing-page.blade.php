@@ -61,7 +61,7 @@
         <h2 class="mb-3">Selamat Datang</h2>
         <p class="mb-4">
             Silakan login untuk melanjutkan ke halaman berikutnya.
-            Template ini responsif dan background otomatis menyesuaikan device.
+
         </p>
 
         <a href="{{ route('login') }}" class="btn btn-primary btn-login">Login</a>
