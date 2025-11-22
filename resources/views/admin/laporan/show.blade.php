@@ -89,7 +89,8 @@
                                 @foreach ($detail['soal'] as $row)
                                     <tr>
                                         <td>{{ $row['no'] }}</td>
-                                        <td class="@if ($row['status'] == 'salah') bg-danger text-white 
+                                        <td
+                                            class="@if ($row['status'] == 'salah') bg-danger text-white
                                             @elseif($row['status'] == 'benar') bg-success text-white @endif">
                                             {{ $row['jawaban_user'] ?? '-' }}
                                         </td>
@@ -106,6 +107,17 @@
                     Tidak ada jawaban yang dapat ditampilkan.
                 </div>
             @endforelse
+
+            @if ($rekapGlobal['total_soal'] > 0)
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">📊 Grafik Rekap — Angka Hilang (Gabungan Semua Modul)</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartAngkaHilang" height="120"></canvas>
+                    </div>
+                </div>
+            @endif
 
         </div>
     </div>
@@ -161,7 +173,11 @@
                     // Buat sheet dari data rekap + tabel
                     const wsRekap = XLSX.utils.aoa_to_sheet(rekapData);
                     const wsTable = XLSX.utils.table_to_sheet(table);
-                    XLSX.utils.sheet_add_json(wsRekap, XLSX.utils.sheet_to_json(wsTable, { header: 1 }), { origin: -1 });
+                    XLSX.utils.sheet_add_json(wsRekap, XLSX.utils.sheet_to_json(wsTable, {
+                        header: 1
+                    }), {
+                        origin: -1
+                    });
 
                     // Tambahkan ke workbook
                     XLSX.utils.book_append_sheet(wb, wsRekap, modul.substring(0, 31));

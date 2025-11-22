@@ -126,8 +126,26 @@ class LaporanController extends Controller
                 ];
             }
         }
+        // ==========================
+        // 🔥 Rekap Global Angka-Hilang
+        // ==========================
+        $rekapGlobal = [
+            'total_soal' => 0,
+            'dijawab' => 0,
+            'benar' => 0,
+            'salah' => 0,
+        ];
 
-        return view('admin.laporan.show', compact('kode', 'data'));
+        foreach ($data as $modul => $detail) {
+            if (isset($detail['rekap'])) {
+                $rekapGlobal['total_soal'] += $detail['rekap']['total_soal'] ?? 0;
+                $rekapGlobal['dijawab'] += $detail['rekap']['dijawab'] ?? 0;
+                $rekapGlobal['benar'] += $detail['rekap']['benar'] ?? 0;
+                $rekapGlobal['salah'] += $detail['rekap']['salah'] ?? 0;
+            }
+        }
+
+        return view('admin.laporan.show', compact('kode', 'data', 'rekapGlobal'));
     }
 
     public function detail($kode, $user_id)
