@@ -21,22 +21,37 @@
         }
 
         #soal-container,
-        .question-box,
-        .question-body {
-            max-width: 100% !important;
+        .question-box {
             width: 100% !important;
-            overflow: hidden !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+            /* biar tidak tenggelam */
         }
 
         .question-body {
+            width: 100%;
+            max-width: 100%;
             word-break: break-word !important;
             overflow-wrap: break-word !important;
             white-space: normal !important;
+            overflow: visible !important;
+            /* penting */
         }
 
+        /* Semua elemen dalam soal aman di layar HP */
         .question-body * {
             max-width: 100% !important;
             white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+
+        /* Jika ada <pre> atau <code> yang bikin jebol */
+        .question-body pre,
+        .question-body code {
+            white-space: pre-wrap !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
         }
     </style>
 
