@@ -108,16 +108,22 @@
                 </div>
             @endforelse
 
-            @if ($rekapGlobal['total_soal'] > 0)
-                <div class="card mb-4">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">📊 Grafik Rekap — Angka Hilang (Gabungan Semua Modul)</h5>
+            {{-- 📊 Grafik Rekap Per Modul (HANYA modul angka-hilang) --}}
+            @foreach ($data as $modul => $detail)
+                @if (isset($detail['rekap']))
+                    <div class="card mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">
+                                📊 Grafik Rekap — {{ $modul }} (Angka Hilang)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart_{{ $modul }}" height="120"></canvas>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <canvas id="chartAngkaHilang" height="120"></canvas>
-                    </div>
-                </div>
-            @endif
+                @endif
+            @endforeach
+
 
         </div>
     </div>
@@ -126,107 +132,49 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const filter = document.getElementById('filterModul');
-            const btnExport = document.getElementById('btnExportExcel');
 
-            // 🔍 Filter Modul
-            if (filter) {
-                filter.addEventListener('change', function() {
-                    const selected = this.value.toLowerCase();
-                    document.querySelectorAll('.laporan-modul').forEach(card => {
-                        const modul = card.dataset.modul.toLowerCase();
-                        card.style.display = selected === '' || modul === selected ? '' : 'none';
-                    });
-                });
-            }
+            // ============================
+            // 📊 Chart per modul angka-hilang
+            // ============================
+            @foreach ($data as $modul => $detail)
+                @if (isset($detail['rekap']))
 
-            // 📤 Export Semua Modul (rekap + tabel)
-            btnExport.addEventListener('click', function() {
-                const allCards = document.querySelectorAll('.laporan-modul');
-                if (allCards.length === 0) {
-                    alert('⚠️ Tidak ada data untuk diekspor!');
-                    return;
-                }
-
-                const wb = XLSX.utils.book_new();
-
-                allCards.forEach(card => {
-                    const modul = card.dataset.modul || 'Tanpa Modul';
-                    const rekapDiv = card.querySelector('.rekap');
-                    const table = card.querySelector('table');
-
-                    // Ambil data rekap (jika ada)
-                    const rekapData = [];
-                    if (rekapDiv) {
-                        const total = rekapDiv.querySelector('.total-soal')?.textContent || '-';
-                        const dijawab = rekapDiv.querySelector('.dijawab')?.textContent || '-';
-                        const benar = rekapDiv.querySelector('.benar')?.textContent || '-';
-                        const salah = rekapDiv.querySelector('.salah')?.textContent || '-';
-                        rekapData.push(["📋 Rekapitulasi Hasil"]);
-                        rekapData.push(["Total Soal", total]);
-                        rekapData.push(["Dijawab", dijawab]);
-                        rekapData.push(["Benar", benar]);
-                        rekapData.push(["Salah", salah]);
-                        rekapData.push([]); // spasi baris
-                    }
-
-                    // Buat sheet dari data rekap + tabel
-                    const wsRekap = XLSX.utils.aoa_to_sheet(rekapData);
-                    const wsTable = XLSX.utils.table_to_sheet(table);
-                    XLSX.utils.sheet_add_json(wsRekap, XLSX.utils.sheet_to_json(wsTable, {
-                        header: 1
-                    }), {
-                        origin: -1
-                    });
-
-                    // Tambahkan ke workbook
-                    XLSX.utils.book_append_sheet(wb, wsRekap, modul.substring(0, 31));
-                });
-
-                const tanggal = new Date().toISOString().slice(0, 10);
-                const filename = `Laporan_Semua_Modul_{{ $kode }}_${tanggal}.xlsx`;
-
-                XLSX.writeFile(wb, filename);
-                alert('✅ Semua tabel + rekap berhasil diekspor ke Excel!');
-            });
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            @if ($rekapGlobal['total_soal'] > 0)
-                const ctx = document.getElementById('chartAngkaHilang').getContext('2d');
-
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Total Soal', 'Dijawab', 'Benar', 'Salah'],
-                        datasets: [{
-                            label: 'Jumlah',
-                            data: [
-                                {{ $rekapGlobal['total_soal'] }},
-                                {{ $rekapGlobal['dijawab'] }},
-                                {{ $rekapGlobal['benar'] }},
-                                {{ $rekapGlobal['salah'] }}
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
+                    new Chart(document.getElementById('chart_{{ $modul }}'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Benar', 'Salah', 'Dijawab'],
+                            datasets: [{
+                                label: 'Jumlah',
+                                data: [
+                                    {{ $detail['rekap']['benar'] }},
+                                    {{ $detail['rekap']['salah'] }},
+                                    {{ $detail['rekap']['dijawab'] }}
+                                ],
+                                backgroundColor: [
+                                    'rgba(0, 200, 0, 0.7)', // hijau
+                                    'rgba(200, 0, 0, 0.7)', // merah
+                                    'rgba(0, 100, 255, 0.7)' // biru
+                                ]
+                            }]
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
                             }
                         }
-                    }
-                });
-            @endif
+                    });
+                @endif
+            @endforeach
+
         });
     </script>
+
 @endsection
