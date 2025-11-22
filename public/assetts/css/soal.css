@@ -153,37 +153,6 @@ body {
     border-radius: 4px;
 }
 
-.question-box {
-    height: auto !important;
-}
-
-/* Pastikan isi soal bebas memanjang */
-.question-body {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    min-height: auto !important;
-
-    white-space: normal !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    overflow: visible !important;
-}
-
-/* Elemen-elemen di dalam soal */
-.question-body * {
-    max-width: 100% !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-}
-
-/* Jika ada <pre> bikin jebol */
-.question-body pre,
-.question-body code {
-    white-space: pre-wrap !important;
-    word-break: break-word !important;
-}
-
 /* Radio Option */
 .option {
     display: flex;

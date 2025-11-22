@@ -12,13 +12,62 @@
         }
 
         .question-box {
-            max-width: 100%;
+            height: auto !important;
         }
 
-        .question-body img,
-        .question-body table {
-            max-width: 100%;
-            height: auto;
+        /* Pastikan isi soal bebas memanjang */
+        .question-body {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            min-height: auto !important;
+
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            overflow: visible !important;
+        }
+
+        /* Elemen-elemen di dalam soal */
+        .question-body * {
+            max-width: 100% !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+
+        /* Jika ada <pre> bikin jebol */
+        .question-body pre,
+        .question-body code {
+            white-space: pre-wrap !important;
+            word-break: break-word !important;
+        }
+
+        .option-item {
+            display: flex !important;
+            align-items: flex-start !important;
+            gap: 10px;
+
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+
+            max-width: 100% !important;
+        }
+
+        /* Input radio/checkbox tetap kecil */
+        .option-item input {
+            flex-shrink: 0;
+        }
+
+        /* Teks jawaban wajib wrap */
+        .option-item span,
+        .option-item div,
+        .option-item p {
+            flex-grow: 1;
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            max-width: 100% !important;
         }
     </style>
     <div class="container mt-3">
@@ -376,6 +425,7 @@
     </div>
     <div class="question-body p-2">
         ${soal.soal}
+        <img src="https://tse1.mm.bing.net/th/id/OIP.EU3YoXroYCwvBlm-532aaAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="">
     </div>
     <form id="form-soal-${i}" class="mt-4">
         <div class="list-group">
