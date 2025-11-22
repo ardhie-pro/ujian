@@ -108,18 +108,20 @@
                 </div>
             @endforelse
 
-            @if (isset($detail['rekap']))
-                <div class="card mb-4">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">
-                            📊 Grafik Rekap — {{ $modul }} (Angka Hilang)
-                        </h5>
+            @foreach ($data as $modul => $detail)
+                @if (isset($detail['rekap']))
+                    <div class="card mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">
+                                📊 Grafik Rekap — {{ $modul }} (Angka Hilang)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart_{{ $modul }}" height="120"></canvas>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <canvas id="chart_{{ $modul }}" height="120"></canvas>
-                    </div>
-                </div>
-            @endif
+                @endif
+            @endforeach
 
         </div>
     </div>
@@ -213,9 +215,9 @@
                                     {{ $detail['rekap']['dijawab'] }}
                                 ],
                                 backgroundColor: [
-                                    'rgba(0, 200, 0, 0.7)', // benar → hijau
-                                    'rgba(200, 0, 0, 0.7)', // salah → merah
-                                    'rgba(0, 100, 255, 0.7)' // dijawab → biru
+                                    'rgba(0, 200, 0, 0.7)', // hijau
+                                    'rgba(200, 0, 0, 0.7)', // merah
+                                    'rgba(0, 100, 255, 0.7)' // biru
                                 ],
                                 borderWidth: 1
                             }]
@@ -239,4 +241,5 @@
 
         });
     </script>
+
 @endsection
