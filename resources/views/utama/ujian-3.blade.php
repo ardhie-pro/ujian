@@ -21,7 +21,7 @@
         }
 
         .question-box {
-            max-width: 100%;
+            display: none;
         }
 
         .question-body img,
