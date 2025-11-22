@@ -116,15 +116,19 @@
                 </div>
             </div>
 
-
         </div>
     </div>
 
     <!-- 🧠 Script Filter + Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
+            /* ============================================================
+               🔥  BAGIAN GRAFIK GLOBAL (AUTO AMBIL DATA DARI SETIAP .rekap)
+            ============================================================ */
             const rekapList = document.querySelectorAll('.rekap');
             const labels = [];
             const dataTotal = [];
@@ -143,48 +147,114 @@
                 dataSalah.push(parseInt(r.querySelector('.salah')?.textContent || 0));
             });
 
-            // 🎨 GRAFIK GLOBAL
-            const ctx = document.getElementById('chart_global').getContext('2d');
+            if (rekapList.length > 0) {
+                const ctx = document.getElementById('chart_global').getContext('2d');
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                            label: 'Total Soal',
-                            data: dataTotal,
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        },
-                        {
-                            label: 'Dijawab',
-                            data: dataDijawab,
-                            backgroundColor: 'rgba(0, 123, 255, 0.6)',
-                        },
-                        {
-                            label: 'Benar',
-                            data: dataBenar,
-                            backgroundColor: 'rgba(40, 167, 69, 0.6)',
-                        },
-                        {
-                            label: 'Salah',
-                            data: dataSalah,
-                            backgroundColor: 'rgba(220, 53, 69, 0.6)',
-                        },
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                                label: 'Total Soal',
+                                data: dataTotal,
+                                backgroundColor: 'rgba(0,0,0,0.5)'
+                            },
+                            {
+                                label: 'Dijawab',
+                                data: dataDijawab,
+                                backgroundColor: 'rgba(0,123,255,0.6)'
+                            },
+                            {
+                                label: 'Benar',
+                                data: dataBenar,
+                                backgroundColor: 'rgba(40,167,69,0.6)'
+                            },
+                            {
+                                label: 'Salah',
+                                data: dataSalah,
+                                backgroundColor: 'rgba(220,53,69,0.6)'
+                            }
+                        ]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
+                });
+            }
+
+            /* ============================================================
+               🔍  FILTER MODUL
+            ============================================================ */
+            const filter = document.getElementById('filterModul');
+            const btnExport = document.getElementById('btnExportExcel');
+
+            if (filter) {
+                filter.addEventListener('change', function() {
+                    const selected = this.value.toLowerCase();
+                    document.querySelectorAll('.laporan-modul').forEach(card => {
+                        const modul = card.dataset.modul.toLowerCase();
+                        card.style.display = selected === '' || modul === selected ? '' : 'none';
+                    });
+                });
+            }
+
+            /* ============================================================
+               📤 EXPORT EXCEL (REKAP + TABEL)
+            ============================================================ */
+            btnExport.addEventListener('click', function() {
+                const allCards = document.querySelectorAll('.laporan-modul');
+                if (allCards.length === 0) {
+                    alert('⚠️ Tidak ada data untuk diekspor!');
+                    return;
                 }
+
+                const wb = XLSX.utils.book_new();
+
+                allCards.forEach(card => {
+                    const modul = card.dataset.modul || 'Tanpa Modul';
+                    const rekapDiv = card.querySelector('.rekap');
+                    const table = card.querySelector('table');
+
+                    const rekapData = [];
+                    if (rekapDiv) {
+                        const total = rekapDiv.querySelector('.total-soal')?.textContent || '-';
+                        const dijawab = rekapDiv.querySelector('.dijawab')?.textContent || '-';
+                        const benar = rekapDiv.querySelector('.benar')?.textContent || '-';
+                        const salah = rekapDiv.querySelector('.salah')?.textContent || '-';
+                        rekapData.push(["📋 Rekapitulasi Hasil"]);
+                        rekapData.push(["Total Soal", total]);
+                        rekapData.push(["Dijawab", dijawab]);
+                        rekapData.push(["Benar", benar]);
+                        rekapData.push(["Salah", salah]);
+                        rekapData.push([]);
+                    }
+
+                    const wsRekap = XLSX.utils.aoa_to_sheet(rekapData);
+                    const wsTable = XLSX.utils.table_to_sheet(table);
+                    XLSX.utils.sheet_add_json(wsRekap, XLSX.utils.sheet_to_json(wsTable, {
+                        header: 1
+                    }), {
+                        origin: -1
+                    });
+
+                    XLSX.utils.book_append_sheet(wb, wsRekap, modul.substring(0, 31));
+                });
+
+                const tanggal = new Date().toISOString().slice(0, 10);
+                const filename = `Laporan_Semua_Modul_{{ $kode }}_${tanggal}.xlsx`;
+
+                XLSX.writeFile(wb, filename);
+                alert('✅ Semua tabel + rekap berhasil diekspor ke Excel!');
             });
 
         });
