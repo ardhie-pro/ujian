@@ -107,7 +107,6 @@
                     Tidak ada jawaban yang dapat ditampilkan.
                 </div>
             @endforelse
-
             <div class="card mb-4">
                 <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">📊 Grafik Rekap Semua Modul</h5>
@@ -122,6 +121,74 @@
     </div>
 
     <!-- 🧠 Script Filter + Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const filter = document.getElementById('filterModul');
+            const btnExport = document.getElementById('btnExportExcel');
+
+            // 🔍 Filter Modul
+            if (filter) {
+                filter.addEventListener('change', function() {
+                    const selected = this.value.toLowerCase();
+                    document.querySelectorAll('.laporan-modul').forEach(card => {
+                        const modul = card.dataset.modul.toLowerCase();
+                        card.style.display = selected === '' || modul === selected ? '' : 'none';
+                    });
+                });
+            }
+
+            // 📤 Export Semua Modul (rekap + tabel)
+            btnExport.addEventListener('click', function() {
+                const allCards = document.querySelectorAll('.laporan-modul');
+                if (allCards.length === 0) {
+                    alert('⚠️ Tidak ada data untuk diekspor!');
+                    return;
+                }
+
+                const wb = XLSX.utils.book_new();
+
+                allCards.forEach(card => {
+                    const modul = card.dataset.modul || 'Tanpa Modul';
+                    const rekapDiv = card.querySelector('.rekap');
+                    const table = card.querySelector('table');
+
+                    // Ambil data rekap (jika ada)
+                    const rekapData = [];
+                    if (rekapDiv) {
+                        const total = rekapDiv.querySelector('.total-soal')?.textContent || '-';
+                        const dijawab = rekapDiv.querySelector('.dijawab')?.textContent || '-';
+                        const benar = rekapDiv.querySelector('.benar')?.textContent || '-';
+                        const salah = rekapDiv.querySelector('.salah')?.textContent || '-';
+                        rekapData.push(["📋 Rekapitulasi Hasil"]);
+                        rekapData.push(["Total Soal", total]);
+                        rekapData.push(["Dijawab", dijawab]);
+                        rekapData.push(["Benar", benar]);
+                        rekapData.push(["Salah", salah]);
+                        rekapData.push([]); // spasi baris
+                    }
+
+                    // Buat sheet dari data rekap + tabel
+                    const wsRekap = XLSX.utils.aoa_to_sheet(rekapData);
+                    const wsTable = XLSX.utils.table_to_sheet(table);
+                    XLSX.utils.sheet_add_json(wsRekap, XLSX.utils.sheet_to_json(wsTable, {
+                        header: 1
+                    }), {
+                        origin: -1
+                    });
+
+                    // Tambahkan ke workbook
+                    XLSX.utils.book_append_sheet(wb, wsRekap, modul.substring(0, 31));
+                });
+
+                const tanggal = new Date().toISOString().slice(0, 10);
+                const filename = `Laporan_Semua_Modul_{{ $kode }}_${tanggal}.xlsx`;
+
+                XLSX.writeFile(wb, filename);
+                alert('✅ Semua tabel + rekap berhasil diekspor ke Excel!');
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
@@ -189,6 +256,5 @@
 
         });
     </script>
-
 
 @endsection
