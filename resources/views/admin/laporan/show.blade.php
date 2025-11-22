@@ -108,73 +108,87 @@
                 </div>
             @endforelse
 
-            {{-- 📊 Grafik Rekap Per Modul (HANYA modul angka-hilang) --}}
-            @foreach ($data as $modul => $detail)
-                @if (isset($detail['rekap']))
-                    <div class="card mb-4">
-                        <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">
-                                📊 Grafik Rekap — {{ $modul }} (Angka Hilang)
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="chart_{{ $modul }}" height="120"></canvas>
-                        </div>
-                    </div>
-                @endif
-            @endforeach
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">📊 Grafik Rekap Semua Modul</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chart_global" height="140"></canvas>
+                </div>
+            </div>
 
 
         </div>
     </div>
 
     <!-- 🧠 Script Filter + Export -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            // ============================
-            // 📊 Chart per modul angka-hilang
-            // ============================
-            @foreach ($data as $modul => $detail)
-                @if (isset($detail['rekap']))
+            const labels = [
+                @foreach ($data as $modul => $detail)
+                    @if (isset($detail['rekap']))
+                        "{{ $modul }}",
+                    @endif
+                @endforeach
+            ];
 
-                    new Chart(document.getElementById('chart_{{ $modul }}'), {
-                        type: 'bar',
-                        data: {
-                            labels: ['Benar', 'Salah', 'Dijawab'],
-                            datasets: [{
-                                label: 'Jumlah',
-                                data: [
-                                    {{ $detail['rekap']['benar'] }},
-                                    {{ $detail['rekap']['salah'] }},
-                                    {{ $detail['rekap']['dijawab'] }}
-                                ],
-                                backgroundColor: [
-                                    'rgba(0, 200, 0, 0.7)', // hijau
-                                    'rgba(200, 0, 0, 0.7)', // merah
-                                    'rgba(0, 100, 255, 0.7)' // biru
-                                ]
-                            }]
+            // Dataset Benar
+            const dataBenar = [
+                @foreach ($data as $detail)
+                    {{ $detail['rekap']['benar'] ?? 0 }},
+                @endforeach
+            ];
+
+            // Dataset Salah
+            const dataSalah = [
+                @foreach ($data as $detail)
+                    {{ $detail['rekap']['salah'] ?? 0 }},
+                @endforeach
+            ];
+
+            // Dataset Dijawab
+            const dataDijawab = [
+                @foreach ($data as $detail)
+                    {{ $detail['rekap']['dijawab'] ?? 0 }},
+                @endforeach
+            ];
+
+            new Chart(document.getElementById('chart_global'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                            label: "Benar",
+                            data: dataBenar,
+                            backgroundColor: "rgba(0, 200, 0, 0.7)"
                         },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
+                        {
+                            label: "Salah",
+                            data: dataSalah,
+                            backgroundColor: "rgba(200, 0, 0, 0.7)"
+                        },
+                        {
+                            label: "Dijawab",
+                            data: dataDijawab,
+                            backgroundColor: "rgba(0, 100, 255, 0.7)"
                         }
-                    });
-                @endif
-            @endforeach
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
 
         });
     </script>
+
 
 @endsection
