@@ -20,14 +20,23 @@
             font-weight: 600;
         }
 
-        .question-box {
-            display: none;
+        #soal-container,
+        .question-box,
+        .question-body {
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow: hidden !important;
         }
 
-        .question-body img,
-        .question-body table {
-            max-width: 100%;
-            height: auto;
+        .question-body {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            white-space: normal !important;
+        }
+
+        .question-body * {
+            max-width: 100% !important;
+            white-space: normal !important;
         }
     </style>
 
