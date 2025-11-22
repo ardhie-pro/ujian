@@ -108,13 +108,15 @@
                 </div>
             @endforelse
 
-            @if ($rekapGlobal['total_soal'] > 0)
+            @if (isset($detail['rekap']))
                 <div class="card mb-4">
                     <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">📊 Grafik Rekap — Angka Hilang (Gabungan Semua Modul)</h5>
+                        <h5 class="mb-0">
+                            📊 Grafik Rekap — {{ $modul }} (Angka Hilang)
+                        </h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="chartAngkaHilang" height="120"></canvas>
+                        <canvas id="chart_{{ $modul }}" height="120"></canvas>
                     </div>
                 </div>
             @endif
@@ -195,38 +197,46 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            @if ($rekapGlobal['total_soal'] > 0)
-                const ctx = document.getElementById('chartAngkaHilang').getContext('2d');
 
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Total Soal', 'Dijawab', 'Benar', 'Salah'],
-                        datasets: [{
-                            label: 'Jumlah',
-                            data: [
-                                {{ $rekapGlobal['total_soal'] }},
-                                {{ $rekapGlobal['dijawab'] }},
-                                {{ $rekapGlobal['benar'] }},
-                                {{ $rekapGlobal['salah'] }}
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
+            @foreach ($data as $modul => $detail)
+                @if (isset($detail['rekap']))
+
+                    new Chart(document.getElementById('chart_{{ $modul }}'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Benar', 'Salah', 'Dijawab'],
+                            datasets: [{
+                                label: 'Jumlah',
+                                data: [
+                                    {{ $detail['rekap']['benar'] }},
+                                    {{ $detail['rekap']['salah'] }},
+                                    {{ $detail['rekap']['dijawab'] }}
+                                ],
+                                backgroundColor: [
+                                    'rgba(0, 200, 0, 0.7)', // benar → hijau
+                                    'rgba(200, 0, 0, 0.7)', // salah → merah
+                                    'rgba(0, 100, 255, 0.7)' // dijawab → biru
+                                ],
+                                borderWidth: 1
+                            }]
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
                             }
                         }
-                    }
-                });
-            @endif
+                    });
+                @endif
+            @endforeach
+
         });
     </script>
 @endsection
