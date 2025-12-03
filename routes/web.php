@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\KumpulanModulController;
+use App\Http\Controllers\GrupKolomConntroller;
 use App\Http\Controllers\KodeLoginController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\AdminController;
@@ -20,6 +21,10 @@ Route::get('/menunggu-konfirmasi', function () {
 Route::get('/akses', function () {
     return view('utama.sits');
 });
+Route::get('/pendahuluan', function () {
+    return view('utama.pagependahuluan');
+});
+
 Route::get('/download-template-soal', function () {
     // Path ke file template Word kamu di folder resources/views/template
     $path = resource_path('views/template/soal.docx');
@@ -35,10 +40,13 @@ Route::get('/download-template-soal', function () {
     );
 })->name('download.template.soal');
 
+
+
 Route::get('/', function () {
     return view('utama.landing-page');
 });
-
+Route::get('/history', [KodeLoginController::class, 'history'])->name('history.login');
+Route::get('/hasiluser/{kode}', [LaporanController::class, 'hasiluser'])->name('hasiluser.show');
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/kode', [KodeLoginController::class, 'index'])->name('kode.login');
     Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
@@ -61,6 +69,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.generateUser');
     Route::get('/akun', [AdminController::class, 'akun'])->name('admin.akun');
     Route::get('/user', [AdminController::class, 'user'])->name('admin.user');
+    Route::post('/user/buatakun', [AdminController::class, 'buatakun'])->name('user.buatakun');
+    Route::post('/user/buatgrup', [AdminController::class, 'buatgrup'])->name('user.buatgrup');
+    Route::delete('/hapus-grup/{id}', [AdminController::class, 'hapusGrup'])->name('user.hapusgrup');
+    Route::post('/user/update-grup/{id}', [AdminController::class, 'updateGrup'])->name('user.updateGrup');
+    Route::post('/user/hapus-grup/{id}', [AdminController::class, 'hapusbGrup'])->name('user.hapusbGrup');
+
 
 
     Route::resource('kumpulan-modul', KumpulanModulController::class);
@@ -116,6 +130,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('kelompok-soal', KelompokSoalController::class);
     Route::put('/kelompok-soal/{id}', [KelompokSoalController::class, 'update']);
     Route::delete('/kelompok-soal/{id}', [KelompokSoalController::class, 'destroy']);
+
+    Route::get('/grupangkahilang', [GrupKolomConntroller::class, 'index'])->name('grupangkahilang.index');
+    Route::get('/grupkolom/{nama}', [GrupKolomConntroller::class, 'detail'])->name('grup.detail');
+
+    // angka hilang grup
+    Route::post('/grupkolom/generate', [GrupKolomConntroller::class, 'generate'])
+        ->name('grupkolom.generate');
+    Route::put('/modul/update/{id}', [GrupKolomConntroller::class, 'update'])->name('modul.update');
+    Route::delete('/modul/delete/{id}', [GrupKolomConntroller::class, 'delete'])->name('modul.delete');
+    Route::post('/grupkolom/tambah-kolom', [GrupKolomConntroller::class, 'tambahKolom'])
+        ->name('grup.tambahKolom');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

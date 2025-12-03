@@ -315,7 +315,7 @@ body {
     /* jarak dari atas layar */
     right: 20px;
     /* jarak dari sisi kanan */
-    z-index: 1000;
+    z-index: 0;
     /* biar di atas elemen lain */
     width: 200px;
     /* bisa kamu ubah kalau perlu */
@@ -340,7 +340,7 @@ body {
     /* jarak dari atas layar */
     right: 20px;
     /* jarak dari sisi kanan */
-    z-index: 1000;
+    z-index: 0;
     /* biar di atas elemen lain */
     width: 200px;
     /* bisa kamu ubah kalau perlu */

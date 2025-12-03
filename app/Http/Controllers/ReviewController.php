@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\JawabanUser;
 use App\Models\KunciJawaban;
@@ -14,27 +15,29 @@ use Carbon\Carbon;
 class ReviewController extends Controller
 {
     // 🟢 Menampilkan semua kode
-   public function index()
-{
-    $data = DB::table('kode')
-        // Ambil nama peserta dari jawaban_user (kolom modul = 'Nama')
-        ->leftJoin('jawaban_user', function ($join) {
-            $join->on('jawaban_user.user_id', '=', 'kode.kode')
-                 ->where('jawaban_user.modul', '=', 'Nama');
-        })
-        // Ambil nama modul dari kumpulan_modul
-        ->leftJoin('kumpulan_modul', 'kumpulan_modul.id', '=', 'kode.modul_id')
-        ->select(
-            'kode.*',
-            'jawaban_user.jawaban as nama_peserta',
-            'kumpulan_modul.nama as nama_modul'
-        )
-        ->orderByRaw("CASE WHEN kode.status = 0 THEN 0 ELSE 1 END") // status 0 di atas
-        ->orderBy('kode.id', 'desc')
-        ->get();
+    public function index()
 
-    return view('review.index', compact('data'));
-}
+    {
+        $datap = User::where('status', 'user')->get();
+        $data = DB::table('kode')
+            // Ambil nama peserta dari jawaban_user (kolom modul = 'Nama')
+            ->leftJoin('jawaban_user', function ($join) {
+                $join->on('jawaban_user.user_id', '=', 'kode.kode')
+                    ->where('jawaban_user.modul', '=', 'Nama');
+            })
+            // Ambil nama modul dari kumpulan_modul
+            ->leftJoin('kumpulan_modul', 'kumpulan_modul.id', '=', 'kode.modul_id')
+            ->select(
+                'kode.*',
+                'jawaban_user.jawaban as nama_peserta',
+                'kumpulan_modul.nama as nama_modul'
+            )
+            ->orderByRaw("CASE WHEN kode.status = 0 THEN 0 ELSE 1 END") // status 0 di atas
+            ->orderBy('kode.id', 'desc')
+            ->get();
+
+        return view('review.index', compact('data'));
+    }
 
     // 🟢 Menampilkan modul dari kode yang diklik
     public function show($kode)

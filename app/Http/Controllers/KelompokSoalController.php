@@ -20,6 +20,7 @@ class KelompokSoalController extends Controller
     {
         $data = $request->validate([
             'judul' => 'nullable|string',
+            'persamaan' => 'nullable|string',
             'soal1_text' => 'nullable|string',
             'soal1_img' => 'nullable|image|max:2048',
             'soal2_text' => 'nullable|string',

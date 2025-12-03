@@ -69,7 +69,7 @@
                 Tambah Soal
             </button>
 
-            <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap mt-3">
+            <table id="" class="table table-striped table-bordered dt-responsive nowrap mt-3">
                 <thead>
                     <tr>
                         <th>NO</th>
@@ -179,6 +179,7 @@
                             <select name="type_template" class="form-select" required>
                                 <option value="">-- Pilih Type Template --</option>
                                 <option value="data-nama">Data Nama</option>
+                                <option value="panduan">Panduan</option>
                                 <option value="angka-hilang">Angka-Hilang</option>
                                 <option value="multiple-chois">Multiple-Chois</option>
                                 <option value="tanpa-kembali">Tanpa-Kembali</option>

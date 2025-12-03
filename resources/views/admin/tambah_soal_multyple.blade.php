@@ -397,33 +397,8 @@
             </div>
         </div>
         <!-- End Row -->
-        <!-- Modal Tambah -->
-        <!-- Modal Tambah -->
-        <div class="modal fade bs-example-modal-lg" id="addModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Tambah Soal</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ route('soal.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="modul" value="{{ $modul }}">
-                            <div class="mb-3">
-                                <label>No Soal</label>
-                                <input type="text" name="no" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Soal</label>
-                                <textarea name="soal2" class="form-control"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+
     </div>
     <!-- End Page-content -->
     <div class="container-fluid mt-4">
@@ -497,9 +472,4 @@
     </div>
     <!-- Container-Fluid -->
     </div>
-
-
-
-
-
 @endsection

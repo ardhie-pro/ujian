@@ -175,13 +175,12 @@
 
     <div class="page-content">
         {{-- =====================  TABEL REVIEW  ===================== --}}
-        <div class="card" id="editFormContainer" style="display:none;">
+        <div class="wrapper" id="editFormContainer" style="display:none;">
             <form id="formEditSoal" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <input type="hidden" name="modul" id="editModul">
-
                 <div class="mb-3">
                     <label>No Soal</label>
                     <input type="text" name="no" class="form-control" id="editNo" required>
@@ -217,6 +216,17 @@
         </div>
         <div class="wrapper card card-animate mt-5">
             <div class="title mb-5">Daftar Soal -----</div>
+
+            <div class="d-flex gap-2 mb-3">
+                <button class="btn btn-warning col-2" data-bs-toggle="modal" data-bs-target="#addModal">
+                    + Tambah Soal
+                </button>
+
+                <button type="button" class="btn btn-answered col-2" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                    + Tambah Kolom Soal
+                </button>
+            </div>
+
             {{-- Alert sukses --}}
             @if (session('success'))
                 <div class="alert alert-success">
@@ -254,22 +264,31 @@
                 });
             </script>
 
-            <button class="btn btn-answered col-2 mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
-                + Tambah Soal
-            </button>
-
             @php
-                $first = $data->first();
-                $kd = $first->kelompok_data ?? null;
+                // Ambil data kelompok yang sesuai dengan modul terpilih
+                $selected = $kelompok->where('persamaan', $modul)->first();
 
+                // Default kosong
                 $list = [
-                    ['key' => 'A', 'text' => $kd->soal1_text ?? null, 'img' => $kd->soal1_img ?? null],
-                    ['key' => 'B', 'text' => $kd->soal2_text ?? null, 'img' => $kd->soal2_img ?? null],
-                    ['key' => 'C', 'text' => $kd->soal3_text ?? null, 'img' => $kd->soal3_img ?? null],
-                    ['key' => 'D', 'text' => $kd->soal4_text ?? null, 'img' => $kd->soal4_img ?? null],
-                    ['key' => 'E', 'text' => $kd->soal5_text ?? null, 'img' => $kd->soal5_img ?? null],
+                    ['key' => 'A', 'text' => null, 'img' => null],
+                    ['key' => 'B', 'text' => null, 'img' => null],
+                    ['key' => 'C', 'text' => null, 'img' => null],
+                    ['key' => 'D', 'text' => null, 'img' => null],
+                    ['key' => 'E', 'text' => null, 'img' => null],
                 ];
+
+                // Jika ditemukan kelompok yang cocok, ambil datanya
+                if ($selected) {
+                    $list = [
+                        ['key' => 'A', 'text' => $selected->soal1_text ?? null, 'img' => $selected->soal1_img ?? null],
+                        ['key' => 'B', 'text' => $selected->soal2_text ?? null, 'img' => $selected->soal2_img ?? null],
+                        ['key' => 'C', 'text' => $selected->soal3_text ?? null, 'img' => $selected->soal3_img ?? null],
+                        ['key' => 'D', 'text' => $selected->soal4_text ?? null, 'img' => $selected->soal4_img ?? null],
+                        ['key' => 'E', 'text' => $selected->soal5_text ?? null, 'img' => $selected->soal5_img ?? null],
+                    ];
+                }
             @endphp
+
 
             <style>
                 /* CONTAINER UTAMA */
@@ -342,16 +361,56 @@
             </style>
 
 
+
             <tbody id="tbody-kelompok">
                 <tr>
                     <td colspan="9">
-
                         <div class="kolom-wrapper">
+                            <div class="row ">
+                                <div class="col-2 mt-3 mb-5 bg-light p-2 ms-auto"> <!-- Tambah ms-auto -->
+                                    <form action="{{ route('soal.generate') }}" method="POST">
+                                        @csrf
+
+                                        <input type="hidden" name="modul" value="{{ $modul }}">
+                                        <input type="hidden" name="kelompok" value="{{ $selected->judul ?? '' }}">
+
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="number" name="jumlah" id="jumlah" placeholder="Jumlah"
+                                                min="1" class="form-control" required>
+
+                                            <button type="submit" class="btn btn-success">
+                                                Generate
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                                <div class="col-2 mt-3 mb-5 p-2 bg-light">
+                                    @if ($selected)
+                                        <form action="{{ route('kelompok-soal.destroy', $selected->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                    Hapus
+                                                </button>
+                                            </div>
+
+                                        </form>
+                                    @endif
+                                </div>
+
+                            </div>
+
+
+
 
                             {{-- JUDUL --}}
                             <div class="kolom-title">
-                                {{ $first->kelompok ?? '' }}
-
+                                {{ $selected->judul ?? '' }}
                             </div>
 
                             {{-- OPSI --}}
@@ -384,6 +443,8 @@
                     </td>
                 </tr>
             </tbody>
+
+
 
             <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap"
                 style="
@@ -439,7 +500,8 @@
                                 @endif
                             </td>
 
-                            <td> <button type="button" class="btn btn-warning btn-sm"
+                            <td>
+                                <button type="button" class="btn btn-warning btn-sm"
                                     onclick="showEditForm('{{ $item->id }}', '{{ $item->modul }}', '{{ $item->kelompok }}', `{{ $item->soal2 }}`, `{{ $item->no }}`)">
                                     Edit
                                 </button>
@@ -458,44 +520,7 @@
             </table>
 
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow p-4 mt-4">
-                    <h5 class="card-title mb-3">🎯 Generate Soal Otomatis</h5>
 
-                    <form action="{{ route('soal.generate') }}" method="POST">
-                        @csrf
-
-                        <input type="hidden" name="modul" value="{{ $modul }}">
-
-                        <div class="mb-3">
-                            <label for="kelompok" class="form-label fw-bold">Pilih Kelompok Soal</label>
-                            <select name="kelompok" id="kelompok" class="form-select" required>
-                                <option value="">-- Pilih Kelompok --</option>
-                                @foreach ($kelompok as $k)
-                                    <option value="{{ $k->judul }}">{{ $k->judul }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="jumlah" class="form-label fw-bold">Jumlah Soal</label>
-                            <input type="number" name="jumlah" id="jumlah" placeholder="Masukkan jumlah soal"
-                                min="1" class="form-control" required>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="submit" class="btn btn-success">
-                                🚀 Generate Otomatis
-                            </button>
-
-
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
 
     </div>
     {{-- ===================== MODAL TAMBAH ===================== --}}
@@ -516,16 +541,10 @@
                         <div class="mb-3">
                             <label>No Soal</label>
                             <input type="text" name="no" class="form-control" required>
+                            <input type="hidden" name="kelompok" class="form-control"
+                                value="{{ $selected->judul ?? '' }}" required>
                         </div>
-                        <div class="mb-3">
-                            <label>Kolom</label>
-                            <select name="kelompok" class="form-control" required>
-                                <option value="">-- Pilih Kolom --</option>
-                                @foreach ($kelompok as $k)
-                                    <option value="{{ $k->judul }}">{{ $k->judul }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+
                         <div class="mb-3">
                             <label>Soal</label>
                             <textarea name="soal2" class="form-control"></textarea>
@@ -542,5 +561,50 @@
             </div>
         </div>
     </div>
+    {{-- ===================== MODAL TAMBAH ===================== --}}
+    <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalTambahLabel">Tambah Kolom Soal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
+                <form action="{{ url('/kelompok-soal') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+                        <div class="mb-3">
+                            <label class="form-label">Judul</label>
+                            <input type="text" name="judul" class="form-control">
+                            <input type="hidden" name="persamaan" value="{{ $modul }}">
+                        </div>
+
+                        @for ($i = 1; $i <= 5; $i++)
+                            <div class="border rounded p-3 mb-3">
+                                <h5>Soal {{ $i }}</h5>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Teks Soal
+                                        {{ $i }}</label>
+                                    <textarea name="soal{{ $i }}_text" class="form-control" rows="2"></textarea>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="form-label">Gambar Soal
+                                        {{ $i }}</label>
+                                    <input type="file" name="soal{{ $i }}_img" class="form-control">
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+
+                    <div class="modal-footer " style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection

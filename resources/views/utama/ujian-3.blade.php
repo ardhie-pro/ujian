@@ -78,6 +78,11 @@
             overflow-wrap: break-word !important;
             max-width: 100% !important;
         }
+
+        #timerButton {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
     </style>
 
     <div class="container mt-3">
@@ -90,7 +95,7 @@
                         <ol class="breadcrumb mb-0" id="breadcrumb-modul"></ol>
                     </nav>
                     <div class="timer-box">
-                        <span id="liveTimer">00:00:00</span>
+                        {{-- <span id="liveTimer">00:00:00</span> --}}
                     </div>
                 </div>
                 <div class="question-box mb-5" id="soal-container"></div>
@@ -104,6 +109,7 @@
                         <i class="bi bi-list" id="toggle-layout" style="cursor:pointer"></i>
                     </div>
                     <div class="grid-container" id="soal-buttons"></div>
+
                 </div>
             </div>
 
@@ -277,12 +283,6 @@
         });
     </script>
 
-    <style>
-        #timerButton {
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-    </style>
     <script>
         const ambilModul = @json($ambilmodul);
         const breadcrumb = document.getElementById("breadcrumb-modul");
@@ -434,6 +434,7 @@
                 renderSidebar();
             };
 
+
             function renderSoal(i) {
                 const soal = soalList[i];
                 const total = soalList.length;
@@ -538,6 +539,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
+            let windowBlurred = false;
+
             // 🔹 Fungsi Logout Otomatis
             function autoLogout() {
                 fetch("/logouttest", {
@@ -546,19 +549,16 @@
                         "X-CSRF-TOKEN": "{{ csrf_token() }}"
                     }
                 }).then(() => {
-                    alert(
-                        "Anda keluar dari full screen / melakukan tindakan terlarang. Anda akan logout otomatis."
-                    );
+                    alert("Anda keluar atau mengklik di luar halaman. Anda akan logout otomatis.");
                     window.location.href = "/";
                 }).catch(() => {
                     window.location.href = "/";
                 });
             }
 
-            // 🔹 Deteksi KELUAR FULLSCREEN
+            // 🔹 Deteksi Keluar Fullscreen
             document.addEventListener("fullscreenchange", function() {
                 if (!document.fullscreenElement) {
-                    // User KELUAR dari fullscreen
                     autoLogout();
                 }
             });
@@ -570,7 +570,7 @@
                 autoLogout();
             });
 
-            // 🔹 Cegah shortcut berbahaya
+            // 🔹 Cegah Shortcut Berbahaya
             document.addEventListener("keydown", e => {
                 const forbidden = [
                     (e.ctrlKey && e.key === "u"),
@@ -580,31 +580,34 @@
                     (e.ctrlKey && e.key === "p"),
                     (e.key === "PrintScreen")
                 ];
+
                 if (forbidden.some(f => f)) {
                     e.preventDefault();
                     alert("Tindakan ini tidak diizinkan!");
-                    try {
-                        navigator.clipboard.writeText("");
-                    } catch {}
                     autoLogout();
                 }
             });
 
-            // 🔹 Jika user berpindah tab atau keluar jendela
+            // 🔹 Ketika user meninggalkan window (ALT+TAB / klik luar)
             window.addEventListener("blur", () => {
-                setTimeout(() => {
-                    if (!document.hasFocus()) {
-                        autoLogout();
-                    }
-                }, 500);
+                windowBlurred = true; // tandai bahwa user keluar window
             });
 
-            // 🔹 Jika mouse keluar dari window
-            document.addEventListener("mouseleave", () => {
-                autoLogout();
+            // 🔹 Jika user kembali ke window lalu melakukan KLIK → logout
+            window.addEventListener("focus", () => {
+                if (windowBlurred) {
+                    autoLogout();
+                }
+            });
+
+            // 🔹 Jika user benar-benar KLIK DI LUAR (browser tidak mendeteksi klik),
+            //     tapi cara ini: jika window blur + ada klik pertama saat kembali → logout.
+            document.addEventListener("mousedown", () => {
+                if (windowBlurred) {
+                    autoLogout();
+                }
             });
 
         });
     </script>
-
 @endsection

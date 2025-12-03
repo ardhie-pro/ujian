@@ -60,6 +60,8 @@ class SoalController extends Controller
             return view('admin.tambah-soal', compact('data', 'modul', 'kelompok'));
         } elseif ($type_template === 'multiple-chois') {
             return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri'));
+        } elseif ($type_template === 'panduan') {
+            return view('admin.panduan', compact('data2', 'modul', 'kelompok', 'galeri'));
         } elseif ($type_template === 'tanpa-kembali') {
             return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri'));
         } else {

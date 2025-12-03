@@ -142,7 +142,146 @@
         <h1>SELAMAT DATANG,</h1>
         <h2>ADMIN CITTA BHAKTI NIRBAYA</h2>
 
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        {{-- input grup --}}
+        {{-- input user  --}}
         <div class="wrapper mt-5">
+            <div class="title">Input User</div>
+            <form action="{{ route('user.buatakun') }}" method="POST">
+                @csrf
+
+                <div class="mb-3">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Status / Role</label>
+                    <select name="status" class="form-control">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="panitia">Panitia</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label>Grup</label>
+                    <select name="grup" class="form-control">
+                        <option value="-">tidak ada grup</option>
+                        @foreach ($grup as $g)
+                            <option value="{{ $g->nama_grup }}">{{ $g->nama_grup }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button class="btn btn-primary">Simpan</button>
+            </form>
+        </div>
+        <div class="wrapper mt-5">
+            <div class="title">Input Grup</div>
+            @if (session('successgrup'))
+                <div class="alert alert-success">{{ session('successgrup') }}</div>
+            @endif
+
+            <form action="{{ route('user.buatgrup') }}" method="POST">
+                @csrf
+
+                <div class="mb-3">
+                    <label>Nama Grup</label>
+                    <input type="text" name="nama_grup" class="form-control">
+                </div>
+
+                <button class="btn btn-primary">Simpan</button>
+            </form>
+
+            <div class="mt-4 p-2 bg-light rounded-1">
+                @foreach ($grup as $g)
+                    <form action="{{ route('user.hapusgrup', $g->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+
+                        <span class="badge bg-dark p-2 m-2">
+                            {{ $g->nama_grup }}
+                            <button class="btn btn-sm btn-danger p-0 px-1" style="margin-left:5px; font-size:10px;"
+                                onclick="return confirm('Hapus grup ini?')">
+                                ✕
+                            </button>
+                        </span>
+                    </form>
+                @endforeach
+            </div>
+
+        </div>
+
+        <div class="wrapper">
+            <div class="title">Daftar Grup</div>
+
+            <select id="pilihGrup" class="form-select mb-3" onchange="filterByGrup()">
+                <option value="">-- Pilih Grup --</option>
+                @foreach ($grup as $g)
+                    <option value="{{ $g->nama_grup }}">{{ $g->nama_grup }}</option>
+                @endforeach
+            </select>
+
+            <div id="listUser"></div>
+        </div>
+
+        <script>
+            // gabungkan dan reset index
+            const dataUser = @json($userb->values()->merge($userb->values()));
+            console.log(dataUser); // debug
+
+            function filterByGrup() {
+                const grup = document.getElementById("pilihGrup").value;
+                console.log("Grup dipilih:", grup); // debug
+
+                const filtered = dataUser.filter(u => u.grup == grup);
+                console.log("Filtered:", filtered); // debug
+
+                let html = "";
+
+                if (filtered.length === 0) {
+                    html = "<p class='text-muted'>Tidak ada user di grup ini.</p>";
+                } else {
+                    html += `
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                    filtered.forEach(function(u) {
+                        html += `
+                    <tr>
+                        <td>${u.name}</td>
+                        <td>${u.email}</td>
+                        <td>
+                            <form action="/user/hapus-grup/${u.id}" method="POST">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-danger btn-sm">Hapus Grup</button>
+                            </form>
+                        </td>
+                    </tr>`;
+                    });
+
+                    html += `</tbody></table>`;
+                }
+
+                document.getElementById("listUser").innerHTML = html;
+            }
+        </script>
+        <div class="wrapper">
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
@@ -156,7 +295,7 @@
         </div>
 
         @if (isset($hasil) && count($hasil) > 0)
-            <div class="wrapper mt-5">
+            <div class="wrapper ">
                 <h3 class="mt-4">Hasil Generate User</h3>
                 <table id="tabelHasil" class="table table-bordered mt-2">
                     <thead>
@@ -183,7 +322,7 @@
         @endif
 
         {{-- =====================  TABEL ADMIN  ===================== --}}
-        <div class="wrapper mt-5">
+        <div class="wrapper">
             <div class="title">Informasi Akun — User</div>
 
             <div class="table-responsive mt-4">
@@ -196,6 +335,7 @@
                             <th>Password</th>
                             <th>Role</th>
                             <th>Status</th>
+                            <th>Grup</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -236,6 +376,28 @@
                                         </option>
                                     </select>
                                 </td>
+
+                                <td>
+                                    <select name="grup" class="form-select form-select-sm">
+
+                                        {{-- Option untuk grup kosong --}}
+                                        <option value=""
+                                            {{ empty($user->grup) || $user->grup == '-' ? 'selected' : '' }}>
+                                            Tidak Ada
+                                        </option>
+
+                                        {{-- List grup lainnya --}}
+                                        @foreach ($grup as $g)
+                                            <option value="{{ $g->nama_grup }}"
+                                                {{ $user->grup == $g->nama_grup ? 'selected' : '' }}>
+                                                {{ $g->nama_grup }}
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+                                </td>
+
+
 
                                 <td>
                                     <button type="submit" class="btn btn-warning btn-sm">💾 Simpan</button>

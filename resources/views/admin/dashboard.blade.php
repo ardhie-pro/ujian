@@ -145,6 +145,9 @@
 
         <div class="wrapper mt-5">
             <div class="title">Informasi Akun User Review Dan User</div>
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
 
             <div class="grid">
 
@@ -167,7 +170,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="box">Password : {{ $user->password }}</div>
+                                    <div class="box">Password : {{ $user->lihatpw }}</div>
                                 </div>
 
                                 <div class="row">
@@ -195,18 +198,27 @@
                                             <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
                                             </option>
                                             <option value="pending" {{ $user->status == 'pending' ? 'selected' : '' }}>
-                                                Pending
-                                            </option>
+                                                Pending</option>
                                         </select>
                                     </div>
 
-                                    <button type="submit" class="btn-custom btn-danger-sm" style="margin-left: 5px;">
+                                    {{-- ❗ Tombol hapus MASIH DI SINI, POSISI TETAP --}}
+                                    <button type="submit" form="deleteForm{{ $user->id }}"
+                                        class="btn-custom btn-danger-sm" style="margin-left: 5px;">
                                         🗑️ Hapus
                                     </button>
+
                                 </div>
 
                             </div>
 
+                        </form>
+
+                        {{-- FORM DELETE TERPISAH (disembunyikan) --}}
+                        <form id="deleteForm{{ $user->id }}" action="{{ route('admin.deleteUser', $user->id) }}"
+                            method="POST" style="display:none;">
+                            @csrf
+                            @method('DELETE')
                         </form>
                     @endif
                 @endforeach

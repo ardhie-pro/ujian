@@ -25,6 +25,10 @@ class User extends Authenticatable
         'password',
         'password',
         'lihatpw',
+        'grup',
+        'history',
+
+
     ];
 
     /**

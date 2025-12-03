@@ -276,118 +276,161 @@
     </style>
 </head>
 
+
 <body>
-    <!-- Background Images -->
-    {{-- <img src="{{ asset('assetts/images/atas.png') }}" alt="bg top" class="bg-top" />
-    <img src="{{ asset('assetts/images/bawah.png') }}" alt="bg bottom" class="bg-bottom" /> --}}
 
-    <!-- Login Box -->
+    <style>
+        body {
+            background-color: #fff;
+            min-height: 100vh;
+            font-family: "Segoe UI", sans-serif;
+            position: relative;
+        }
+
+        .bg-bottom {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 800px;
+            height: auto;
+            z-index: -1;
+            margin-right: -330px;
+        }
+
+        .history-card {
+            border: 2px solid #0b4b8b;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fff;
+            transition: 0.3s;
+        }
+
+        .history-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-bar {
+            padding: 15px 30px;
+            border-bottom: 2px solid #0b4b8b;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: #0b4b8b;
+            border-radius: 50%;
+        }
+
+        .history-card {
+            background: rgba(255, 255, 255, 0.09);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(11, 75, 139, 0.25);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+            min-height: 150px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* batasi 3 baris */
+        .history-card p {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        /* tombol lihat laporan kecil dan rapi */
+        .btn-history {
+            display: block;
+            margin: 10px auto 0 auto;
+            width: fit-content;
+        }
+
+        .history-card a,
+        .history-card a:hover,
+        .history-card a:focus {
+            text-decoration: none !important;
+        }
+
+        /* atau hilangkan underline untuk semua link dalam card container */
+        .history-card {
+            text-decoration: none !important;
+        }
+
+        a {
+            text-decoration: none !important;
+        }
+    </style>
+
+    </head>
+
+    <body>
+
+        <!-- CONTENT -->
 
 
+        <div class="container my-5">
 
-    <!-- Background Images -->
+            <h3 class="text-center mb-4 fw-semibold text-light">Riwayat Pengerjaan Anda</h3>
 
+            <div class="row justify-content-center">
 
-
-    <!-- Login Box -->
-    <div id="formContainer">
-        <div class="login-box">
-            <div class="login-right">
-                <h4 class="mb-5 text-light">Masukan Kode Pengerjaan</h4>
-                <button type="button" class="dropdown-item text-primary" id="btnChangeAccount">
-                    <i class="bi bi-key me-2"></i>
-                </button>
-                @if (session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
-                @endif
-
-                <form action="{{ route('kode.check') }}" id="loginForm" method="POST">
-                    @csrf
-
-                    <div class="mb-3 text-light">
-                        <input type="text" name="kode" class="form-control" placeholder="Kode" />
+                @forelse ($riwayat as $item)
+                    @if (trim($item) != '')
+                        <div class="col-md-4 mb-4">
+                            <a href="{{ route('hasiluser.show', ['kode' => trim($item)]) }}">
+                                <div class="history-card">
+                                    <p class="fs-5 text-light">{{ trim($item) }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    @endif
+                @empty
+                    <div class="text-center text-muted">
+                        Belum ada riwayat pengerjaan.
                     </div>
+                @endforelse
 
-                    <button type="submit" class="btn btn-login">Mulai</button>
+            </div>
+        </div>
+
+
+        <div class="fab-container">
+
+            <!-- FAB Menu (muncul di atas tombol) -->
+            <div class="fab-menu" id="fabMenu">
+                <a href="{{ route('history.login') }}">📜 History</a>
+                <a href="#" id="btnFabChangePw">🔑 Ganti Password</a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit">🚪 Logout</button>
                 </form>
             </div>
-        </div>
-    </div>
 
-    <!-- Floating Action Button (FAB) -->
-    <div class="fab-container">
-
-        <!-- FAB Menu (muncul di atas tombol) -->
-        <div class="fab-menu" id="fabMenu">
-            <a href="{{ route('history.login') }}">📜 History</a>
-            <a href="#" id="btnFabChangePw">🔑 Ganti Password</a>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit">🚪 Logout</button>
-            </form>
+            <!-- FAB Button -->
+            <div class="fab-button" id="fabBtn">☰</div>
         </div>
 
-        <!-- FAB Button -->
-        <div class="fab-button" id="fabBtn">☰</div>
-    </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.getElementById('fabBtn').addEventListener('click', function() {
+                let menu = document.getElementById('fabMenu');
+                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            });
 
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('btnChangeAccount').addEventListener('click', function() {
-
-            document.querySelector('.login-right h4').innerText = "Ganti Password & Akun";
-
-            document.getElementById('formContainer').innerHTML = `
-            <div class="login-box">
-            <div class="login-right">
-        <form action="{{ route('akun.update') }}" method="POST">
-            @csrf
-
-            <div class="mb-3">
-                <input type="text" name="username" class="form-control"
-                    value="{{ Auth::user()->name }}" placeholder="Username Baru" required>
-            </div>
-
-            <div class="mb-3">
-                <input type="email" name="email" class="form-control"
-                    value="{{ Auth::user()->email }}" placeholder="Email Baru" required>
-            </div>
-
-            <div class="mb-3">
-                <input type="password" name="password" value="{{ Auth::user()->lihatpw }}" id="pwInput" class="form-control"
-                    placeholder="Password Baru" required>
-            </div>
-
-            <div class="mb-3 text-light">
-                <input type="checkbox" onclick="togglePw()"> Tampilkan Password
-            </div>
-
-
-            <button type="submit" class="btn btn-login">Simpan Perubahan</button>
-            </div>
-            </div>
-        </form>
-    `;
-        });
-
-        function togglePw() {
-            let pw = document.getElementById('pwInput');
-            pw.type = pw.type === 'password' ? 'text' : 'password';
-        }
-    </script>
-    <script>
-        document.getElementById('fabBtn').addEventListener('click', function() {
-            let menu = document.getElementById('fabMenu');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.getElementById('btnFabChangePw').addEventListener('click', function() {
-            document.getElementById('btnChangeAccount').click();
-        });
-    </script>
-
-</body>
+            document.getElementById('btnFabChangePw').addEventListener('click', function() {
+                document.getElementById('btnChangeAccount').click();
+            });
+        </script>
+    </body>
 
 </html>

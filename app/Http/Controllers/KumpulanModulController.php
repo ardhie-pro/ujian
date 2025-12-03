@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KumpulanModul;
+use App\Models\grupkolom;
 use App\Models\TarikModul;
 use Illuminate\Http\Request;
 
@@ -16,8 +17,9 @@ class KumpulanModulController extends Controller
 
     public function create()
     {
+        $kAngkahilang = grupkolom::all();
         $modul = TarikModul::all(); // ambil semua modul yang bisa dicentang
-        return view('admin.kumpulan-modul', compact('modul'));
+        return view('admin.kumpulan-modul', compact('modul', 'kAngkahilang'));
     }
 
     public function store(Request $request)

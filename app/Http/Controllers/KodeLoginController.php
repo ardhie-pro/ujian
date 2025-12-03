@@ -101,4 +101,13 @@ class KodeLoginController extends Controller
         // redirect ke halaman utama
         return redirect('/')->with('success', 'Anda telah keluar dari ujian.');
     }
+    public function history()
+    {
+        $user = Auth::user();
+
+        // Pisahkan history berdasarkan koma
+        $riwayat = explode(',', $user->history ?? '');
+
+        return view('utama.history', compact('riwayat', 'user'));
+    }
 }

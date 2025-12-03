@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\SoalMultipleChoice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -80,6 +81,8 @@ class SoalMultipleChoiceController extends Controller
                 return view('utama.pages-data', compact('modul', 'ambilmodul'));
             case 'istirahat':
                 return view('utama.break', compact('modul', 'ambilmodul', 'waktu'));
+            case 'panduan':
+                return view('utama.pagependahuluan', compact('modul', 'ambilmodul', 'waktu'));
             case 'angka-hilang':
                 return view('utama.ujian-2', compact('modul', 'ambilmodul', 'waktu'));
             case 'multiple-chois':
@@ -126,9 +129,42 @@ class SoalMultipleChoiceController extends Controller
         $newStatus = $currentStatus + 1;
 
         // 🔹 Jika sudah habis semua modul
+        // if ($newStatus >= count($modulArray)) {
+        //     $kode->update(['status' => $newStatus, 'updated_at' => $now]);
+        //     session(['status' => $newStatus]);
+        //     return view('utama.selesai');
+        // }
+
         if ($newStatus >= count($modulArray)) {
-            $kode->update(['status' => $newStatus, 'updated_at' => $now]);
+
+            $user = Auth::user(); // User yang login
+
+            // Data baru yang mau ditambahkan ke history
+            $historyBaru = $kode->kode;
+
+            // Ambil history lama DARI USER
+            $historyLama = $user->history;
+
+            // Gabungkan kalau sudah ada isi
+            if (!empty($historyLama)) {
+                $historyUpdate = $historyLama . ', ' . $historyBaru;
+            } else {
+                $historyUpdate = $historyBaru;
+            }
+
+            // Update history user
+            $user->update([
+                'history' => $historyUpdate,
+            ]);
+
+            // Update status pada tabel $kode
+            $kode->update([
+                'status'   => $newStatus,
+                'updated_at' => $now,
+            ]);
+
             session(['status' => $newStatus]);
+
             return view('utama.selesai');
         }
 
@@ -182,13 +218,14 @@ class SoalMultipleChoiceController extends Controller
             'no' => 'required',
             'soal' => 'required',
             'modul' => 'required',
-            'pembahasan' => 'required',
+            'pembahasan' => 'nullable',
             'j1' => 'nullable|string',
             'j2' => 'nullable|string',
             'j3' => 'nullable|string',
             'j4' => 'nullable|string',
             'j5' => 'nullable|string',
         ]);
+
 
         SoalMultipleChoice::create($validated);
 
@@ -207,7 +244,7 @@ class SoalMultipleChoiceController extends Controller
             'no' => 'required',
             'soal' => 'required',
             'modul' => 'required',
-            'pembahasan' => 'required',
+            'pembahasan' => 'nullable',
             'j1' => 'nullable|string',
             'j2' => 'nullable|string',
             'j3' => 'nullable|string',

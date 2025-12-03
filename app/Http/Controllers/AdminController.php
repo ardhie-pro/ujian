@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\grupModel;
 use App\Models\SoalModul;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,8 @@ class AdminController extends Controller
     }
     public function akun()
     {
+        $grup = grupModel::all();
+
         $admins = User::where('status', 'admin')
             ->orderBy('id', 'desc')
             ->get(); // ← ini wajib
@@ -37,14 +40,15 @@ class AdminController extends Controller
             ->orderBy('id', 'desc')
             ->get(); // ← ini juga
 
-        return view('admin.akun', compact('admins', 'reviews'));
+        return view('admin.akun', compact('admins', 'reviews', 'grup'));
     }
     public function user()
     {
+        $grup = grupModel::all();
         $userb = User::where('status', 'user')
             ->orderBy('id', 'desc')
             ->get(); // ← ini wajib
-        return view('admin.user', compact('userb'));
+        return view('admin.user', compact('userb', 'grup'));
     }
     // Ambil soal berdasarkan modul & nomor
     public function getSoal($modul, $no)
@@ -201,5 +205,68 @@ class AdminController extends Controller
 
         return view('admin.user', compact('hasil', 'userb'))
             ->with('success', $req->jumlah . ' user berhasil dibuat!');
+    }
+
+    // input akun di admin
+    public function buatakun(Request $request)
+    {
+        $request->validate([
+            'name'      => 'required',
+            'grup'      => 'required',
+            'email'     => 'required|email|unique:users',
+            'password'  => 'required|min:5',
+            'status'    => 'required'
+        ]);
+
+        User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'grup'     => $request->grup,
+            'password'  => $request->lihatpw, // masukan ke lihat pw agar terllihat
+            'password'  => Hash::make($request->password), // password terenkripsi
+            'lihatpw'   => $request->password, // kalau kamu mau simpan plain (sesuai requestmu)
+            'status'    => $request->status,
+        ]);
+
+        return back()->with('success', 'User berhasil ditambahkan!');
+    }
+
+    public function buatgrup(Request $request)
+    {
+        $request->validate([
+            'nama_grup'      => 'required',
+        ]);
+
+        grupModel::create([
+            'nama_grup'      => $request->nama_grup,
+        ]);
+
+        return back()->with('successgrup', 'Grup berhasil ditambahkan!');
+    }
+
+    // hapus grup
+    public function hapusGrup($id)
+    {
+        grupModel::where('id', $id)->delete();
+
+        return back()->with('successgrup', 'Grup berhasil dihapus!');
+    }
+
+    public function updateGrup(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->grup = $request->grup;   // isi kolom grup
+        $user->save();
+
+        return back()->with('success', 'Grup user berhasil diubah.');
+    }
+
+    public function hapusbGrup($id)
+    {
+        $user = User::findOrFail($id);
+        $user->grup = null;   // hapus kolom grup saja
+        $user->save();
+
+        return back()->with('success', 'Grup user berhasil dihapus.');
     }
 }

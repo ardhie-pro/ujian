@@ -71,31 +71,24 @@
         }
     </style>
     <div class="container mt-3">
+
         <!-- MAIN SECTION -->
         <div class="row mt-2 align-items-start" id="main-row">
             <!-- LEFT: Question -->
-            <div class="col-lg-8" id="soal-col">
+            <div class="col-lg-12" id="soal-col">
                 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                     <nav aria-label="breadcrumb" class="mb-2 mb-md-0">
                         <ol class="breadcrumb mb-0" id="breadcrumb-modul"></ol>
                     </nav>
                     <div class="timer-box">
-                        Waktu: <span id="liveTimer">00:00:00</span>
+                        <span id="liveTimer">00:00:00</span>
                     </div>
                 </div>
                 <div class="question-box mb-5" id="soal-container"></div>
             </div>
 
             <!-- RIGHT: Sidebar -->
-            <div class="col-lg-4 mt-3 mt-lg-0" id="sidebar-col">
-                <div class="sidebar-box">
-                    <div class="sidebar-title d-flex align-items-center justify-content-between px-2">
-                        <span> Nomor Soal Pengerjaan</span>
-                        <i class="bi bi-list" id="toggle-layout" style="cursor:pointer"></i>
-                    </div>
-                    <div class="grid-container" id="soal-buttons"></div>
-                </div>
-            </div>
+
 
             <footer>
                 <p class="text-left mb-5">
@@ -105,14 +98,13 @@
             </footer>
         </div>
     </div>
-
     <script>
         const ambilModul = @json($ambilmodul);
         const breadcrumb = document.getElementById("breadcrumb-modul");
         breadcrumb.innerHTML = "";
 
         // Modul yang tidak ditampilkan
-        const skipList = ["Nama-Peserta", "istirahat"];
+        const skipList = ["Nama-Peserta", "istirahat", "panduan"];
 
         let filtered = ambilModul.filter(modul => !skipList.includes(modul));
 
@@ -189,6 +181,7 @@
 
     <!-- JAVASCRIPT -->
     @php
+
         use App\Models\Kode;
         use Carbon\Carbon;
 
@@ -197,6 +190,7 @@
 
         // waktu selesai dari database (format waktu Jakarta)
         $waktuSelesai = $kodeData ? Carbon::parse($kodeData->waktu, 'Asia/Jakarta')->format('Y-m-d H:i:s') : null;
+
     @endphp
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -417,18 +411,11 @@
                 soal.mapping = acakJawaban.map(j => j.abjad);
 
                 let html = `
-    <div class="question-header">
-        <h6>SOAL NOMER ${noSoal}</h6>
-        <button class="flag-btn ${tandaiSoal[soal.no] ? 'flagged-active' : ''}">
-    <i class="bi bi-flag"></i> ${tandaiSoal[soal.no] ? 'Sudah Ditandai' : 'Tandai Soal'}
-</button>
-    </div>
     <div class="question-body p-2">
         ${soal.soal}
 
     </div>
-    <form id="form-soal-${i}" class="mt-4">
-        <div class="list-group">
+
     `;
 
                 acakJawaban.forEach((j, idx) => {
@@ -437,23 +424,13 @@
 
                     html += `
         <label class="list-group-item list-group-item-action option-item">
-            <input class="form-check-input me-2"
-                   type="radio"
-                   name="jawaban${noSoal}"
-                   value="${j.abjad}"
-                   ${checked}
-                   onclick="jawab(${noSoal}, '${j.abjad}')">
-            ${j.text}
+
         </label>`;
                 });
 
                 html += `
         </div>
         <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn btn-flagged"
-                    onclick="prevQuestion()" ${i===0 ? 'disabled' : ''}>
-                ← Sebelumnya
-            </button>
             <button type="button" class="btn btn-answered" onclick="nextQuestion()">
                 ${i === total - 1 ? 'Selesai' : 'Selanjutnya →'}
             </button>
@@ -536,13 +513,15 @@
             function showSelesai() {
                 document.getElementById('soal-container').innerHTML = `
         <div class="text-center p-5">
-            <h3 class="text-success mb-3">🎉 Semua soal telah selesai!</h3>
-            <p class="text-muted">Terima kasih sudah mengerjakan ujian ini.</p>
+              <h3 class="fw-bold text-success mb-2">Siap Mengerjakan Soal?</h3>
+            <p class="text-muted mb-4">
+                Pastikan Anda telah membaca instruksi dan siap melanjutkan ke tahap berikutnya.
+            </p>
             <form action="/next-modul" method="POST">
                 @csrf
                 <input type="hidden" name="modul" value="${modul}">
                 <button type="submit" class="btn btn-success mt-3">
-                    Lanjut ke Modul Berikutnya
+                    Lanjut
                 </button>
             </form>
         </div>`;
@@ -626,5 +605,6 @@
 
         });
     </script>
+
     <!-- akhir ujian -->
 @endsection

@@ -136,147 +136,149 @@
         }
     </style>
 
-
-
     <div class="page-content">
         <h1>SELAMAT DATANG,</h1>
         <h2>ADMIN CITTA BHAKTI NIRBAYA</h2>
+    </div>
 
-        {{-- =====================  TABEL ADMIN  ===================== --}}
-        <div class="wrapper mt-5">
-            <div class="title">Informasi Akun — Admin</div>
 
-            <div class="table-responsive mt-4">
-                <table class="table table-bordered">
-                    <thead style="background:#F4C542; color:#0E2542; font-weight:700;">
+    {{-- =====================  TABEL ADMIN  ===================== --}}
+    <div class="wrapper">
+        <div class="title">Informasi Akun — Admin</div>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered">
+                <thead style="background:#F4C542; color:#0E2542; font-weight:700;">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Paswword</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @php $noAdmin = 1; @endphp
+
+                    @foreach ($admins as $user)
                         <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Paswword</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
+                            <td>{{ $noAdmin++ }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->lihatpw }}</td>
 
-                    <tbody>
-                        @php $noAdmin = 1; @endphp
-
-                        @foreach ($admins as $user)
-                            <tr>
-                                <td>{{ $noAdmin++ }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->lihatpw }}</td>
-
-                                <td>
-                                    <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
-                                        @csrf
-                                        <select name="role" class="form-select form-select-sm">
-                                            <option value="active" {{ $user->role == 'active' ? 'selected' : '' }}>Active
-                                            </option>
-                                            <option value="inactive" {{ $user->role == 'inactive' ? 'selected' : '' }}>
-                                                Inactive</option>
-                                            <option value="suspended" {{ $user->role == 'suspended' ? 'selected' : '' }}>
-                                                Suspended</option>
-                                        </select>
-                                </td>
-
-                                <td>
-                                    <select name="status" class="form-select form-select-sm">
-                                        <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
+                            <td>
+                                <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
+                                    @csrf
+                                    <select name="role" class="form-select form-select-sm">
+                                        <option value="active" {{ $user->role == 'active' ? 'selected' : '' }}>Active
                                         </option>
-                                        <option value="review" {{ $user->status == 'review' ? 'selected' : '' }}>Review
-                                        </option>
+                                        <option value="inactive" {{ $user->role == 'inactive' ? 'selected' : '' }}>
+                                            Inactive</option>
+                                        <option value="suspended" {{ $user->role == 'suspended' ? 'selected' : '' }}>
+                                            Suspended</option>
                                     </select>
-                                </td>
+                            </td>
 
-                                <td>
-                                    <button type="submit" class="btn btn-warning btn-sm">💾 Simpan</button>
-                                    </form>
+                            <td>
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
+                                    </option>
+                                    <option value="review" {{ $user->status == 'review' ? 'selected' : '' }}>Review
+                                    </option>
+                                </select>
+                            </td>
 
-                                    <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        <button class="btn btn-danger btn-sm">🗑️ Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                            <td>
+                                <button type="submit" class="btn btn-warning btn-sm">💾</button>
+                                </form>
+
+                                <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm">🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+    </div>
 
-        {{-- =====================  TABEL REVIEW  ===================== --}}
-        <div class="wrapper mt-5">
-            <div class="title">Informasi Akun — Review</div>
 
-            <div class="table-responsive mt-4">
-                <table class="table table-bordered">
-                    <thead style="background:#F4C542; color:#0E2542; font-weight:700;">
+
+    {{-- =====================  TABEL REVIEW  ===================== --}}
+    <div class="wrapper">
+        <div class="title">Informasi Akun — Review</div>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered">
+                <thead style="background:#F4C542; color:#0E2542; font-weight:700;">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @php $noReview = 1; @endphp
+
+                    @foreach ($reviews as $user)
                         <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Password</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @php $noReview = 1; @endphp
-
-                        @foreach ($reviews as $user)
-                            <tr>
-                                <td>{{ $noReview++ }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->lihatpw }}</td>
+                            <td>{{ $noReview++ }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->lihatpw }}</td>
 
 
-                                <td>
-                                    <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
-                                        @csrf
-                                        <select name="role" class="form-select form-select-sm">
-                                            <option value="active" {{ $user->role == 'active' ? 'selected' : '' }}>Active
-                                            </option>
-                                            <option value="inactive" {{ $user->role == 'inactive' ? 'selected' : '' }}>
-                                                Inactive</option>
-                                            <option value="suspended" {{ $user->role == 'suspended' ? 'selected' : '' }}>
-                                                Suspended</option>
-                                        </select>
-                                </td>
-
-                                <td>
-                                    <select name="status" class="form-select form-select-sm">
-                                        <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
+                            <td>
+                                <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
+                                    @csrf
+                                    <select name="role" class="form-select form-select-sm">
+                                        <option value="active" {{ $user->role == 'active' ? 'selected' : '' }}>Active
                                         </option>
-                                        <option value="review" {{ $user->status == 'review' ? 'selected' : '' }}>Review
-                                        </option>
+                                        <option value="inactive" {{ $user->role == 'inactive' ? 'selected' : '' }}>
+                                            Inactive</option>
+                                        <option value="suspended" {{ $user->role == 'suspended' ? 'selected' : '' }}>
+                                            Suspended</option>
                                     </select>
-                                </td>
+                            </td>
 
-                                <td>
-                                    <button type="submit" class="btn btn-warning btn-sm">💾 Simpan</button>
-                                    </form>
+                            <td>
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="admin" {{ $user->status == 'admin' ? 'selected' : '' }}>Admin
+                                    </option>
+                                    <option value="review" {{ $user->status == 'review' ? 'selected' : '' }}>Review
+                                    </option>
+                                </select>
+                            </td>
 
-                                    <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        <button class="btn btn-danger btn-sm">🗑️ Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
+                            <td>
+                                <button type="submit" class="btn btn-warning btn-sm">💾</button>
+                                </form>
 
-                </table>
-            </div>
+                                <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm">🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+
+            </table>
         </div>
+    </div>
     </div>
 
 

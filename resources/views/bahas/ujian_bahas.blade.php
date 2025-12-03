@@ -1,384 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.main-soal')
 
-<head>
-    <meta charset="utf-8" />
-    <title>
-        CIBN | Citta Bhakti Nirbaya
-    </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-    <meta content="Themesbrand" name="author" />
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assetts//images/favicon.ico') }}" />
+@section('title', 'Dashboard')
+@section('content2')
 
-    <!-- Plugins css -->
-    <link href="{{ asset('assetts//libs/bootstrap-editable/css/bootstrap-editable.css') }}" rel="stylesheet"
-        type="text/css" />
-
-    <!-- Bootstrap Css -->
-    <link href="{{ asset('assetts//css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
-    <!-- Icons Css -->
-    <link href="{{ asset('assetts//css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- App Css-->
-    <link href="{{ asset('assetts//css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <style>
-        #timerButton {
-            font-weight: 600;
-            letter-spacing: 0.5px;
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+            grid-gap: 10px;
+            padding: 10px;
         }
 
-        .btn-soal {
-            width: 45px;
-            height: 45px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            transition: 0.2s;
-            padding: 0;
+        .question-box {
+            height: auto !important;
         }
 
-        .btn-soal:hover {
-            transform: scale(1.08);
+        /* Pastikan isi soal bebas memanjang */
+        .question-body {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            min-height: auto !important;
+
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            overflow: visible !important;
         }
 
-        .btn-answered {
-            background-color: #00e673;
-            /* biru Bootstrap */
-            color: white;
+        /* Elemen-elemen di dalam soal */
+        .question-body * {
+            max-width: 100% !important;
+            white-space: normal !important;
+            word-break: break-word !important;
         }
 
-        .btn-unanswered {
-            background-color: #adb5bd;
-            /* abu-abu */
-            color: white;
-        }
-
-        /* rapikan layout */
-        #side-menu {
-            padding-bottom: 1rem;
-        }
-
-        .menu-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-
-        #vertical-menu-btn {
-            display: none;
-        }
-
-        @media (max-width: 991px) {
-            #vertical-menu-btn {
-                display: inline-block;
-            }
-        }
-
-        .card {
-            border-radius: 16px;
-            background: #ffffff;
-        }
-
-        .card-body {
-            background-color: #fff;
+        /* Jika ada <pre> bikin jebol */
+        .question-body pre,
+        .question-body code {
+            white-space: pre-wrap !important;
+            word-break: break-word !important;
         }
 
         .option-item {
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.05rem;
-            padding: 12px 15px;
-            transition: all 0.2s ease-in-out;
+            display: flex !important;
+            align-items: flex-start !important;
+            gap: 10px;
+
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+
+            max-width: 100% !important;
         }
 
-        .option-item:hover {
-            background-color: #f1f3f5;
+        /* Input radio/checkbox tetap kecil */
+        .option-item input {
+            flex-shrink: 0;
         }
 
-        .option-item input[type="radio"]:checked+span {
-            font-weight: 600;
-        }
-
-        input[type="radio"]:checked~label,
-        .option-item input[type="radio"]:checked {
-            accent-color: #0d6efd;
-        }
-
-        .badge {
-            border-radius: 8px;
-        }
-
-        @media (max-width: 576px) {
-            .card-body {
-                padding: 1.25rem;
-            }
-
-            .fs-5 {
-                font-size: 1rem !important;
-            }
-        }
-
-        .option-item {
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .bg-success {
-            background-color: #28a745 !important;
-            color: #fff !important;
-        }
-
-        .bg-danger {
-            background-color: #dc3545 !important;
-            color: #fff !important;
+        /* Teks jawaban wajib wrap */
+        .option-item span,
+        .option-item div,
+        .option-item p {
+            flex-grow: 1;
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            max-width: 100% !important;
         }
     </style>
-</head>
+    <div class="container mt-3">
+        <!-- MAIN SECTION -->
+        <div class="row mt-2 align-items-start" id="main-row">
+            <!-- LEFT: Question -->
+            <div class="col-lg-8" id="soal-col">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <nav aria-label="breadcrumb" class="mb-2 mb-md-0">
+                        <ol class="breadcrumb mb-0" id="breadcrumb-modul"></ol>
+                    </nav>
 
-<body data-topbar="colored">
-    <!-- <body data-layout="horizontal" data-topbar="colored"> -->
-
-    <!-- Begin page -->
-    <div id="layout-wrapper">
-        <header id="page-topbar">
-            <div class="navbar-header">
-                <div class="d-flex">
-                    <!-- LOGO -->
-                    <div class="navbar-brand-box">
-                        <a href="index.html" class="logo logo-dark">
-                            <span class="logo-sm">
-                                <img src="{{ asset('assetts/images/logo-sm-dark.png') }}" alt=""
-                                    height="42" />
-                            </span>
-                            <span class="logo-lg">
-                                <img src="{{ asset('assetts/images/logo-dark.png') }}" alt="" height="44" />
-                            </span>
-                        </a>
-
-                        <a href="index.html" class="logo logo-light">
-                            <span class="logo-sm">
-                                <img src="{{ asset('assetts/images/logo-sm-light.png') }}" alt=""
-                                    height="42" />
-                            </span>
-                            <span class="logo-lg">
-                                <img src="{{ asset('assetts/images/logo-light.png') }}" alt="" height="44" />
-                            </span>
-                        </a>
-                    </div>
-
-                    <!-- Menu Icon -->
-
-                    <button type="button" class="btn px-3 font-size-24 header-item waves-effect d-block d-lg-none"
-                        id="vertical-menu-btn">
-                        <i class="mdi mdi-menu"></i>
-                    </button>
                 </div>
+                <div class="question-box mb-5" id="soal-container"></div>
+            </div>
 
-                <div class="d-flex">
-                    <div class="dropdown d-inline-block d-lg-none ms-2">
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                            aria-labelledby="page-header-search-dropdown">
-                            <form class="p-3">
-                                <div class="form-group m-0"></div>
-                            </form>
-                        </div>
+            <!-- RIGHT: Sidebar -->
+            <div class="col-lg-4 mt-3 mt-lg-0" id="sidebar-col">
+                <div class="sidebar-box">
+                    <div class="sidebar-title d-flex align-items-center justify-content-between px-2">
+                        <span> Nomor Soal Pengerjaan</span>
+                        <i class="bi bi-list" id="toggle-layout" style="cursor:pointer"></i>
                     </div>
-
-                    <!-- Notification Dropdown -->
-
-                    <!-- User -->
-                    <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="rounded-circle header-profile-user"
-                                src="{{ asset('assetts/images/users/avatar-4.jpg') }}" alt="Header Avatar" />
-                        </button>
-
-
-                    </div>
-
-                    <!-- Setting -->
-                    <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
-                            <i class="mdi mdi-cog bx-spin"></i>
-                        </button>
-                    </div>
+                    <div class="grid-container" id="soal-buttons"></div>
                 </div>
             </div>
-        </header>
 
-        <!-- ========== Left Sidebar Start ========== -->
-        <div class="vertical-menu">
-            <div data-simplebar class="h-100">
-                <div class="user-details">
-                    <div class="d-flex">
-                        <div class="me-2">
-                            <img src="{{ asset('assetts/images/users/avatar-4.jpg') }}" alt=""
-                                class="avatar-md rounded-circle" />
-                        </div>
-                        <div class="user-info w-100">
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    Donald Johnson
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-account-circle text-muted me-2"></i>
-                                            Profile
-                                            <div class="ripple-wrapper me-2"></div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-cog text-muted me-2"></i> Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-lock-open-outline text-muted me-2"></i>
-                                            Lock screen</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" class="dropdown-item"><i
-                                                class="mdi mdi-power text-muted me-2"></i> Logout</a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <p class="text-white-50 m-0">Administrator</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!--- Sidemenu -->
-                <div id="sidebar-menu">
-                    <!-- Left Menu Start -->
-                    <ul class="metismenu list-unstyled" id="side-menu">
-                        <li class="menu-title">Nomor Soal</li>
-
-                        <div class="container-fluid py-2">
-                            <div class="row g-2" id="soal-buttons"></div>
-
-                        </div>
-                    </ul>
-
-
-
-
-                </div>
-                <!-- Sidebar -->
-            </div>
-        </div>
-        <!-- Left Sidebar End -->
-
-        <!-- ============================================================== -->
-        <!-- Start right Content here -->
-        <!-- ============================================================== -->
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                    <!-- start page title -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="page-title-box d-flex align-items-center justify-content-between">
-                                <div class="page-title">
-
-                                    <ol class="breadcrumb" id="breadcrumb-modul"></ol>
-                                </div>
-
-                                <div class="state-information d-none d-sm-block">
-                                    <div class="state-graph"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end page title -->
-
-                    <!-- Start Page-content-Wrapper -->
-                    <div class="page-content-wrapper">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-
-                                    <div class="card-body p-4" id="soal-container">
-                                        <div class="text-center text-muted">Memuat soal...</div>
-                                    </div>
-
-
-
-                                    <script>
-                                        function nextQuestion() {
-                                            const selected = document.querySelector(
-                                                'input[name="jawaban1"]:checked'
-                                            );
-                                            if (!selected) {
-                                                Swal.fire({
-                                                    icon: "warning",
-                                                    title: "Belum dijawab",
-                                                    text: "Silakan pilih salah satu jawaban terlebih dahulu!",
-                                                    confirmButtonColor: "#3085d6",
-                                                });
-                                                return;
-                                            }
-
-                                            Swal.fire({
-                                                icon: "success",
-                                                title: "Jawaban tersimpan!",
-                                                text: "Kamu memilih: " + selected.value,
-                                                confirmButtonColor: "#3085d6",
-                                            });
-                                        }
-                                    </script>
-
-
-
-                                    <!-- End Cardbody -->
-                                </div>
-                                <!-- End Card -->
-                            </div>
-                            <!-- End Col -->
-                        </div>
-                        <!-- End Row -->
-                    </div>
-                    <!-- End Page-content-wrapper -->
-                </div>
-                <!-- Container-fluid -->
-            </div>
-            <!-- End Page-content-wrapper -->
-
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-12 text-center">
-                            <script>
-                                document.write(new Date().getFullYear());
-                            </script>
-                            © CIBN
-                            <span class="d-none d-sm-inline-block">- Crafted with <i
-                                    class="mdi mdi-heart text-primary"></i> by
-                                Citta Bhakti Nirbaya.</span>
-                        </div>
-                    </div>
-                </div>
+            <footer>
+                <p class="text-left mb-5">
+                    Created By
+                    <a href="" class="text-decoration-none text-body">Citta Bhakti Nirbaya</a>
+                </p>
             </footer>
         </div>
-        <!-- end main content-->
     </div>
-    <!-- END layout-wrapper -->
-
-    <!-- Right Sidebar -->
-
-    <!-- /Right-bar -->
-
-    <!-- Right bar overlay-->
-    <div class="rightbar-overlay"></div>
-
-    <!-- JAVASCRIPT -->
-    <!-- ini ujian -->
 
 
 
@@ -442,23 +166,6 @@
             window.jawab = function(no, j) {
                 jawabanUser[no] = j;
 
-                // fetch('/simpan-jawaban', {
-                //         method: 'POST',
-                //         headers: {
-                //             'Content-Type': 'application/json',
-                //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                //         },
-                //         body: JSON.stringify({
-                //             modul: modul,
-                //             kodeLogin: kodeLogin,
-                //             no: no,
-                //             jawaban: j
-                //         })
-                //     })
-                //     .then(res => res.json())
-                //     .catch(err => console.error("Gagal simpan jawaban:", err));
-
-                // renderSidebar();
             };
 
             // ✅ Render soal
@@ -500,15 +207,16 @@
                 soal.mapping = acakJawaban.map(j => j.abjad);
 
                 let html = `
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="card-title mb-0">Soal Nomor ${noSoal}</h4>
-        <span class="badge bg-primary fs-6">${i + 1} / ${total}</span>
+ <div class="question-header">
+    <h6>SOAL NOMER ${noSoal}</h6>
+
     </div>
-    <p class="text-muted mb-4">Pilihlah jawaban yang paling tepat.</p>
-    <div class="question-content">
-        <p class="fs-5">${soal.soal}</p>
+     <div class="question-body p-2">
+        ${soal.soal}
+
+    </div>
         <form id="form-soal-${i}" class="mt-4">
-            <div class="list-group">
+        <div class="list-group">
     `;
 
                 acakJawaban.forEach((j, idx) => {
@@ -529,13 +237,14 @@
                     }
 
                     html += `
-        <label class="list-group-item list-group-item-action option-item ${bgClass}">
+
+            <label class="list-group-item list-group-item-action option-item ${bgClass}">
             <input class="form-check-input me-2"
                    type="radio"
                    name="jawaban${noSoal}"
                    value="${j.abjad}"
                    ${checked}>
-            ${tampilanAbjad}. ${j.text}
+             ${j.text}
         </label>`;
                 });
 
@@ -545,17 +254,17 @@
             <div class="mt-3 border-left border-info ps-2">
                 <strong>Pembahasan:</strong>
                 <p>${soal.pembahasan || 'Pembahasan belum tersedia.'}</p>
-            </div>
-            <div class="d-flex justify-content-between mt-4">
-                <button type="button" class="btn btn-outline-secondary"
-                        onclick="prevQuestion()" ${i === 0 ? 'disabled' : ''}>
-                    ← Sebelumnya
-                </button>
-                <button type="button" class="btn btn-primary" onclick="nextQuestion()">
-                    ${i === total - 1 ? 'Selesai' : 'Selanjutnya →'}
-                </button>
-            </div>
-        </form>
+             </div>
+        <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-flagged"
+                    onclick="prevQuestion()" ${i===0 ? 'disabled' : ''}>
+                ← Sebelumnya
+            </button>
+            <button type="button" class="btn btn-answered" onclick="nextQuestion()">
+                ${i === total - 1 ? 'Selesai' : 'Selanjutnya →'}
+            </button>
+        </div>
+    </form>
     </div>`;
 
                 document.getElementById('soal-container').innerHTML = html;
@@ -567,13 +276,17 @@
                 sidebar.innerHTML = "";
 
                 soalList.forEach((soal, idx) => {
-                    const active = idx === index ? "btn-primary" : "";
+                    const active = idx === index ? "btn-aktif" : "";
                     const sudahJawab = jawabanUser[soal.no] ? "btn-answered" : "btn-unanswered";
 
                     sidebar.innerHTML += `
-    <div class="col-3 d-flex justify-content-center mb-2">
-        <button class="btn btn-soal ${sudahJawab} ${active}" onclick="goToQuestion(${idx})">${soal.no}</button>
-    </div>`;
+                      <div class="grid-item  ${sudahJawab} ${active}">
+    <button class="btn btn-soal ${sudahJawab} ${active}"
+            onclick="goToQuestion(${idx})">
+        ${soal.no}
+    </button>
+</div>
+    `;
                 });
             }
 
@@ -607,7 +320,7 @@
         <div class="text-center p-5">
             <h3 class="text-success mb-3">🎉 Semua soal telah selesai!</h3>
             <p class="text-muted">Terima kasih sudah mengerjakan ujian ini.</p>
-           
+
         </div>`;
             }
 
@@ -618,24 +331,4 @@
 
 
 
-
-
-    <!-- akhir ujian -->
-    <script src="{{ asset('assetts/libs/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/metismenu/metisMenu.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('assetts/libs/jquery-sparkline/jquery.sparkline.min.js') }}"></script>
-    <!-- Plugins js -->
-    <script src="{{ asset('assetts/libs/moment/moment.js') }}"></script>
-    <script src="{{ asset('assetts/libs/bootstrap-editable/js/index.js') }}"></script>
-
-    <!--form-xeditable Init js-->
-    <script src="{{ asset('assetts/js/pages/form-xeditable.init.js') }}"></script>
-
-    <!-- App js -->
-    <script src="{{ asset('assetts/js/app.js') }}"></script>
-</body>
-
-</html>
+@endsection

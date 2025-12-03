@@ -109,7 +109,7 @@
                     </li>
 
                     <li
-                        class="has-dropdown {{ Route::is('admin.akun') || Route::is('admin.user') || Route::is('kelompok-soal.*') ? 'active open' : '' }}">
+                        class="has-dropdown {{ Route::is('admin.akun') || Route::is('admin.user') ? 'active open' : '' }}">
                         <a href="#">
                             <i class="mdi">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -123,7 +123,7 @@
 
                         <div class="submenu {{ Route::is('admin.akun') || Route::is('admin.user') ? 'show' : '' }}">
                             <a href="{{ route('admin.akun') }}" class="{{ Route::is('admin.akun') ? 'active' : '' }}">
-                                Admin / Review
+                                Admin / Review`
                             </a>
 
                             <a href="{{ route('admin.user') }}" class="{{ Route::is('admin.user') ? 'active' : '' }}">
@@ -131,20 +131,12 @@
                             </a>
                         </div>
                     </li>
-
                     <!-- Dropdown 1 -->
-
-                    <li>
-                        <a href="{{ route('kelompok-soal.index') }}"
-                            class="{{ Route::is('kelompok-soal.*') ? 'active' : '' }}">
-                            <i class="mdi mdi-format-list-bulleted"></i>
-                            <span>Kolom Soal</span>
-                        </a>
                     </li>
 
 
 
-                    <li class="has-dropdown 
+                    <li class="has-dropdown
     {{ Route::is('tarik-modul.index') ? 'active open' : '' }}">
                         <a href="#">
                             <i class="mdi mdi-download-box-outline"></i>
@@ -152,8 +144,8 @@
                         </a>
 
                         <div class="submenu {{ Route::is('tarik-modul.index') ? 'show' : '' }}">
-                            <a href="{{ route('tarik-modul.index', ['type' => 'data-nama,istirahat']) }}"
-                                class="{{ request('type') === 'data-nama,istirahat' ? 'active' : '' }}">
+                            <a href="{{ route('tarik-modul.index', ['type' => 'data-nama,istirahat,panduan']) }}"
+                                class="{{ request('type') === 'data-nama,istirahat,panduan' ? 'active' : '' }}">
                                 Data Nama & Istirahat
                             </a>
 
@@ -193,6 +185,14 @@
                             class="{{ Route::is('generate-kode.*') ? 'active' : '' }}">
                             <i class="mdi mdi-qrcode-edit"></i>
                             <span>Generate Kode</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('kelompok-soal.index') }}"
+                            class="{{ Route::is('kelompok-soal.*') ? 'active' : '' }}">
+                            <i class="mdi mdi-format-list-bulleted"></i>
+                            <span>Kolom Soal</span>
                         </a>
                     </li>
 
