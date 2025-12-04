@@ -34,11 +34,10 @@
                                         <thead class="table-light sticky-top" style="top: 0; z-index: 10;">
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Kode</th>
+                                                <th>Nama</th>
                                                 <th>Status</th>
-                                                <th>Modul ID</th>
-                                                <th>Tanggal Mulai</th>
-                                                <th>Tanggal Selesai</th>
+                                                <th>Grup</th>
+
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -47,11 +46,14 @@
                                                 <tr class="">
                                                     <td>{{ $index + 1 }}</td>
                                                     <td><strong>{{ $row->name }}</strong></td>
+                                                    <td><strong>{{ $row->status }}</strong></td>
+                                                    <td><strong>{{ $row->grup }}</strong></td>
+
 
                                                     <td>
                                                         <a href="{{ route('review.show', $row->name) }}"
                                                             class="btn btn-sm btn-primary">
-                                                            Lihat Modul
+                                                            Cek Data
                                                         </a>
                                                     </td>
                                                 </tr>

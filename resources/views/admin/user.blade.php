@@ -148,43 +148,6 @@
         {{-- input grup --}}
         {{-- input user  --}}
         <div class="wrapper mt-5">
-            <div class="title">Input User</div>
-            <form action="{{ route('user.buatakun') }}" method="POST">
-                @csrf
-
-                <div class="mb-3">
-                    <label>Nama Lengkap</label>
-                    <input type="text" name="name" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label>Password</label>
-                    <input type="password" name="password" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label>Status / Role</label>
-                    <select name="status" class="form-control">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                        <option value="panitia">Panitia</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label>Grup</label>
-                    <select name="grup" class="form-control">
-                        <option value="-">tidak ada grup</option>
-                        @foreach ($grup as $g)
-                            <option value="{{ $g->nama_grup }}">{{ $g->nama_grup }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <button class="btn btn-primary">Simpan</button>
-            </form>
-        </div>
-        <div class="wrapper mt-5">
             <div class="title">Input Grup</div>
             @if (session('successgrup'))
                 <div class="alert alert-success">{{ session('successgrup') }}</div>
@@ -232,6 +195,44 @@
 
             <div id="listUser"></div>
         </div>
+        <div class="wrapper mt-5">
+            <div class="title">Input User</div>
+            <form action="{{ route('user.buatakun') }}" method="POST">
+                @csrf
+
+                <div class="mb-3">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Status / Role</label>
+                    <select name="status" class="form-control">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="panitia">Panitia</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label>Grup</label>
+                    <select name="grup" class="form-control">
+                        <option value="-">tidak ada grup</option>
+                        @foreach ($grup as $g)
+                            <option value="{{ $g->nama_grup }}">{{ $g->nama_grup }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button class="btn btn-primary">Simpan</button>
+            </form>
+        </div>
+
 
         <script>
             // gabungkan dan reset index

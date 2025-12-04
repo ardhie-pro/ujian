@@ -170,6 +170,28 @@
             /* biru Bootstrap */
             color: white;
         }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .td-text {
+            max-width: 350px;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .td-text img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .td-img img {
+            max-width: 120px;
+            height: auto;
+            display: block;
+            margin: 5px auto;
+        }
     </style>
 
 
@@ -300,6 +322,25 @@
                 </div>
             </div>
         </div>
+        <div class="wrapper">
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
+            <div class="row">
+                <form action="{{ route('soal.importWord') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="word_file" accept=".docx" required>
+                    <button type="submit" class="btn btn-primary">Upload Soal Word</button>
+                </form>
+
+            </div>
+            <div class="row">
+                <a href="{{ route('download.template.soal') }}">
+                    📥 Download Template Soal (Word)
+                </a>
+            </div>
+        </div>
         <div class="wrapper mt-5">
             <div class="row">
                 <div class="col-12">
@@ -397,12 +438,7 @@
             </div>
         </div>
         <!-- End Row -->
-
-
-    </div>
-    <!-- End Page-content -->
-    <div class="container-fluid mt-4">
-        <div class="card shadow-sm">
+        {{-- <div class="wrapper">
             <div class="card-header bg-primary text-white d-flex justify-content-between">
                 <h5 class="mb-0">📷 Manajemen Galeri</h5>
                 <form action="{{ route('admin.galeri.store') }}" method="POST" enctype="multipart/form-data"
@@ -446,28 +482,16 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="card-body">
-                    @if (session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
 
-                    <div class="row">
-                        <form action="{{ route('soal.importWord') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="file" name="word_file" accept=".docx" required>
-                            <button type="submit" class="btn btn-primary">Upload Soal Word</button>
-                        </form>
-                        <div class="mt-3 text-center">
-                            <p class="text-muted mb-2">Butuh contoh format Word-nya?</p>
-                            <a href="{{ route('download.template.soal') }}" class="btn btn-success">
-                                📥 Download Template Soal (Word)
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
+        </div> --}}
+
+
     </div>
+    <!-- End Page-content -->
+
+
+
 
     </div>
     <!-- Container-Fluid -->

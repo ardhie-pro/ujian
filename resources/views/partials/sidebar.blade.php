@@ -123,7 +123,7 @@
 
                         <div class="submenu {{ Route::is('admin.akun') || Route::is('admin.user') ? 'show' : '' }}">
                             <a href="{{ route('admin.akun') }}" class="{{ Route::is('admin.akun') ? 'active' : '' }}">
-                                Admin / Review`
+                                Admin / Review
                             </a>
 
                             <a href="{{ route('admin.user') }}" class="{{ Route::is('admin.user') ? 'active' : '' }}">
@@ -219,7 +219,11 @@
                     <li>
                         <a href="{{ route('review.index') }}" class="{{ Route::is('review.*') ? 'active' : '' }}">
                             <i class="mdi mdi-eye-check-outline"></i>
-                            <span>Halaman Review</span>
+                            <span>Histori</span>
+                        </a>
+                        <a href="{{ route('review.index') }}" class="{{ Route::is('review.*') ? 'active' : '' }}">
+                            <i class="mdi mdi-eye-check-outline"></i>
+                            <span>Data Akun</span>
                         </a>
                     </li>
                 @endif

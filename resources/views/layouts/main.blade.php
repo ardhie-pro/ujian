@@ -116,34 +116,28 @@
         function initTinyMCE(selector) {
             tinymce.init({
                 selector: selector,
+                selector: selector,
                 height: 250,
                 plugins: [
-                    "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
-                    "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-                    "save table contextmenu directionality emoticons template paste textcolor"
+                    "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+                    "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media",
+                    "table emoticons paste"
                 ],
-                toolbar: "undo redo | styleselect | bold italic | " +
+                toolbar: "undo redo | styleselect | bold italic underline | " +
                     "alignleft aligncenter alignright alignjustify | " +
-                    "bullist numlist outdent indent | link image | forecolor backcolor emoticons | code",
+                    "bullist numlist outdent indent | link image | forecolor backcolor | code",
 
-                // 💡 ubah bagian ini ↓↓↓
-                relative_urls: true, // simpan sebagai path relatif
-                remove_script_host: true, // hapus IP/host dari URL
-                document_base_url: '/', // biar semua path mulai dari root
-
-                // 📁 Upload gambar (biarkan seperti ini, sudah bagus)
-                images_upload_url: window.location.origin + '/upload-image',
+                // --------------------------------------------------
+                // ⚡ BASE64 IMAGE (DRAG & DROP / COPY PASTE)
+                // --------------------------------------------------
                 automatic_uploads: true,
-                images_upload_credentials: true,
                 file_picker_types: 'image',
+                paste_data_images: true,
 
-                // 🧩 optional: cegah URL absolut waktu paste
-                urlconverter_callback: (url, node, onSave, name) => {
-                    if (url.startsWith(window.location.origin)) {
-                        // hapus domain-nya biar tetap relatif
-                        return url.replace(window.location.origin, '');
-                    }
-                    return url;
+                // Convert gambar ke base64
+                images_upload_handler: function(blobInfo, success, failure) {
+                    const base64 = "data:" + blobInfo.blob().type + ";base64," + blobInfo.base64();
+                    success(base64);
                 },
             });
         }
