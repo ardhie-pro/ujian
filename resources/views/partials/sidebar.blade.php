@@ -136,14 +136,18 @@
 
 
 
-                    <li class="has-dropdown
-    {{ Route::is('tarik-modul.index') ? 'active open' : '' }}">
+                    <li
+                        class="has-dropdown
+    {{ Route::is('tarik-modul.index') || Route::is('grupangkahilang.index') ? 'active open' : '' }}">
                         <a href="#">
                             <i class="mdi mdi-download-box-outline"></i>
                             <span>Soal</span>
                         </a>
 
-                        <div class="submenu {{ Route::is('tarik-modul.index') ? 'show' : '' }}">
+                        <div
+                            class="submenu
+        {{ Route::is('tarik-modul.index') || Route::is('grupangkahilang.index') ? 'show' : '' }}">
+
                             <a href="{{ route('tarik-modul.index', ['type' => 'data-nama,istirahat,panduan']) }}"
                                 class="{{ request('type') === 'data-nama,istirahat,panduan' ? 'active' : '' }}">
                                 Data Nama & Istirahat
@@ -164,8 +168,15 @@
                                 Tanpa Kembali
                             </a>
 
+                            {{-- MENU BARU: GRUP ANGKA HILANG --}}
+                            <a href="{{ route('grupangkahilang.index') }}"
+                                class="{{ Route::is('grupangkahilang.index') ? 'active' : '' }}">
+                                Grup Angka Hilang
+                            </a>
+
                         </div>
                     </li>
+
 
                     <!-- Dropdown 2 -->
                     <li class="has-dropdown">

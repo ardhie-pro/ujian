@@ -273,13 +273,7 @@
             color: #f8f9fa !important;
             opacity: 1;
         }
-    </style>
-</head>
 
-
-<body>
-
-    <style>
         body {
             background-color: #fff;
             min-height: 100vh;
@@ -371,66 +365,66 @@
         }
     </style>
 
-    </head>
+</head>
 
-    <body>
+<body>
 
-        <!-- CONTENT -->
+    <!-- CONTENT -->
 
 
-        <div class="container my-5">
+    <div class="container my-5">
 
-            <h3 class="text-center mb-4 fw-semibold text-light">Riwayat Pengerjaan Anda</h3>
+        <h3 class="text-center mb-4 fw-semibold text-light">Riwayat Pengerjaan Anda</h3>
 
-            <div class="row justify-content-center">
+        <div class="row justify-content-center">
 
-                @forelse ($riwayat as $item)
-                    @if (trim($item) != '')
-                        <div class="col-md-4 mb-4">
-                            <a href="{{ route('hasiluser.show', ['kode' => trim($item)]) }}">
-                                <div class="history-card">
-                                    <p class="fs-5 text-light">{{ trim($item) }}</p>
-                                </div>
-                            </a>
-                        </div>
-                    @endif
-                @empty
-                    <div class="text-center text-muted">
-                        Belum ada riwayat pengerjaan.
+            @forelse ($riwayat as $item)
+                @if (trim($item) != '')
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ route('hasiluser.show', ['kode' => trim($item)]) }}">
+                            <div class="history-card">
+                                <p class="fs-5 text-light">{{ trim($item) }}</p>
+                            </div>
+                        </a>
                     </div>
-                @endforelse
+                @endif
+            @empty
+                <div class="text-center text-muted">
+                    Belum ada riwayat pengerjaan.
+                </div>
+            @endforelse
 
-            </div>
+        </div>
+    </div>
+
+
+    <div class="fab-container">
+
+        <!-- FAB Menu (muncul di atas tombol) -->
+        <div class="fab-menu" id="fabMenu">
+            <a href="{{ route('history.login') }}">📜 History</a>
+            <a href="#" id="btnFabChangePw">🔑 Ganti Password</a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit">🚪 Logout</button>
+            </form>
         </div>
 
+        <!-- FAB Button -->
+        <div class="fab-button" id="fabBtn">☰</div>
+    </div>
 
-        <div class="fab-container">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('fabBtn').addEventListener('click', function() {
+            let menu = document.getElementById('fabMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
 
-            <!-- FAB Menu (muncul di atas tombol) -->
-            <div class="fab-menu" id="fabMenu">
-                <a href="{{ route('history.login') }}">📜 History</a>
-                <a href="#" id="btnFabChangePw">🔑 Ganti Password</a>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit">🚪 Logout</button>
-                </form>
-            </div>
-
-            <!-- FAB Button -->
-            <div class="fab-button" id="fabBtn">☰</div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            document.getElementById('fabBtn').addEventListener('click', function() {
-                let menu = document.getElementById('fabMenu');
-                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-            });
-
-            document.getElementById('btnFabChangePw').addEventListener('click', function() {
-                document.getElementById('btnChangeAccount').click();
-            });
-        </script>
-    </body>
+        document.getElementById('btnFabChangePw').addEventListener('click', function() {
+            document.getElementById('btnChangeAccount').click();
+        });
+    </script>
+</body>
 
 </html>
