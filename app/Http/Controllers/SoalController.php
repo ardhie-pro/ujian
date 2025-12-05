@@ -57,13 +57,13 @@ class SoalController extends Controller
         $galeri = DB::table('img_soal_random')->orderByDesc('id')->get();
 
         if ($type_template === 'angka-hilang') {
-            return view('admin.tambah-soal', compact('data', 'modul', 'kelompok'));
+            return view('admin.tambah-soal', compact('data', 'modul', 'kelompok', 'type_template'));
         } elseif ($type_template === 'multiple-chois') {
-            return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri'));
+            return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri', 'type_template'));
         } elseif ($type_template === 'panduan') {
-            return view('admin.panduan', compact('data2', 'modul', 'kelompok', 'galeri'));
+            return view('admin.panduan', compact('data2', 'modul', 'kelompok', 'galeri', 'type_template'));
         } elseif ($type_template === 'tanpa-kembali') {
-            return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri'));
+            return view('admin.tambah_soal_multyple', compact('data2', 'modul', 'kelompok', 'galeri', 'type_template'));
         } else {
             return redirect()->back()->with('error', 'Type template tidak valid.');
         }
@@ -530,5 +530,32 @@ class SoalController extends Controller
         }
 
         return back()->with('success', "✅ Berhasil import {$count} soal! Semua gambar otomatis ter-embed base64 di kolom HTML.");
+    }
+    public function deleteAll(Request $request)
+    {
+        $ids = $request->ids;
+        $type_template = $request->type_template; // ambil dari form
+
+
+        if (!$ids || count($ids) === 0) {
+            return back()->with('error', 'Tidak ada data yang dipilih!');
+        }
+
+        // ===============================
+        // LOGIKA DELETE BERDASARKAN TYPE
+        // ===============================
+
+        if ($type_template == 'multiple-chois' || $type_template == 'panduan' || $type_template == 'tanpa-kembali') {
+
+            // hapus dari tabel multiple choice
+            SoalMultipleChoice::whereIn('id', $ids)->delete();
+        } else {
+
+
+            // hapus dari tabel soal_modul
+            SoalModul::whereIn('id', $ids)->delete();
+        }
+
+        return back()->with('success', 'Berhasil menghapus ID: ' . implode(', ', $ids));
     }
 }

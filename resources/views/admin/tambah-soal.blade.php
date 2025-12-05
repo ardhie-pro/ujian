@@ -452,80 +452,91 @@
                 </tr>
             </tbody>
 
+            <form id="formDeleteAll" action="{{ route('soal.deleteAll') }}" method="POST">
+                @csrf
+                <input type="hidden" name="type_template" value="{{ $type_template }}">
 
-
-            <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap"
-                style="
+                <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap"
+                    style="
                                                     border-collapse: collapse;
                                                     border-spacing: 0;
                                                     width: 100%;
                                                 ">
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>Kelompok Soal</th>
-                        <th>Soal</th>
-                        <th>Gambar 1</th>
-                        <th>Gambar 2</th>
-                        <th>Gambar 3</th>
-                        <th>Gambar 4</th>
-                        <th>Gambar 5</th>
-                        <th>Aksi</th>
-
-                    </tr>
-                </thead>
-
-                <tbody id="tbody-soal-biasa">
-                    @foreach ($data as $item)
+                    <thead>
                         <tr>
-                            <td>{{ $item->no }}</td>
-                            <td>{{ $item->kelompok }}</td>
-                            <td>{{ $item->soal2 ?? '-' }}</td>
+                            <th><input type="checkbox" id="checkAll"></th>
+                            <th>NO</th>
+                            <th>Kelompok Soal</th>
+                            <th>Soal</th>
+                            <th>Gambar 1</th>
+                            <th>Gambar 2</th>
+                            <th>Gambar 3</th>
+                            <th>Gambar 4</th>
+                            <th>Gambar 5</th>
+                            <th>Aksi</th>
 
-                            <td>
-                                @if ($item->j1)
-                                    <img src="{{ asset('storage/' . $item->j1) }}" width="60">
-                                @endif
-                            </td>
-                            <td>
-                                @if ($item->j2)
-                                    <img src="{{ asset('storage/' . $item->j2) }}" width="60">
-                                @endif
-                            </td>
-                            <td>
-                                @if ($item->j3)
-                                    <img src="{{ asset('storage/' . $item->j3) }}" width="60">
-                                @endif
-                            </td>
-                            <td>
-                                @if ($item->j4)
-                                    <img src="{{ asset('storage/' . $item->j4) }}" width="60">
-                                @endif
-                            </td>
-                            <td>
-                                @if ($item->j5)
-                                    <img src="{{ asset('storage/' . $item->j5) }}" width="60">
-                                @endif
-                            </td>
-
-                            <td>
-                                <button type="button" class="btn btn-warning btn-sm"
-                                    onclick="showEditForm('{{ $item->id }}', '{{ $item->modul }}', '{{ $item->kelompok }}', `{{ $item->soal2 }}`, `{{ $item->no }}`)">
-                                    Edit
-                                </button>
-
-                                <form action="{{ route('soal.destroy', $item->id) }}" method="POST" class="d-inline">
-                                    @csrf @method('DELETE')
-                                    <button onclick="return confirm('Yakin hapus?')"
-                                        class="btn btn-danger btn-sm">Hapus</button>
-                                </form>
-                            </td>
                         </tr>
-                    @endforeach
-                </tbody>
+                    </thead>
 
 
-            </table>
+                    <tbody id="tbody-soal-biasa">
+                        @foreach ($data as $item)
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="ids[]" value="{{ $item->id }}" class="checkItem">
+
+                                </td>
+                                <td>{{ $item->no }}</td>
+                                <td>{{ $item->kelompok }}</td>
+                                <td>{{ $item->soal2 ?? '-' }}</td>
+
+                                <td>
+                                    @if ($item->j1)
+                                        <img src="{{ asset('storage/' . $item->j1) }}" width="60">
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->j2)
+                                        <img src="{{ asset('storage/' . $item->j2) }}" width="60">
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->j3)
+                                        <img src="{{ asset('storage/' . $item->j3) }}" width="60">
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->j4)
+                                        <img src="{{ asset('storage/' . $item->j4) }}" width="60">
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->j5)
+                                        <img src="{{ asset('storage/' . $item->j5) }}" width="60">
+                                    @endif
+                                </td>
+
+                                <td>
+                                    <button type="button" class="btn btn-warning btn-sm"
+                                        onclick="showEditForm('{{ $item->id }}', '{{ $item->modul }}', '{{ $item->kelompok }}', `{{ $item->soal2 }}`, `{{ $item->no }}`)">
+                                        Edit
+                                    </button>
+
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="deleteSingle({{ $item->id }})">
+                                        Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+
+                </table>
+                <button type="button" id="btnDeleteSelected" class="btn btn-danger mt-2">
+                    Hapus Terpilih
+                </button>
+            </form>
 
         </div>
 
@@ -615,4 +626,54 @@
             </div>
         </div>
     </div>
+    <script>
+        // ===========================
+        // CENTANG SEMUA
+        // ===========================
+        document.getElementById('checkAll').addEventListener('change', function() {
+            document.querySelectorAll('.checkItem').forEach(cb => cb.checked = this.checked);
+        });
+
+        // ===========================
+        // HAPUS TERPILIH
+        // ===========================
+        document.getElementById('btnDeleteSelected').addEventListener('click', function() {
+
+            let checked = document.querySelectorAll('.checkItem:checked');
+
+            if (checked.length === 0) {
+                alert("Tidak ada data yang dipilih!");
+                return;
+            }
+
+            // hanya konfirmasi biasa tanpa tampilkan ID
+            if (confirm("Yakin ingin menghapus data yang dipilih?")) {
+                document.getElementById('formDeleteAll').submit();
+            }
+        });
+
+        // ===========================
+        // HAPUS SATU DATA
+        // ===========================
+        function deleteSingle(id) {
+
+            if (!confirm("Yakin hapus data ini?")) return;
+
+            // form delete dinamis (anti nested form)
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/soal/' + id;
+
+            form.innerHTML = `
+        @csrf
+        @method('DELETE')
+    `;
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+
+
+
 @endsection

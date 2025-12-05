@@ -358,79 +358,74 @@
                             </button>
                         </div>
 
-                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
-                            style="
-                                                    border-collapse: collapse;
-                                                    border-spacing: 0;
-                                                    width: 100%;
-                                                ">
-                            <thead>
-                                <tr>
-                                    <th>NO</th>
+                        <form id="formDeleteAll" action="{{ route('soal.deleteAll') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="type_template" value="{{ $type_template }}">
 
-                                    <th>Soal</th>
-                                    <th>Pembahasan</th>
-
-                                    <th>Gambar 1</th>
-                                    <th>Gambar 2</th>
-                                    <th>Gambar 3</th>
-                                    <th>Gambar 4</th>
-                                    <th>Gambar 5</th>
-                                    <th>Aksi</th>
-
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @forelse($data2 as $item)
+                            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
                                     <tr>
-                                        <td>{{ $item->no }}</td>
-
-                                        <td>
-                                            {{ $item->soal }}
-                                        </td>
-                                        <td>
-                                            {{ $item->pembahasan }}
-                                        </td>
-                                        <td>
-                                            {{ $item->j1 }}
-                                        </td>
-                                        <td>
-                                            {{ $item->j2 }}
-                                        </td>
-                                        <td>
-                                            {{ $item->j3 }}
-                                        </td>
-                                        <td>
-                                            {{ $item->j4 }}
-                                        </td>
-                                        <td>
-                                            {{ $item->j5 }}
-                                        </td>
-
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm"
-                                                onclick="showEditForm('{{ $item->id }}', '{{ $item->modul }}', `{{ $item->soal }}`,`{{ $item->pembahasan }}`, `{{ $item->no }}`, `{{ $item->j1 }}`, `{{ $item->j2 }}`, `{{ $item->j3 }}`, `{{ $item->j4 }}`, `{{ $item->j5 }}`)">
-                                                Edit
-                                            </button>
-
-                                            <form action="{{ route('soal.destroy', $item->id) }}" method="POST"
-                                                class="d-inline">
-                                                @csrf @method('DELETE')
-                                                <button onclick="return confirm('Yakin hapus?')"
-                                                    class="btn btn-danger btn-sm">Hapus</button>
-                                            </form>
-                                        </td>
+                                        <th><input type="checkbox" id="checkAll"></th>
+                                        <th>NO</th>
+                                        <th>Soal</th>
+                                        <th>Pembahasan</th>
+                                        <th>Gambar 1</th>
+                                        <th>Gambar 2</th>
+                                        <th>Gambar 3</th>
+                                        <th>Gambar 4</th>
+                                        <th>Gambar 5</th>
+                                        <th>Aksi</th>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center">Belum ada soal untuk modul ini.
-                                        </td>
-                                    </tr>
-                                    <!-- Modal Edit -->
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+
+                                <tbody>
+
+                                    @forelse($data2 as $item)
+                                        <tr>
+
+                                            <!-- CHECKBOX -->
+                                            <td>
+                                                <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                                    class="checkItem">
+
+                                            </td>
+
+                                            <td>{{ $item->no }}</td>
+                                            <td>{{ $item->soal }}</td>
+                                            <td>{{ $item->pembahasan }}</td>
+                                            <td>{{ $item->j1 }}</td>
+                                            <td>{{ $item->j2 }}</td>
+                                            <td>{{ $item->j3 }}</td>
+                                            <td>{{ $item->j4 }}</td>
+                                            <td>{{ $item->j5 }}</td>
+
+                                            <td>
+                                                <button type="button" class="btn btn-warning btn-sm"
+                                                    onclick="showEditForm('{{ $item->id }}','{{ $item->modul }}',`{{ $item->soal }}`,`{{ $item->pembahasan }}`,`{{ $item->no }}`,`{{ $item->j1 }}`,`{{ $item->j2 }}`,`{{ $item->j3 }}`,`{{ $item->j4 }}`,`{{ $item->j5 }}`)">
+                                                    Edit
+                                                </button>
+
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="deleteSingle({{ $item->id }})">
+                                                    Hapus
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="10" class="text-center">Belum ada soal untuk modul ini.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+
+                            <button type="button" id="btnDeleteSelected" class="btn btn-danger mt-2">
+                                Hapus Terpilih
+                            </button>
+
+                        </form>
+
                     </div>
 
                 </div>
@@ -496,4 +491,54 @@
     </div>
     <!-- Container-Fluid -->
     </div>
+    <script>
+        // ===========================
+        // CENTANG SEMUA
+        // ===========================
+        document.getElementById('checkAll').addEventListener('change', function() {
+            document.querySelectorAll('.checkItem').forEach(cb => cb.checked = this.checked);
+        });
+
+        // ===========================
+        // HAPUS TERPILIH
+        // ===========================
+        document.getElementById('btnDeleteSelected').addEventListener('click', function() {
+
+            let checked = document.querySelectorAll('.checkItem:checked');
+
+            if (checked.length === 0) {
+                alert("Tidak ada data yang dipilih!");
+                return;
+            }
+
+            // hanya konfirmasi biasa tanpa tampilkan ID
+            if (confirm("Yakin ingin menghapus data yang dipilih?")) {
+                document.getElementById('formDeleteAll').submit();
+            }
+        });
+
+        // ===========================
+        // HAPUS SATU DATA
+        // ===========================
+        function deleteSingle(id) {
+
+            if (!confirm("Yakin hapus data ini?")) return;
+
+            // form delete dinamis (anti nested form)
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/soal/' + id;
+
+            form.innerHTML = `
+        @csrf
+        @method('DELETE')
+    `;
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+
+
+
 @endsection

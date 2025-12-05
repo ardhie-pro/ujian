@@ -109,6 +109,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/soal/import-word', [SoalController::class, 'importWord'])->name('soal.importWord');
     Route::put('/soal/{id}', [SoalController::class, 'update'])->name('soal.update');
     Route::delete('/soal/{id}', [SoalController::class, 'destroy'])->name('soal.destroy');
+    Route::post('/soal/delete-all', [SoalController::class, 'deleteAll'])
+        ->name('soal.deleteAll');
+
+
     // kunci jawaban
     Route::get('/kunci-jawaban/{modul}/{type_template}', [SoalController::class, 'show'])->name('kunci-jawaban.show');
     Route::post('/kunci-jawaban/simpan', [SoalController::class, 'simpan'])->name('kunci-jawaban.simpan');
