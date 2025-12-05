@@ -234,6 +234,12 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
 
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
@@ -367,26 +373,7 @@
                     <td colspan="9">
                         <div class="kolom-wrapper">
                             <div class="row ">
-                                <div class="col-2 mt-3 mb-5 bg-light p-2 ms-auto"> <!-- Tambah ms-auto -->
-                                    <form action="{{ route('soal.generate') }}" method="POST">
-                                        @csrf
-
-                                        <input type="hidden" name="modul" value="{{ $modul }}">
-                                        <input type="hidden" name="kelompok" value="{{ $selected->judul ?? '' }}">
-
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input type="number" name="jumlah" id="jumlah" placeholder="Jumlah"
-                                                min="1" class="form-control" required>
-
-                                            <button type="submit" class="btn btn-success">
-                                                Generate
-                                            </button>
-                                        </div>
-
-                                    </form>
-                                </div>
-
-                                <div class="col-2 mt-3 mb-5 p-2 bg-light">
+                                <div class="col-2 mt-3 mb-5 p-2 ">
                                     @if ($selected)
                                         <form action="{{ route('kelompok-soal.destroy', $selected->id) }}" method="POST">
                                             @csrf
@@ -402,6 +389,27 @@
                                         </form>
                                     @endif
                                 </div>
+                                <div class="col-2 mt-3 mb-5  p-2 ms-auto"> <!-- Tambah ms-auto -->
+                                    <form action="{{ route('soal.generate') }}" method="POST">
+                                        @csrf
+
+                                        <input type="hidden" name="modul" value="{{ $modul }}">
+                                        <input type="hidden" name="kelompok" value="{{ $selected->judul ?? '' }}">
+
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="number" name="jumlah" id="jumlah" placeholder="Jumlah"
+                                                min="1" class="form-control" required
+                                                style="background-color: white !important; color: black;">
+
+                                            <button type="submit" class="btn btn-success">
+                                                Generate
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+
 
                             </div>
 

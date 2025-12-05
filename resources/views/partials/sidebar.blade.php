@@ -150,7 +150,7 @@
 
                             <a href="{{ route('tarik-modul.index', ['type' => 'data-nama,istirahat,panduan']) }}"
                                 class="{{ request('type') === 'data-nama,istirahat,panduan' ? 'active' : '' }}">
-                                Data Nama & Istirahat
+                                Lainya
                             </a>
 
                             <a href="{{ route('tarik-modul.index', ['type' => 'multiple-chois']) }}"
@@ -158,10 +158,10 @@
                                 Multiple Choice
                             </a>
 
-                            <a href="{{ route('tarik-modul.index', ['type' => 'angka-hilang']) }}"
+                            {{-- <a href="{{ route('tarik-modul.index', ['type' => 'angka-hilang']) }}"
                                 class="{{ request('type') === 'angka-hilang' ? 'active' : '' }}">
                                 Soal Angka Hilang
-                            </a>
+                            </a> --}}
 
                             <a href="{{ route('tarik-modul.index', ['type' => 'tanpa-kembali']) }}"
                                 class="{{ request('type') === 'tanpa-kembali' ? 'active' : '' }}">
@@ -179,16 +179,12 @@
 
 
                     <!-- Dropdown 2 -->
-                    <li class="has-dropdown">
-                        <a href="#">
+                    <li>
+                        <a href="{{ route('kumpulan-modul.index') }}"
+                            class="{{ Route::is('kumpulan-modul.*') ? 'active' : '' }}">
                             <i class="mdi mdi-file-multiple-outline"></i>
-                            <span>Kumpulan Modul</span>
+                            <span>Centang Modul</span>
                         </a>
-
-                        <div class="submenu">
-                            <a href="{{ route('kumpulan-modul.index') }}">List Modul</a>
-                            <a href="{{ route('kumpulan-modul.create') }}">Tambah Modul</a>
-                        </div>
                     </li>
 
                     <li>
@@ -198,14 +194,13 @@
                             <span>Generate Kode</span>
                         </a>
                     </li>
-
-                    <li>
+                    {{-- <li>
                         <a href="{{ route('kelompok-soal.index') }}"
                             class="{{ Route::is('kelompok-soal.*') ? 'active' : '' }}">
                             <i class="mdi mdi-format-list-bulleted"></i>
                             <span>Kolom Soal</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li>
                         <a href="{{ route('laporan.index') }}" class="{{ Route::is('laporan.*') ? 'active' : '' }}">

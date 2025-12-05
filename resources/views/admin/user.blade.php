@@ -401,7 +401,7 @@
 
 
                                 <td>
-                                    <button type="submit" class="btn btn-warning btn-sm">💾 Simpan</button>
+                                    <button type="submit" class="btn btn-warning btn-sm mb-2">💾</button>
                                     </form>
 
                                     <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST"
@@ -410,7 +410,7 @@
                                         @method('DELETE')
                                         <button class="btn btn-danger btn-sm"
                                             onclick="return confirm('Yakin mau hapus user ini?')">
-                                            🗑️ Hapus
+                                            🗑️
                                         </button>
                                     </form>
                                 </td>

@@ -169,6 +169,7 @@
                             <div class="mb-3">
                                 <label>Pilih Modul</label>
 
+                                {{-- MODUL BIASA --}}
                                 @foreach ($modul as $m)
                                     <div class="form-check">
                                         <input class="form-check-input modul-checkbox" type="checkbox"
@@ -177,8 +178,8 @@
                                     </div>
                                 @endforeach
 
+                                {{-- GRUP DAN ISI --}}
                                 @foreach ($kAngkahilang as $k)
-                                    <!-- Checkbox grup (TIDAK dikirim) -->
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input checkbox-grup"
                                             data-grup="{{ $k->nama_grup }}">
@@ -189,7 +190,6 @@
                                         $items = explode(', ', $k->isi);
                                     @endphp
 
-                                    <!-- Checkbox isi (INI YANG DIKIRIM) -->
                                     @foreach ($items as $item)
                                         <div class="form-check ms-3">
                                             <input type="checkbox" class="form-check-input modul-checkbox checkbox-isi"
@@ -202,8 +202,6 @@
                                 <!-- hidden inputs -->
                                 <div id="modul-inputs"></div>
 
-
-
                             </div>
 
                             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -212,59 +210,70 @@
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 const container = document.getElementById('modul-inputs');
-                                // AUTO CENTANG SEMUA ISI KETIKA GRUP DICENTANG
+                                let orderCounter = 0;
+
+                                // ADD ORDER KETIKA DICENTANG
+                                document.querySelectorAll('.form-check-input').forEach(cb => {
+                                    cb.addEventListener('change', function() {
+                                        if (this.checked) {
+                                            this.dataset.order = orderCounter++;
+                                        } else {
+                                            delete this.dataset.order;
+                                        }
+                                        updateHidden();
+                                    });
+                                });
+
+                                // AUTO CENTANG ISI KETIKA GRUP DICENTANG
                                 document.querySelectorAll('.checkbox-grup').forEach(grup => {
                                     grup.addEventListener('change', function() {
                                         const grupName = this.getAttribute('data-grup');
 
                                         const items = document.querySelectorAll(
                                             `.checkbox-isi[data-parent="${grupName}"]`);
-                                        items.forEach(cb => cb.checked = this.checked);
+
+                                        items.forEach(cb => {
+                                            cb.checked = this.checked;
+
+                                            if (this.checked) {
+                                                cb.dataset.order = orderCounter++;
+                                            } else {
+                                                delete cb.dataset.order;
+                                            }
+                                        });
 
                                         updateHidden();
                                     });
                                 });
 
-                                // UPDATE hidden input saat isi grup dicentang manual
-                                document.querySelectorAll('.checkbox-isi').forEach(isi => {
-                                    isi.addEventListener('change', updateHidden);
-                                });
-
-                                // UPDATE hidden input saat modul biasa dicentang
-                                document.querySelectorAll('.modul-checkbox:not(.checkbox-isi)').forEach(mod => {
-                                    mod.addEventListener('change', updateHidden);
-                                });
-
-                                // FUNCTION UPDATE HIDDEN INPUT UNTUK SEMUA CHECKBOX
+                                // UPDATE HIDDEN INPUT SESUAI URUTAN CENTANG
                                 function updateHidden() {
                                     container.innerHTML = '';
 
-                                    // modul biasa
-                                    document.querySelectorAll('.modul-checkbox:not(.checkbox-isi):checked')
-                                        .forEach(cb => {
-                                            const inp = document.createElement('input');
-                                            inp.type = 'hidden';
-                                            inp.name = 'modul_ids[]';
-                                            inp.value = cb.value;
-                                            container.appendChild(inp);
-                                        });
+                                    let allChecked = Array.from(
+                                        document.querySelectorAll('.modul-checkbox:checked')
+                                    );
 
-                                    // isi grup
-                                    document.querySelectorAll('.checkbox-isi:checked')
-                                        .forEach(cb => {
-                                            const inp = document.createElement('input');
-                                            inp.type = 'hidden';
-                                            inp.name = 'modul_ids[]';
-                                            inp.value = cb.value;
-                                            container.appendChild(inp);
-                                        });
+
+                                    // SORT BERDASARKAN ORDER
+                                    allChecked.sort((a, b) => {
+                                        return (a.dataset.order ?? 0) - (b.dataset.order ?? 0);
+                                    });
+
+                                    // BUAT HIDDEN INPUT SESUAI URUTAN
+                                    allChecked.forEach(cb => {
+                                        const inp = document.createElement('input');
+                                        inp.type = 'hidden';
+                                        inp.name = 'modul_ids[]';
+                                        inp.value = cb.value;
+                                        container.appendChild(inp);
+                                    });
                                 }
                             });
                         </script>
 
-
-
                     </div>
+
                     <!-- End Cardbody -->
 
                 </div>

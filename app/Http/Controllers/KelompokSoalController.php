@@ -33,6 +33,13 @@ class KelompokSoalController extends Controller
             'soal5_img' => 'nullable|image|max:2048',
         ]);
 
+        // 🔥 Cek apakah judul sudah ada
+        if (KelompokSoal::where('judul', $request->judul)->exists()) {
+            return redirect()->back()
+                ->with('error', 'Kolom sudah ada!')
+                ->withInput();
+        }
+
         // Simpan gambar jika ada
         for ($i = 1; $i <= 5; $i++) {
             if ($request->hasFile("soal{$i}_img")) {
@@ -42,8 +49,9 @@ class KelompokSoalController extends Controller
 
         $soal = KelompokSoal::create($data);
 
-        return redirect()->route('kelompok-soal.index')->with('success', 'Data berhasil disimpan!');
+        return redirect()->back()->with('success', 'Data berhasil disimpan!');
     }
+
 
     public function edit($id)
     {

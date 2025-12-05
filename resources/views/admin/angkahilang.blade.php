@@ -54,6 +54,10 @@
             }
         }
 
+        .bg-birucibn {
+            background-color: #244e9b;
+        }
+
         .btn-answered {
             background-color: #244e9b;
             color: white;
@@ -71,28 +75,71 @@
 
 
 
-            <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap mt-3">
-                <thead>
-                    <tr>
-                        <th>Nama Grup</th>
-                    </tr>
-                </thead>
+            <div class="row g-3">
+                @foreach ($data as $g)
+                    <div class="col-md-4">
 
-                <tbody>
-                    @foreach ($data as $g)
-                        <td>
-                            <a href="{{ route('grup.detail', $g->nama_grup) }}">
-                                {{ $g->nama_grup }}
-                            </a>
-                        </td>
-                    @endforeach
+                        <div class="card bg-birucibn p-3 text-light shadow-sm">
+                            <h5>
+                                <a href="{{ route('grup.detail', $g->nama_grup) }}"
+                                    style="color: white; text-decoration: none;">
+                                    {{ $g->nama_grup }}
+                                </a>
+                            </h5>
 
 
-                    {{-- FORM EDIT TANPA MODAL --}}
+                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                <!-- EDIT -->
+                                <a class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                    data-bs-target="#editModal{{ $g->id }}">
+                                    <i class="bx bx-edit"></i>
+                                </a>
+
+                                <!-- DELETE -->
+                                <form action="{{ route('grup.destroy', $g->nama_grup) }}" method="POST"
+                                    onsubmit="return confirm('Yakin hapus bang?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            @foreach ($data as $g)
+            @endforeach
+
+            {{-- TARUH SEMUA MODAL DI SINI --}}
+            @foreach ($data as $g)
+                <div class="modal fade" id="editModal{{ $g->id }}">
+                    <div class="modal-dialog">
+                        <form action="{{ route('grup.update', $g->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5>Edit Nama Grup</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" name="nama_grup" class="form-control" value="{{ $g->nama_grup }}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            @endforeach
 
 
-                </tbody>
-            </table>
+
         </div>
     </div>
 

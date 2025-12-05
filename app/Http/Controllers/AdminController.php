@@ -109,11 +109,13 @@ class AdminController extends Controller
         $request->validate([
             'status' => 'required|string',
             'role' => 'required|string',
+            'grup' => 'required|string',
         ]);
 
 
         $user->update([
             'status' => $request->status,
+            'grup' => $request->grup,
             'role' => $request->role,
         ]);
 

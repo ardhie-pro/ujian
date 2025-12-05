@@ -133,6 +133,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/grupangkahilang', [GrupKolomConntroller::class, 'index'])->name('grupangkahilang.index');
     Route::get('/grupkolom/{nama}', [GrupKolomConntroller::class, 'detail'])->name('grup.detail');
+    // UPDATE nama_grup (pakai modal)
+    Route::put('/updategrup/{id}', [GrupKolomConntroller::class, 'updatek'])->name('grup.update');
+    // DELETE nama_grup + hapus semua modul
+    Route::delete('/destroy/{nama}', [GrupKolomConntroller::class, 'destroy'])->name('grup.destroy');
 
     // angka hilang grup
     Route::post('/grupkolom/generate', [GrupKolomConntroller::class, 'generate'])

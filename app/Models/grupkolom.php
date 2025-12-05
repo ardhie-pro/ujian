@@ -9,6 +9,7 @@ class grupkolom extends Model
     protected $table = 'grup_kolom';
 
     protected $fillable = [
+        'id',
         'nama_grup',
         'isi'
     ];

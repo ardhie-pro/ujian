@@ -20,7 +20,7 @@ class RoleMiddleware
 
         // Jika user tidak memiliki salah satu role yang diizinkan
         if (!in_array($user->status, $roles)) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+            abort(500, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         return $next($request);

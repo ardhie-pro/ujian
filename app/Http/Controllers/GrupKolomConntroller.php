@@ -54,8 +54,8 @@ class GrupKolomConntroller extends Controller
 
     public function index()
     {
-        $data = grupkolom::select('nama_grup')
-            ->groupBy('nama_grup')
+        $data = grupkolom::select('id', 'nama_grup')
+            ->groupBy('nama_grup', 'id')
             ->get();
 
         return view('admin.angkahilang', compact('data'));
@@ -160,5 +160,53 @@ class GrupKolomConntroller extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Kolom baru berhasil ditambahkan!');
+    }
+
+    public function destroy($nama)
+    {
+        $grup = grupkolom::where('nama_grup', $nama)->first();
+
+        if (!$grup) return back()->with('error', 'Data tidak ditemukan');
+
+        // Ambil semua modul dari kolom isi → array
+        $items = explode(", ", $grup->isi);
+
+        // Hapus semua TarikModul yg modul ada di daftar
+        TarikModul::whereIn('modul', $items)->delete();
+
+        // Hapus grup kolom
+        $grup->delete();
+
+        return back()->with('success', 'Data dan modul terkait berhasil dihapus!');
+    }
+    public function updatek(Request $request, $id)
+    {
+        $request->validate([
+            'nama_grup' => 'required',
+        ]);
+
+        $grup = grupkolom::find($id);
+
+        // pecah modul lama
+        $oldItems = explode(", ", $grup->isi);
+
+        // generate modul baru
+        $newItems = [];
+        foreach ($oldItems as $i => $old) {
+            $newItems[] = $request->nama_grup . " " . ($i + 1);
+
+            // update juga ke TarikModul
+            TarikModul::where('modul', $old)->update([
+                'modul' => $request->nama_grup . " " . ($i + 1),
+            ]);
+        }
+
+        // update grup & isi
+        $grup->update([
+            'nama_grup' => $request->nama_grup,
+            'isi' => implode(", ", $newItems),
+        ]);
+
+        return back()->with('success', 'Nama grup dan modul berhasil diupdate!');
     }
 }

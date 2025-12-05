@@ -95,7 +95,7 @@
                         <ol class="breadcrumb mb-0" id="breadcrumb-modul"></ol>
                     </nav>
                     <div class="timer-box">
-                        {{-- <span id="liveTimer">00:00:00</span> --}}
+                        <span id="liveTimer">00:00:00</span>
                     </div>
                 </div>
                 <div class="question-box mb-5" id="soal-container"></div>
