@@ -88,12 +88,36 @@
                             <td>{{ $row->type_template }}</td>
                             <td>{{ $row->waktu }}</td>
                             <td>
-                                <a href="{{ url('/soal?modul=' . urlencode($row->modul) . '&type_template=' . urlencode($row->type_template)) }}"
-                                    class="btn btn-info btn-sm">Kasih Soal</a>
+                                {{-- === LOGIKA DISPLAY BUTTONS === --}}
+                                @php
+                                    $tt = strtolower(trim($row->type_template));
+                                @endphp
 
-                                <a href="{{ route('kunci-jawaban.show', ['modul' => $row->modul, 'type_template' => $row->type_template]) }}"
-                                    class="btn btn-success btn-sm">Kunci Jawaban</a>
+                                {{-- 🔥 ISTIRAHAT: tidak ada tombol sama sekali --}}
+                                @if ($tt === 'istirahat')
+                                    {{-- nothing --}}
 
+                                    {{-- 🔥 PANDUAN / NAMA-PESERTA: ganti Kasih Soal -> Buat Penulisan --}}
+                                @elseif ($tt === 'panduan' || $tt === 'data-nama')
+                                    <a href="{{ url('/soal?modul=' . urlencode($row->modul) . '&type_template=' . urlencode($row->type_template)) }}"
+                                        class="btn btn-info btn-sm">
+                                        Buat Penulisan
+                                    </a>
+
+                                    {{-- 🔥 TEMPLATE BIASA --}}
+                                @else
+                                    <a href="{{ url('/soal?modul=' . urlencode($row->modul) . '&type_template=' . urlencode($row->type_template)) }}"
+                                        class="btn btn-info btn-sm">
+                                        Kasih Soal
+                                    </a>
+
+                                    <a href="{{ route('kunci-jawaban.show', ['modul' => $row->modul, 'type_template' => $row->type_template]) }}"
+                                        class="btn btn-success btn-sm">
+                                        Kunci Jawaban
+                                    </a>
+                                @endif
+
+                                {{-- BUTTON EDIT dan HAPUS TETAP --}}
                                 <button type="button" onclick="toggleEdit({{ $row->id }})"
                                     class="btn btn-warning btn-sm">Edit</button>
 
@@ -199,5 +223,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleEdit(id) {
+            let box = document.getElementById('formEdit' + id);
+
+            if (box.style.display === 'none' || box.style.display === '') {
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
+        }
+    </script>
+
 
 @endsection

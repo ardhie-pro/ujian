@@ -378,21 +378,53 @@
 
         <div class="row justify-content-center">
 
-            @forelse ($riwayat as $item)
-                @if (trim($item) != '')
+            @forelse ($riwayat as $kodeRiwayat)
+                @php
+                    $kode = trim($kodeRiwayat);
+                    $info = \App\Models\Kode::where('kode', $kode)->first();
+                @endphp
+
+                @if ($info)
                     <div class="col-md-4 mb-4">
-                        <a href="{{ route('hasiluser.show', ['kode' => trim($item)]) }}">
+                        <a href="{{ route('hasiluser.show', ['kode' => $info->kode]) }}">
                             <div class="history-card">
-                                <p class="fs-5 text-light">{{ trim($item) }}</p>
+
+                                {{-- KODE --}}
+                                <p class="fs-5 text-light mb-1">
+                                    {{ $info->kode }}
+                                </p>
+
+                                {{-- MODUL --}}
+                                <p class="text-light mb-1">
+                                    Modul:
+                                    @php
+                                        $moduls = \App\Models\TarikModul::where('id', $info->modul_id)->pluck('modul');
+                                    @endphp
+
+                                    @forelse ($moduls as $m)
+                                        <strong>{{ $m }}</strong><br>
+                                    @empty
+                                        <strong>-</strong>
+                                    @endforelse
+                                </p>
+
+
+                                {{-- WAKTU --}}
+                                <p class="text-light mb-0">
+                                    {{ $info->created_at?->format('d M Y H:i') }}
+                                </p>
+
                             </div>
                         </a>
                     </div>
                 @endif
+
             @empty
                 <div class="text-center text-muted">
                     Belum ada riwayat pengerjaan.
                 </div>
             @endforelse
+
 
         </div>
     </div>

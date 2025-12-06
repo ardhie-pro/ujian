@@ -9,14 +9,6 @@ use App\Models\TarikModul;
 use App\Models\SoalMultipleChoice;
 use App\Models\SoalModul;
 
-
-
-
-
-
-
-
-
 class TarikModulController extends Controller
 {
     public function index(Request $request)

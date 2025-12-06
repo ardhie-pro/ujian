@@ -635,11 +635,16 @@
             const dataDijawab = [];
             const dataBenar = [];
             const dataSalah = [];
+            const modul = "{{ $modul }}";
+
+
 
             let index = 1;
 
-            rekapList.forEach(r => {
-                labels.push("Modul " + index++);
+            rekapList.forEach((r, i) => {
+                const card = r.closest('.laporan-modul');
+                const namaModul = card.dataset.modul || `Modul-${i+1}`;
+                labels.push(namaModul);
 
                 dataTotal.push(parseInt(r.querySelector('.total-soal')?.textContent || 0));
                 dataDijawab.push(parseInt(r.querySelector('.dijawab')?.textContent || 0));
@@ -780,8 +785,8 @@
     </script>
     <script>
         /* ============================================================
-                                                                                                                                                           🧮 TOTALAN GLOBAL (BENAR, SALAH, DIJAWAB, POIN)
-                                                                                                                                                        ============================================================ */
+                                                                                                                                                                   🧮 TOTALAN GLOBAL (BENAR, SALAH, DIJAWAB, POIN)
+                                                                                                                                                                ============================================================ */
         let totalSoalAll = 0;
         let totalDijawabAll = 0;
         let totalBenarAll = 0;

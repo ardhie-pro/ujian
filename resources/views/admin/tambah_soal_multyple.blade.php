@@ -192,6 +192,24 @@
             display: block;
             margin: 5px auto;
         }
+
+        .table td,
+        .table th {
+            vertical-align: top !important;
+            white-space: normal !important;
+            word-wrap: break-word;
+            max-width: 300px;
+        }
+
+        /* Scroll responsif */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* Agar kolom Opsi tidak terlalu lebar */
+        .opsi-col {
+            width: 120px;
+        }
     </style>
 
 
@@ -199,7 +217,7 @@
         <div id="formTambahSoal" style="display:none;">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="wrapper">
                         <div class="card-body">
                             <h5 class="mb-3">Tambah Soal</h5>
 
@@ -220,28 +238,44 @@
                                 <hr>
 
                                 <h6 class="fw-bold">Pilihan Jawaban</h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
+
+                                <div id="pilihan-wrapper" class="row g-3">
+                                    <!-- DEFAULT -->
+                                    <div class="col-5 pilihan-item">
                                         <label>Jawaban A</label>
                                         <textarea name="j1" id="elm_j1"></textarea>
                                     </div>
-                                    <div class="col-md-6 mb-2">
+
+                                    <div class="col-5 pilihan-item">
                                         <label>Jawaban B</label>
                                         <textarea name="j2" id="elm_j2"></textarea>
                                     </div>
-                                    <div class="col-md-6 mb-2">
+
+                                    <!-- HIDDEN OPTIONS -->
+                                    <div class="col-5 pilihan-item d-none">
                                         <label>Jawaban C</label>
                                         <textarea name="j3" id="elm_j3"></textarea>
                                     </div>
-                                    <div class="col-md-6 mb-2">
+
+                                    <div class="col-5 pilihan-item d-none">
                                         <label>Jawaban D</label>
                                         <textarea name="j4" id="elm_j4"></textarea>
                                     </div>
-                                    <div class="col-md-6 mb-2">
+
+                                    <div class="col-5 pilihan-item d-none">
                                         <label>Jawaban E</label>
                                         <textarea name="j5" id="elm_j5"></textarea>
                                     </div>
                                 </div>
+
+                                <!-- BUTTONS -->
+                                <div class="mt-2 mb-5">
+                                    <button type="button" id="btnAdd" class="btn btn-primary btn-sm">Tambah
+                                        Pilihan</button>
+                                    <button type="button" id="btnRemove" class="btn btn-danger btn-sm d-none">Hapus
+                                        Pilihan</button>
+                                </div>
+
                                 <div class="mb-3">
                                     <label>Pembahasan</label>
                                     <textarea id="elm_pembahasan" name="pembahasan" rows="3"></textarea>
@@ -262,7 +296,7 @@
         <div id="formEditSoal" style="display: none;">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="wrapper">
                         <div class="card-body">
                             <h5 class="mb-3">Edit Soal</h5>
 
@@ -353,76 +387,87 @@
                             Silahkan Bisa Menambahkan Dan Juga Meng Edit Data Modul Disini
                         </p>
                         <div class="mb-3">
-                            <button type="button" id="tambahSoalBtn" class="btn btn-success">
-                                + Tambah Soal
-                            </button>
+
                         </div>
 
                         <form id="formDeleteAll" action="{{ route('soal.deleteAll') }}" method="POST">
                             @csrf
+                            <div class="mt-2 mb-5">
+                                <button type="button" id="tambahSoalBtn" class="btn btn-success">
+                                    + Tambah Soal
+                                </button>
+                                <button type="button" id="btnDeleteSelected" class="btn btn-danger ">
+                                    Hapus Terpilih
+                                </button>
+                            </div>
+
+
                             <input type="hidden" name="type_template" value="{{ $type_template }}">
 
-                            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" id="checkAll"></th>
-                                        <th>NO</th>
-                                        <th>Soal</th>
-                                        <th>Pembahasan</th>
-                                        <th>Gambar 1</th>
-                                        <th>Gambar 2</th>
-                                        <th>Gambar 3</th>
-                                        <th>Gambar 4</th>
-                                        <th>Gambar 5</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    @forelse($data2 as $item)
+                            <div class="table-responsive">
+                                <table id="datatable-buttons"
+                                    class="table table-striped table-bordered dt-responsive nowrap">
+                                    <thead>
                                         <tr>
-
-                                            <!-- CHECKBOX -->
-                                            <td>
-                                                <input type="checkbox" name="ids[]" value="{{ $item->id }}"
-                                                    class="checkItem">
-
-                                            </td>
-
-                                            <td>{{ $item->no }}</td>
-                                            <td>{{ $item->soal }}</td>
-                                            <td>{{ $item->pembahasan }}</td>
-                                            <td>{{ $item->j1 }}</td>
-                                            <td>{{ $item->j2 }}</td>
-                                            <td>{{ $item->j3 }}</td>
-                                            <td>{{ $item->j4 }}</td>
-                                            <td>{{ $item->j5 }}</td>
-
-                                            <td>
-                                                <button type="button" class="btn btn-warning btn-sm"
-                                                    onclick="showEditForm('{{ $item->id }}','{{ $item->modul }}',`{{ $item->soal }}`,`{{ $item->pembahasan }}`,`{{ $item->no }}`,`{{ $item->j1 }}`,`{{ $item->j2 }}`,`{{ $item->j3 }}`,`{{ $item->j4 }}`,`{{ $item->j5 }}`)">
-                                                    Edit
-                                                </button>
-
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="deleteSingle({{ $item->id }})">
-                                                    Hapus
-                                                </button>
-                                            </td>
+                                            <th><input type="checkbox" id="checkAll"></th>
+                                            <th>NO</th>
+                                            <th>Soal</th>
+                                            <th>Pembahasan</th>
+                                            <th class="opsi-col">Opsi A</th>
+                                            <th class="opsi-col">Opsi B</th>
+                                            <th class="opsi-col">Opsi C</th>
+                                            <th class="opsi-col">Opsi D</th>
+                                            <th class="opsi-col">Opsi E</th>
+                                            <th>Aksi</th>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="10" class="text-center">Belum ada soal untuk modul ini.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                    </thead>
 
-                            <button type="button" id="btnDeleteSelected" class="btn btn-danger mt-2">
-                                Hapus Terpilih
-                            </button>
+                                    <tbody>
+                                        @forelse($data2 as $item)
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                                        class="checkItem">
+                                                </td>
+
+                                                <td>{{ $item->no }}</td>
+
+                                                <!-- Render HTML TinyMCE -->
+                                                <td>{!! $item->soal !!}</td>
+                                                <td>{!! $item->pembahasan !!}</td>
+
+                                                <td>{!! $item->j1 !!}</td>
+                                                <td>{!! $item->j2 !!}</td>
+                                                <td>{!! $item->j3 !!}</td>
+                                                <td>{!! $item->j4 !!}</td>
+                                                <td>{!! $item->j5 !!}</td>
+
+                                                <td>
+                                                    <button type="button" class="btn btn-warning btn-sm"
+                                                        onclick="showEditForm('{{ $item->id }}','{{ $item->modul }}',`{{ $item->soal }}`,`{{ $item->pembahasan }}`,`{{ $item->no }}`,`{{ $item->j1 }}`,`{{ $item->j2 }}`,`{{ $item->j3 }}`,`{{ $item->j4 }}`,`{{ $item->j5 }}`)">
+                                                        Edit
+                                                    </button>
+
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        onclick="deleteSingle({{ $item->id }})">
+                                                        Hapus
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="10" class="text-center">Belum ada soal untuk modul ini.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+
+
 
                         </form>
 
@@ -538,6 +583,51 @@
             form.submit();
         }
     </script>
+
+    {{-- js untuk menampilkan danmenghapus opsi yaa  bang --}}
+    <script>
+        let counter = 2; // A,B visible
+        const max = 5; // sampai E
+
+        const wrapper = document.getElementById("pilihan-wrapper");
+        const items = wrapper.querySelectorAll(".pilihan-item");
+        const btnAdd = document.getElementById("btnAdd");
+        const btnRemove = document.getElementById("btnRemove");
+
+        function updateButtons() {
+            // sembunyikan tombol hapus kalau cuma 2
+            btnRemove.classList.toggle("d-none", counter <= 2);
+
+            // sembunyikan tombol tambah kalau sudah 5
+            btnAdd.classList.toggle("d-none", counter >= max);
+        }
+
+        btnAdd.addEventListener("click", function() {
+            if (counter >= max) return;
+
+            counter++;
+            items[counter - 1].classList.remove("d-none");
+
+            // refresh tinymce
+            tinymce.init({
+                selector: `#elm_j${counter}`
+            });
+
+            updateButtons();
+        });
+
+        btnRemove.addEventListener("click", function() {
+            if (counter <= 2) return;
+
+            items[counter - 1].classList.add("d-none");
+            counter--;
+
+            updateButtons();
+        });
+
+        updateButtons();
+    </script>
+
 
 
 
