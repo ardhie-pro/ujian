@@ -48,7 +48,9 @@ class SoalController extends Controller
             return redirect()->back()->with('error', 'Type template tidak ditemukan.');
         }
 
-        $data2 = SoalMultipleChoice::where('modul', $modul)->orderBy('no')->get();
+        $data2 = SoalMultipleChoice::where('modul', $modul)
+            ->orderByRaw('CAST(no AS UNSIGNED) ASC')
+            ->get();
         $data = SoalModul::where('modul', $modul)->orderBy('no')->get();
         foreach ($data as $item) {
             $item->kelompok_data = KelompokSoal::where('judul', $item->kelompok)->first();
