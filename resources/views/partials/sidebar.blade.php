@@ -218,7 +218,7 @@
                             <span>Histori</span>
                         </a>
                         <a href="{{ route('review.index') }}" class="{{ Route::is('review.*') ? 'active' : '' }}">
-                            <i class="mdi mdi-eye-check-outline"></i>
+                            <i class="mdi mdi-file-chart"></i>
                             <span>Data Akun</span>
                         </a>
                     </li>

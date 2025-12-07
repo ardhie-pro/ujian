@@ -106,11 +106,13 @@ class AdminController extends Controller
     }
     public function updateUser(Request $request, User $user)
     {
+
         $request->validate([
             'status' => 'required|string',
             'role' => 'required|string',
-            'grup' => 'required|string',
+            'grup' => 'nullable|string',
         ]);
+
 
 
         $user->update([

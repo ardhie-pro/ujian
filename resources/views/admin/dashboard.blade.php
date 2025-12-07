@@ -156,6 +156,7 @@
                         <form action="{{ route('admin.updateUser', $user->id) }}" method="POST" class="d-inline">
                             @csrf
 
+
                             <div class="card p-5">
 
                                 <div class="row">

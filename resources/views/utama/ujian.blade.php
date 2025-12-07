@@ -318,8 +318,12 @@
                             return;
                         }
 
-                        soalList = data;
-                        soalList.sort((a, b) => a.no - b.no);
+                        soalList = data.sort(() => Math.random() - 0.5);
+
+                        // generate fake numbering
+                        soalList.forEach((item, idx) => {
+                            item.fakeNo = idx + 1;
+                        });
 
                         // 🧠 Ambil jawaban user dari database
                         fetch(`/get-jawaban/${modul}/${kodeLogin}`)
@@ -418,7 +422,7 @@
 
                 let html = `
     <div class="question-header">
-        <h6>SOAL NOMER ${noSoal}</h6>
+        <h6>SOAL NOMER ${soal.fakeNo}</h6>
         <button class="flag-btn ${tandaiSoal[soal.no] ? 'flagged-active' : ''}">
     <i class="bi bi-flag"></i> ${tandaiSoal[soal.no] ? 'Sudah Ditandai' : 'Tandai Soal'}
 </button>
@@ -491,18 +495,18 @@
                 sidebar.innerHTML = "";
 
                 // 🔥 URUTKAN BERDASARKAN nomor soal (VIEW ONLY)
-                const sortedSoal = [...soalList].sort((a, b) => Number(a.no) - Number(b.no));
+                const sortedSoal = [...soalList].sort((a, b) => a.fakeNo - b.fakeNo);
 
                 sortedSoal.forEach((soal, idx) => {
                     const active = index === soalList.indexOf(soal) ? "btn-aktif" : "";
-                    const sudahJawab = jawabanUser[soal.no] ? "btn-answered" : "btn-unanswered";
+                    const sudahJawab = jawabanUser[soal.fakeNo] ? "btn-answered" : "btn-unanswered";
                     const ditandai = tandaiSoal[soal.no] ? "btn-flagged" : "";
 
                     sidebar.innerHTML += `
            <div class="grid-item ${ditandai} ${sudahJawab} ${active}">
     <button class="btn btn-soal ${ditandai} ${sudahJawab} ${active}"
             onclick="goToQuestion(${soalList.indexOf(soal)})">
-        ${soal.no}
+        ${soal.fakeNo}
     </button>
 </div>`;
                 });

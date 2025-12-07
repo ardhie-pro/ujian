@@ -199,18 +199,103 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $index => $row)
-                                        <tr class="">
+                                        <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td><strong>{{ $row->name }}</strong></td>
                                             <td><strong>{{ $row->status }}</strong></td>
                                             <td><strong>{{ $row->grup }}</strong></td>
                                             <td>
-                                                <a href="{{ route('review.show', $row->name) }}"
-                                                    class="btn btn-sm btn-primary">
+                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#modalHistory{{ $row->id }}">
                                                     Cek Data
-                                                </a>
+                                                </button>
                                             </td>
                                         </tr>
+
+                                        {{-- 🔥 MODAL --}}
+                                        <div class="modal fade" id="modalHistory{{ $row->id }}" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Riwayat Data — {{ $row->name }}</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        @php
+                                                            $items = explode(',', $row->history ?? '');
+                                                        @endphp
+
+                                                        @if (count($items) > 0)
+                                                            @foreach ($items as $i => $item)
+                                                                @php
+                                                                    $kode = trim($item);
+                                                                    $info = \App\Models\Kode::where(
+                                                                        'kode',
+                                                                        $kode,
+                                                                    )->first();
+                                                                @endphp
+
+                                                                <a href="{{ url('review/' . trim($kode)) }}"
+                                                                    class="text-decoration-none d-block mb-3">
+                                                                    <div
+                                                                        class="p-3 btn-answered shadow-sm rounded-4 card-history">
+
+                                                                        {{-- NOMOR & KODE --}}
+                                                                        <h6 class="mb-1">
+                                                                            <strong>{{ $i + 1 }}.
+                                                                                {{ $kode }}</strong>
+                                                                        </h6>
+
+                                                                        @if ($info)
+                                                                            {{-- MODUL --}}
+                                                                            @php
+                                                                                $moduls = \App\Models\TarikModul::where(
+                                                                                    'id',
+                                                                                    $info->modul_id,
+                                                                                )->pluck('modul');
+                                                                            @endphp
+
+                                                                            <div class="small text-muted mb-1">
+                                                                                Modul:
+                                                                                @forelse ($moduls as $m)
+                                                                                    <span
+                                                                                        class="fw-bold">{{ $m }}</span><br>
+                                                                                @empty
+                                                                                    -
+                                                                                @endforelse
+                                                                            </div>
+
+                                                                            {{-- WAKTU --}}
+                                                                            <div class="small text-secondary">
+                                                                                {{ $info->created_at?->format('d M Y H:i') }}
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="text-danger small">
+                                                                                Kode tidak ditemukan
+                                                                            </div>
+                                                                        @endif
+
+                                                                    </div>
+                                                                </a>
+                                                            @endforeach
+                                                        @else
+                                                            <p class="text-muted">Tidak ada history.</p>
+                                                        @endif
+                                                    </div>
+
+
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Tutup</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </tbody>
                             </table>

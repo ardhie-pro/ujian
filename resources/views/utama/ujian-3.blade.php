@@ -325,6 +325,8 @@
             let soalList = [];
             let jawabanUser = {};
 
+
+
             loadSoal(modul);
 
             function loadSoal(modul) {
@@ -338,8 +340,12 @@
                             return;
                         }
 
-                        soalList = data;
-                        soalList.sort((a, b) => a.no - b.no);
+                        soalList = data.sort(() => Math.random() - 0.5);
+
+                        // generate fake numbering
+                        soalList.forEach((item, idx) => {
+                            item.fakeNo = idx + 1;
+                        });
 
                         // 🔹 Ambil jawaban user dari server
                         fetch(`/get-jawaban/${modul}/${kodeLogin}`)
@@ -387,7 +393,7 @@
 
                     sidebar.innerHTML += `
             <button class="btn btn-soal soal-item ${sudahJawab} ${active}"
-        onclick="goToQuestion(${idx})">${soal.no}</button>
+        onclick="goToQuestion(${idx})">${idx + 1}</button>
 `;
                 });
             }
@@ -470,7 +476,7 @@
 
                 let html = `
         <div class="question-header">
-            <h6>SOAL NOMER ${noSoal}</h6>
+            <h6>SOAL NOMER ${soal.fakeNo}</h6>
         </div>
         <div class="question-body p-2">
             ${soal.soal}
