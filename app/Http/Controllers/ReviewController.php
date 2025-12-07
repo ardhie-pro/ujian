@@ -38,6 +38,29 @@ class ReviewController extends Controller
         return view('review.tampilkanUser', compact('data'));
     }
 
+    public function tampilkankode()
+    {
+        $datap = User::where('status', 'user')->get();
+        $data = DB::table('kode')
+            // Ambil nama peserta dari jawaban_user (kolom modul = 'Nama')
+            ->leftJoin('jawaban_user', function ($join) {
+                $join->on('jawaban_user.user_id', '=', 'kode.kode')
+                    ->where('jawaban_user.modul', '=', 'Nama');
+            })
+            // Ambil nama modul dari kumpulan_modul
+            ->leftJoin('kumpulan_modul', 'kumpulan_modul.id', '=', 'kode.modul_id')
+            ->select(
+                'kode.*',
+                'jawaban_user.jawaban as nama_peserta',
+                'kumpulan_modul.nama as nama_modul'
+            )
+            ->orderByRaw("CASE WHEN kode.status = 0 THEN 0 ELSE 1 END") // status 0 di atas
+            ->orderBy('kode.id', 'desc')
+            ->get();
+
+        return view('review.index', compact('data'));
+    }
+
     public function lihat()
     {
         $data = User::where('status', 'user')->get();

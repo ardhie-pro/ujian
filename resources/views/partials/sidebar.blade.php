@@ -212,7 +212,8 @@
 
                 @if ($user && $user->status === 'review')
                     <li>
-                        <a href="{{ route('review.index') }}" class="{{ Route::is('review.*') ? 'active' : '' }}">
+                        <a href="{{ route('tampilkankode.index') }}"
+                            class="{{ Route::is('tampilkankode.*') ? 'active' : '' }}">
                             <i class="mdi mdi-eye-check-outline"></i>
                             <span>Histori</span>
                         </a>

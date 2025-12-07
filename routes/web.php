@@ -55,6 +55,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 Route::middleware(['auth', 'role:review,admin'])->group(function () {
     // halaman review
+    Route::get('/tampilkankode', [App\Http\Controllers\ReviewController::class, 'tampilkankode'])->name('tampilkankode.index');
     Route::get('/review', [App\Http\Controllers\ReviewController::class, 'index'])->name('review.index');
     Route::get('/review/{kode}', [App\Http\Controllers\ReviewController::class, 'show'])->name('review.show');
     Route::get('/review/{kode}/{modul}', [App\Http\Controllers\ReviewController::class, 'detail'])->name('review.detail');

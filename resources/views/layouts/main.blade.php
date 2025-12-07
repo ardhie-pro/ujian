@@ -199,8 +199,27 @@
                     selector: `#${idField}`,
                     menubar: false,
                     height: 200,
-                    plugins: "link image code lists",
-                    toolbar: "undo redo | bold italic underline | bullist numlist | link image | code",
+                    plugins: [
+                        "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+                        "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media",
+                        "table emoticons paste"
+                    ],
+                    toolbar: "undo redo | styleselect | bold italic underline | " +
+                        "alignleft aligncenter alignright alignjustify | " +
+                        "bullist numlist outdent indent | link image | forecolor backcolor | code",
+
+                    // --------------------------------------------------
+                    // ⚡ BASE64 IMAGE (DRAG & DROP / COPY PASTE)
+                    // --------------------------------------------------
+                    automatic_uploads: true,
+                    file_picker_types: 'image',
+                    paste_data_images: true,
+
+                    // Convert gambar ke base64
+                    images_upload_handler: function(blobInfo, success, failure) {
+                        const base64 = "data:" + blobInfo.blob().type + ";base64," + blobInfo.base64();
+                        success(base64);
+                    },
                     setup: function(editor) {
                         editor.on("init", function() {
                             switch (idField) {
