@@ -99,8 +99,11 @@
 
             <footer>
                 <p class="text-left mb-5">
-                    Created By
-                    <a href="" class="text-decoration-none text-body">Citta Bhakti Nirbaya</a>
+                    Copyright ©
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    by CIBN. All Rights Reserved.
                 </p>
             </footer>
         </div>

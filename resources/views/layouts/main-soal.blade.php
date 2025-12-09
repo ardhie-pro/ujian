@@ -20,8 +20,6 @@
 
     @yield('content2')
 
-
-
 </body>
 
 </html>

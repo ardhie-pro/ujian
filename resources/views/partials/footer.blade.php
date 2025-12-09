@@ -2,10 +2,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 text-center">
+                Copyright ©
                 <script>
-                    document.write(new Date().getFullYear())
-                </script> © CIBN <span class="d-none d-sm-inline-block">- Crafted with by
-                    Citta Bhakti Nirbaya.</span>
+                    document.write(new Date().getFullYear());
+                </script>
+                by CIBN. All Rights Reserved.
             </div>
 
         </div>

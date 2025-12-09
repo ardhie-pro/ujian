@@ -6,7 +6,6 @@
     <body onload="openFullscreen()">
         <!-- HEADER -->
         <div class="container mt-3">
-
             <!-- MAIN SECTION -->
             <div class="row mt-2 align-items-start">
                 <!-- LEFT: Question -->
@@ -28,10 +27,11 @@
             </div>
             <div class="p-5 mt-3">
                 <p class="text-muted">
-                    ©
+                    Copyright ©
                     <script>
                         document.write(new Date().getFullYear());
-                    </script> CIBN. Crafted by Citta Bhakti Nirbaya
+                    </script>
+                    by CIBN. All Rights Reserved.
                 </p>
             </div>
             <link rel="shortcut icon" href="{{ asset('assetts//images/favicon.ico') }}" />
@@ -385,14 +385,14 @@
                   <tr>
                     <tr>
               ${[1,2,3,4,5].map(i => `
-                                                                                                                                                                    <td>
-                                                                                                                                                                      ${
-                                                                                                                                                                        !kelompok[`soal${i}_text`]
-                                                                                                                                                                          ? (kelompok[`soal${i}_img`] ? `<img src="/storage/${kelompok[`soal${i}_img`]}" class="soal-img">` : '')
-                                                                                                                                                                          : kelompok[`soal${i}_text`]
-                                                                                                                                                                      }
-                                                                                                                                                                    </td>
-                                                                                                                                                                  `).join('')}
+                                                                                                                                                                                            <td>
+                                                                                                                                                                                              ${
+                                                                                                                                                                                                !kelompok[`soal${i}_text`]
+                                                                                                                                                                                                  ? (kelompok[`soal${i}_img`] ? `<img src="/storage/${kelompok[`soal${i}_img`]}" class="soal-img">` : '')
+                                                                                                                                                                                                  : kelompok[`soal${i}_text`]
+                                                                                                                                                                                              }
+                                                                                                                                                                                            </td>
+                                                                                                                                                                                          `).join('')}
             </tr>
           </tbody>
           <tfoot>
@@ -408,30 +408,30 @@
       s.soal2
         ? `<h1 class="fw-bold soal-2 text-primary"><span>${s.soal2}</span></h1>`
         : `
-                                                                                                                                                              <div class="container text-center my-3">
-                                                                                                                                                                <div class="d-inline-flex flex-wrap justify-content-center align-items-center border border-2 border-dark rounded p-3"
-                                                                                                                                                                     style="max-width: 100%; gap: 10px;">
-                                                                                                                                                                  ${[s.j1, s.j2, s.j3, s.j4]
-                                                                                                                                                                    .filter(src => src)
-                                                                                                                                                                    .map(src => `
+                                                                                                                                                                                      <div class="container text-center my-3">
+                                                                                                                                                                                        <div class="d-inline-flex flex-wrap justify-content-center align-items-center border border-2 border-dark rounded p-3"
+                                                                                                                                                                                             style="max-width: 100%; gap: 10px;">
+                                                                                                                                                                                          ${[s.j1, s.j2, s.j3, s.j4]
+                                                                                                                                                                                            .filter(src => src)
+                                                                                                                                                                                            .map(src => `
                   <div style="border: 2px solid #000; border-radius: 6px; padding: 5px; margin-bottom: 20px;">
                     <img src="${src}" alt="Gambar Soal" style="height: 5rem; width: auto; object-fit: contain;" class="img-fluid" />
                   </div>
                 `).join('')}
-                                                                                                                                                                </div>
-                                                                                                                                                              </div>
-                                                                                                                                                            `
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                      </div>
+                                                                                                                                                                                    `
     }
 
     <div class="container mb-5">
       <div class="row justify-content-center g-2">
         ${['A','B','C','D','E'].map(h => `
-                                    <div class="col-2">
-                                    <button id="btn-${h}" class="btn-jawab btn btn-outline-primary w-100" onclick="jawab('${h}')">
-                                    ${h}
-                                     </button>
-                                    </div>
-                                    `).join('')}
+                                                            <div class="col-2">
+                                                            <button id="btn-${h}" class="btn-jawab btn btn-outline-primary w-100" onclick="jawab('${h}')">
+                                                            ${h}
+                                                             </button>
+                                                            </div>
+                                                            `).join('')}
       </div>
     </div>
 

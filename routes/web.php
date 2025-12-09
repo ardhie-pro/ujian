@@ -21,6 +21,9 @@ Route::get('/menunggu-konfirmasi', function () {
 Route::get('/akses', function () {
     return view('utama.sits');
 });
+Route::get('/cekselesai', function () {
+    return view('utama.break');
+});
 Route::get('/pendahuluan', function () {
     return view('utama.pagependahuluan');
 });
