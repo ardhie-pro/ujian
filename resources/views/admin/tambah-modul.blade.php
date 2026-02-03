@@ -207,6 +207,8 @@
                                 <option value="angka-hilang">Angka-Hilang</option>
                                 <option value="multiple-chois">Multiple-Chois</option>
                                 <option value="tanpa-kembali">Tanpa-Kembali</option>
+                                <option value="disc">Disc</option>
+                                <option value="energram">Energram</option>
                                 <option value="istirahat">Istirahat</option>
                             </select>
                         </div>

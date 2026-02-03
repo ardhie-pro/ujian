@@ -85,6 +85,10 @@ class SoalMultipleChoiceController extends Controller
                 return view('utama.pagependahuluan', compact('modul', 'ambilmodul', 'waktu'));
             case 'angka-hilang':
                 return view('utama.ujian-2', compact('modul', 'ambilmodul', 'waktu'));
+            case 'disc':
+                return view('utama.ujian-disc', compact('modul', 'ambilmodul', 'waktu'));
+            case 'energram':
+                return view('utama.ujian-energram', compact('modul', 'ambilmodul', 'waktu'));
             case 'multiple-chois':
                 return view('utama.ujian', compact('modul', 'ambilmodul', 'waktu'));
             case 'tanpa-kembali':
