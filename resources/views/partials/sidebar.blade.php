@@ -131,6 +131,25 @@
                             </a>
                         </div>
                     </li>
+                    
+                    <li class="has-dropdown {{ Route::is('landing-banner.*') ? 'active open' : '' }}">
+                        <a href="#">
+                            <i class="mdi mdi-web"></i>
+                            <span>Landing Page</span>
+                        </a>
+
+                        <div class="submenu {{ Route::is('landing-banner.*') ? 'show' : '' }}">
+                            <a href="{{ route('landing-banner.index') }}" class="{{ Route::is('landing-banner.index') ? 'active' : '' }}">
+                                Banner Utama
+                            </a>
+                            <a href="{{ route('landing-feature.index') }}" class="{{ Route::is('landing-feature.*') ? 'active' : '' }}">
+                                Fitur
+                            </a>
+                            <a href="{{ route('landing-client.index') }}" class="{{ Route::is('landing-client.*') ? 'active' : '' }}">
+                                Client
+                            </a>
+                        </div>
+                    </li>
                     <!-- Dropdown 1 -->
                     </li>
 

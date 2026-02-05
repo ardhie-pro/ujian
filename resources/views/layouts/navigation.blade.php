@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="{{ route('dashboard') }}">
+        <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.index') }}">
             <x-application-logo class="me-2" style="width:28px; height:28px; color:#333;" />
             <span class="fw-semibold text-dark">{{ config('app.name', 'Laravel') }}</span>
         </a>
@@ -18,7 +18,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-semibold' : '' }}"
-                        href="{{ route('dashboard') }}">
+                        href="{{ route('admin.index') }}">
                         {{ __('Dashboard') }}
                     </a>
                 </li>

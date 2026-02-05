@@ -46,7 +46,10 @@ Route::get('/download-template-soal', function () {
 
 
 Route::get('/', function () {
-    return view('utama.landing-page');
+    $banner = \App\Models\LandingBanner::where('is_active', true)->first();
+    $features = \App\Models\LandingFeature::where('is_active', true)->orderBy('order', 'asc')->get();
+    $clients = \App\Models\LandingClient::where('is_active', true)->orderBy('order', 'asc')->get();
+    return view('utama.landing-new', compact('banner', 'features', 'clients'));
 });
 Route::get('/history', [KodeLoginController::class, 'history'])->name('history.login');
 Route::get('/hasiluser/{kode}', [LaporanController::class, 'hasiluser'])->name('hasiluser.show');
@@ -96,6 +99,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/generate-kode', [KodeGeneratorController::class, 'index'])->name('generate-kode.index');
     Route::post('/generate-kode', [KodeGeneratorController::class, 'store'])->name('generate-kode.store');
     Route::delete('/generate-kode/{id}', [KodeGeneratorController::class, 'destroy'])->name('generate-kode.destroy');
+    // Landing Banner
+    Route::get('/landing-banner', [App\Http\Controllers\LandingBannerController::class, 'index'])->name('landing-banner.index');
+    Route::post('/landing-banner', [App\Http\Controllers\LandingBannerController::class, 'update'])->name('landing-banner.update');
+    Route::resource('landing-feature', App\Http\Controllers\LandingFeatureController::class);
+    Route::resource('landing-client', App\Http\Controllers\LandingClientController::class);
+
     // admin view soal multiple
     Route::prefix('soal-multiple')->name('soal-multiple.')->group(function () {
         Route::get('/', [SoalMultipleChoiceController::class, 'index'])->name('index');
