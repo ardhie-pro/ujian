@@ -11,18 +11,14 @@
             <div class="row mt-2 align-items-start">
                 <!-- LEFT: Question -->
                 <div class="col-lg-12">
-                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                        <nav aria-label="breadcrumb" class="mb-2 mb-md-0">
-                            <ol class="breadcrumb mb-0" id="breadcrumb-modul">
-
-                            </ol>
-                        </nav>
-                        <div class="timer-box">
-                            <span id="timer">
-                                <span id="liveTimer">00:00:00</span>
-                            </span>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <nav aria-label="breadcrumb" class="mb-2 mb-md-0">
+                        <ol class="breadcrumb mb-0" id="breadcrumb-modul"></ol>
+                    </nav>
+                    <div class="timer-box">
+                        <span id="liveTimer">00:00:00</span>
                     </div>
+                </div>
                     <div class="question-box mb-5">
                         <div class="card-body p-4" id="area-soal">
                             <div class="text-center text-muted">Memuat soal...</div>
@@ -41,15 +37,6 @@
             </div>
             <link rel="shortcut icon" href="{{ asset('assetts//images/favicon.ico') }}" />
             <style>
-                .timer-box {
-                    position: static !important;
-                    /* pastikan tidak fixed */
-                    right: auto !important;
-                    top: auto !important;
-                    background: transparent;
-                    padding: 0;
-                }
-
                 .masuk-soal {
                     font-size: 2rem;
                     font-weight: bold;
@@ -325,29 +312,61 @@
 
                 let filtered = ambilModul.filter(modul => !skipList.includes(modul));
 
-                filtered.forEach((modul, index) => {
+                // Logic Active Sederhana (Default)
+                const currentModul = "{{ $modul }}";
+                let currentIndex = filtered.indexOf(currentModul);
+                
+                // Variable State Toggle
+                let isExpanded = false;
 
-                    // Tambah separator jika bukan yang pertama
-                    if (index > 0) {
-                        const separator = document.createElement("span");
-                        separator.innerHTML = "&nbsp;&gt;&nbsp;";
-                        separator.classList.add("breadcrumb-separator");
-                        breadcrumb.appendChild(separator);
-                    }
-
-                    // Elemen teks modul (bukan link)
-                    const item = document.createElement("span");
-                    item.textContent = modul;
-
-                    // Styling item terakhir = aktif
-                    if (index === filtered.length - 1) {
-                        item.classList.add("breadcrumb-active");
+                function renderBreadcrumb() {
+                    breadcrumb.innerHTML = "";
+                    let visibleModuls = [];
+                    
+                    if (isExpanded) {
+                         visibleModuls = filtered;
                     } else {
-                        item.classList.add("breadcrumb-item-text");
+                         // Sliding Window Logic
+                         let startIdx = Math.max(0, currentIndex - 1);
+                         let endIdx = Math.min(filtered.length, startIdx + 3);
+                         if (endIdx - startIdx < 3 && startIdx > 0) {
+                             startIdx = Math.max(0, endIdx - 3);
+                         }
+                         visibleModuls = filtered.slice(startIdx, endIdx);
                     }
 
-                    breadcrumb.appendChild(item);
-                });
+                    visibleModuls.forEach((modul, index) => {
+                         // Separator
+                         if (index > 0) {
+                             const separator = document.createElement("span");
+                             separator.innerHTML = "&nbsp;&gt;&nbsp;";
+                             separator.classList.add("breadcrumb-separator");
+                             breadcrumb.appendChild(separator);
+                         }
+                         
+                         const item = document.createElement("span");
+                         item.textContent = modul;
+                         
+                 // Selalu gunakan style teks biasa tanpa active highlight
+                 item.classList.add("breadcrumb-item-text");
+                 breadcrumb.appendChild(item);
+            });
+
+                    // Toggle Button
+                    if (filtered.length > 3) {
+                        const btn = document.createElement("span");
+                        btn.textContent = isExpanded ? " (Lihat Sedikit)" : " (Lihat Semua)";
+                        btn.style.cursor = "pointer";
+                        btn.style.color = "#244e9b";
+                        btn.style.fontWeight = "bold";
+                        btn.style.fontSize = "0.85rem";
+                        btn.style.marginLeft = "8px";
+                        btn.onclick = () => { isExpanded = !isExpanded; renderBreadcrumb(); };
+                        breadcrumb.appendChild(btn);
+                    }
+                }
+                
+                renderBreadcrumb();
                 const kodeLogin = "{{ session('kode_login') }}";
                 let modul = {!! json_encode($modul ?? 'default') !!};
                 let no = 1;
@@ -495,6 +514,12 @@
                 }
 
                 function jawab(j) {
+                    // ⚡ OPTIMISTIC UI: Langsung pindah soal tanpa menunggu server
+                    const currentNo = no; // Simpan nomor yang sedang dijawab
+                    no++; // Naikkan nomor untuk soal berikutnya
+                    loadSoal(no); // Load view soal baru segera
+
+                    // Kirim data ke background
                     fetch('/simpan-jawaban', {
                             method: 'POST',
                             headers: {
@@ -504,15 +529,14 @@
                             body: JSON.stringify({
                                 modul: modul,
                                 kodeLogin: kodeLogin,
-                                no: no,
+                                no: currentNo, // Pakai nomor yang tadi
                                 jawaban: j
                             })
                         })
-                        .then(res => res.json())
-                        .then(() => {
-                            no++;
-                            loadSoal(no);
-                        }); // jaga-jaga kalau terakhir
+                        .then(res => {
+                             if(!res.ok) console.error("Gagal simpan jawaban");
+                        })
+                        .catch(err => console.error(err));
                 }
             </script>
             @php
@@ -529,6 +553,13 @@
             @endphp
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
+                    // 🔒 CEGAH TOMBOL BACK (Versi Super Agresif - Anti Double Click)
+                    history.pushState(null, null, location.href);
+                    history.pushState(null, null, location.href); // Double Push
+                    window.onpopstate = function () {
+                        history.go(1);
+                    };
+
                     const display = document.getElementById("liveTimer");
                     if (!display) return;
 
@@ -625,7 +656,7 @@
                     }
                 });
             </script>
-            <script>
+            <!-- <script>
                 document.addEventListener("DOMContentLoaded", function() {
 
                     let windowBlurred = false;
@@ -698,7 +729,7 @@
                     });
 
                 });
-            </script>
+            </script> -->
 
 
             <style>

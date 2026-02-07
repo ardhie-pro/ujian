@@ -558,12 +558,28 @@ body {
     background-color: #244e9b;
     /* biru Bootstrap */
     color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-answered:hover {
+    background-color: #ffc107 !important;
+    /* kuning saat hover */
+    color: #000 !important;
+    border-color: #ffca2c !important;
 }
 
 .btn-unanswered {
     background-color: #adb5bd;
     /* abu-abu */
     color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-unanswered:hover {
+    background-color: #ffc107 !important;
+    /* kuning saat hover */
+    color: #000 !important;
+    border-color: #ffca2c !important;
 }
 
 .header-left img {

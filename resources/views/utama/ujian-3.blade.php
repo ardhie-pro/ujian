@@ -10,6 +10,32 @@
             padding: 10px;
         }
 
+        /* Scrollable container untuk nomor soal */
+        .sidebar-scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar styling */
+        .sidebar-scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .sidebar-scroll-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .sidebar-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
         .soal-item {
             width: 100%;
             height: 50px;
@@ -106,14 +132,15 @@
                 <div class="sidebar-box">
                     <div class="sidebar-title d-flex align-items-center justify-content-between px-2">
                         <span> Nomor Soal Pengerjaan</span>
-                        <i class="bi bi-list" id="toggle-layout" style="cursor:pointer"></i>
+                        <i class="bi bi-list" id="toggle-layout" style="cursor:pointer" title="Klik untuk pindahkan ke bawah"></i>
                     </div>
-                    <div class="grid-container" id="soal-buttons"></div>
-
+                    <div class="sidebar-scroll-container" id="sidebar-scroll">
+                        <div class="grid-container" id="soal-buttons"></div>
+                    </div>
                 </div>
             </div>
 
-            <footer>
+            <footer id="main-footer">
                 <p class="text-left mb-5">
                     Copyright ©
                     <script>
@@ -131,34 +158,76 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
+            // 🔒 CEGAH TOMBOL BACK (Versi Super Agresif - Anti Double Click)
+            history.pushState(null, null, location.href);
+            history.pushState(null, null, location.href); // Double Push
+            window.onpopstate = function () {
+                history.go(1);
+            };
+
             const toggleBtn = document.getElementById("toggle-layout");
             const soalCol = document.getElementById("soal-col");
             const sidebarCol = document.getElementById("sidebar-col");
             const mainRow = document.getElementById("main-row");
             const soalContainer = document.getElementById("soal-container");
+            const sidebarScroll = document.getElementById("sidebar-scroll");
+            const mainFooter = document.getElementById("main-footer");
 
             // Simpan posisi asli
             const originalNextElement = sidebarCol.nextElementSibling;
 
-            toggleBtn.addEventListener("click", function() {
+            const headerToggleBtn = document.getElementById("vertical-menu-btn");
 
+            // 🔄 Fungsi untuk menyesuaikan tinggi sidebar scroll dengan tinggi card soal
+            function syncSidebarHeight() {
+                if (soalContainer && sidebarScroll) {
+                    const soalHeight = soalContainer.offsetHeight;
+                    // Set max-height sidebar agar simetris dengan card soal
+                    // Kurangi sedikit untuk header sidebar (~50px)
+                    const sidebarMaxHeight = Math.max(soalHeight - 50, 200);
+                    sidebarScroll.style.maxHeight = sidebarMaxHeight + 'px';
+                }
+            }
+
+            // Jalankan saat load dan setiap resize
+            syncSidebarHeight();
+            window.addEventListener('resize', syncSidebarHeight);
+
+            // Observer untuk mendeteksi perubahan konten soal
+            const observer = new MutationObserver(syncSidebarHeight);
+            if (soalContainer) {
+                observer.observe(soalContainer, { childList: true, subtree: true });
+            }
+
+            function handleToggle() {
                 const isFull = soalCol.classList.contains("col-12");
 
                 if (!isFull) {
                     // 👉 MASUK MODE FULLSCREEN
-
                     soalCol.classList.remove("col-lg-8");
                     soalCol.classList.add("col-12");
 
                     sidebarCol.classList.remove("col-lg-4");
                     sidebarCol.classList.add("col-12", "mb-3");
 
-                    // 🔥 Pindahkan sidebar tepat di atas question-box
-                    soalContainer.parentNode.insertBefore(sidebarCol, soalContainer);
+                    // 🔥 Pindahkan sidebar ke ATAS footer (bukan di bawahnya)
+                    if (mainFooter) {
+                        mainRow.insertBefore(sidebarCol, mainFooter);
+                    } else {
+                        mainRow.appendChild(sidebarCol);
+                    }
 
+                    // 📜 Scroll ke sidebar yang baru pindah ke bawah
+                    setTimeout(() => {
+                        sidebarCol.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+
+                    // Saat fullscreen, buat sidebar scroll lebih pendek
+                    if (sidebarScroll) {
+                        sidebarScroll.style.maxHeight = '300px';
+                    }
                 } else {
                     // 👉 KEMBALI KE POSISI SEMULA
-
                     soalCol.classList.remove("col-12");
                     soalCol.classList.add("col-lg-8");
 
@@ -171,8 +240,19 @@
                     } else {
                         mainRow.appendChild(sidebarCol);
                     }
+
+                    // 📜 Scroll kembali ke atas
+                    setTimeout(() => {
+                        mainRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+
+                    // Kembalikan height sync
+                    syncSidebarHeight();
                 }
-            });
+            }
+
+            if (toggleBtn) toggleBtn.addEventListener("click", handleToggle);
+            if (headerToggleBtn) headerToggleBtn.addEventListener("click", handleToggle);
 
         });
     </script>
@@ -287,6 +367,7 @@
     </script>
 
     <script>
+        const currentModul = "{{ $modul }}";
         const ambilModul = @json($ambilmodul);
         const breadcrumb = document.getElementById("breadcrumb-modul");
         breadcrumb.innerHTML = "";
@@ -296,29 +377,61 @@
 
         let filtered = ambilModul.filter(modul => !skipList.includes(modul));
 
-        filtered.forEach((modul, index) => {
+        // Logic Active Sederhana (Default)
+        // 🔹 Cari index modul saat ini
+        let currentIndex = filtered.indexOf(currentModul);
+        
+        // Variable State Toggle
+        let isExpanded = false;
 
-            // Tambah separator jika bukan yang pertama
-            if (index > 0) {
-                const separator = document.createElement("span");
-                separator.innerHTML = "&nbsp;&gt;&nbsp;";
-                separator.classList.add("breadcrumb-separator");
-                breadcrumb.appendChild(separator);
-            }
-
-            // Elemen teks modul (bukan link)
-            const item = document.createElement("span");
-            item.textContent = modul;
-
-            // Styling item terakhir = aktif
-            if (index === filtered.length - 1) {
-                item.classList.add("breadcrumb-active");
+        function renderBreadcrumb() {
+            breadcrumb.innerHTML = "";
+            let visibleModuls = [];
+            
+            if (isExpanded) {
+                 visibleModuls = filtered;
             } else {
-                item.classList.add("breadcrumb-item-text");
+                 // Sliding Window Logic
+                 let startIdx = Math.max(0, currentIndex - 1);
+                 let endIdx = Math.min(filtered.length, startIdx + 3);
+                 if (endIdx - startIdx < 3 && startIdx > 0) {
+                     startIdx = Math.max(0, endIdx - 3);
+                 }
+                 visibleModuls = filtered.slice(startIdx, endIdx);
             }
 
-            breadcrumb.appendChild(item);
-        });
+            visibleModuls.forEach((modul, index) => {
+                 // Separator
+                 if (index > 0) {
+                     const separator = document.createElement("span");
+                     separator.innerHTML = "&nbsp;&gt;&nbsp;";
+                     separator.classList.add("breadcrumb-separator");
+                     breadcrumb.appendChild(separator);
+                 }
+                 
+                 const item = document.createElement("span");
+                 item.textContent = modul;
+                 
+                 // Selalu gunakan style teks biasa tanpa active highlight
+                 item.classList.add("breadcrumb-item-text");
+                 breadcrumb.appendChild(item);
+            });
+
+            // Toggle Button
+            if (filtered.length > 3) {
+                const btn = document.createElement("span");
+                btn.textContent = isExpanded ? " (Lihat Sedikit)" : " (Lihat Semua)";
+                btn.style.cursor = "pointer";
+                btn.style.color = "#244e9b";
+                btn.style.fontWeight = "bold";
+                btn.style.fontSize = "0.85rem";
+                btn.style.marginLeft = "8px";
+                btn.onclick = () => { isExpanded = !isExpanded; renderBreadcrumb(); };
+                breadcrumb.appendChild(btn);
+            }
+        }
+        
+        renderBreadcrumb();
 
         const kodeLogin = "{{ session('kode_login') }}";
 
@@ -359,14 +472,8 @@
                                     jawabanUser[item.no] = item.jawaban;
                                 });
 
-                                // 🔹 Cari nomor soal terakhir yang sudah dijawab
-                                let terakhir = 0;
-                                if (Object.keys(jawabanUser).length > 0) {
-                                    const noTerakhir = Math.max(...Object.keys(jawabanUser).map(Number));
-                                    terakhir = soalList.findIndex(s => s.no == noTerakhir);
-                                    if (terakhir < 0) terakhir = 0;
-                                }
-                                index = terakhir;
+                                // ✅ Selalu mulai dari nomor 1 (index 0)
+                                index = 0;
 
                                 renderSoal(index);
                                 renderSidebar();
