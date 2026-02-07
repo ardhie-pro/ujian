@@ -49,7 +49,13 @@ Route::get('/', function () {
     $banner = \App\Models\LandingBanner::where('is_active', true)->first();
     $features = \App\Models\LandingFeature::where('is_active', true)->orderBy('order', 'asc')->get();
     $clients = \App\Models\LandingClient::where('is_active', true)->orderBy('order', 'asc')->get();
-    return view('utama.landing-new', compact('banner', 'features', 'clients'));
+    $services = \App\Models\LandingService::where('is_active', true)->orderBy('order', 'asc')->get();
+    $serviceSection = \App\Models\LandingServiceSection::first();
+    $videoPromo = \App\Models\LandingVideo::first();
+    $ctaSection = \App\Models\LandingCtaSection::first();
+    $ctaButtons = \App\Models\LandingCtaButton::where('is_active', true)->orderBy('order')->get();
+    $testimonials = \App\Models\LandingTestimonial::where('is_active', true)->orderBy('order')->orderBy('created_at', 'desc')->get();
+    return view('utama.landing-new', compact('banner', 'features', 'clients', 'services', 'serviceSection', 'videoPromo', 'ctaSection', 'ctaButtons', 'testimonials'));
 });
 Route::get('/history', [KodeLoginController::class, 'history'])->name('history.login');
 Route::get('/hasiluser/{kode}', [LaporanController::class, 'hasiluser'])->name('hasiluser.show');
@@ -104,6 +110,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/landing-banner', [App\Http\Controllers\LandingBannerController::class, 'update'])->name('landing-banner.update');
     Route::resource('landing-feature', App\Http\Controllers\LandingFeatureController::class);
     Route::resource('landing-client', App\Http\Controllers\LandingClientController::class);
+    Route::resource('landing-service', App\Http\Controllers\LandingServiceController::class);
+    Route::post('/landing-service/section', [App\Http\Controllers\LandingServiceController::class, 'updateSection'])->name('landing-service.section.update');
+    
+    Route::get('/landing-video', [App\Http\Controllers\LandingVideoController::class, 'index'])->name('landing-video.index');
+    Route::post('/landing-video', [App\Http\Controllers\LandingVideoController::class, 'update'])->name('landing-video.update');
+
+    Route::get('/landing-cta', [App\Http\Controllers\LandingCtaController::class, 'index'])->name('landing-cta.index');
+    Route::post('/landing-cta/section', [App\Http\Controllers\LandingCtaController::class, 'updateSection'])->name('landing-cta.section.update');
+    Route::post('/landing-cta/button', [App\Http\Controllers\LandingCtaController::class, 'storeButton'])->name('landing-cta.button.store');
+    Route::get('/landing-cta/button/{button}/edit', [App\Http\Controllers\LandingCtaController::class, 'editButton'])->name('landing-cta.button.edit');
+    Route::put('/landing-cta/button/{button}', [App\Http\Controllers\LandingCtaController::class, 'updateButton'])->name('landing-cta.button.update');
+    Route::delete('/landing-cta/button/{button}', [App\Http\Controllers\LandingCtaController::class, 'destroyButton'])->name('landing-cta.button.destroy');
+
+    Route::resource('landing-testimonial', App\Http\Controllers\LandingTestimonialController::class)->except(['create', 'store', 'show']);
+    Route::post('/landing-testimonial/submit', [App\Http\Controllers\LandingTestimonialController::class, 'storePublic'])->name('landing-testimonial.submit');
 
     // admin view soal multiple
     Route::prefix('soal-multiple')->name('soal-multiple.')->group(function () {

@@ -6,7 +6,7 @@
   <!-- Basic Page Needs
   ================================================== -->
   <meta charset="utf-8">
-  <title>Small Apps | Bootstrap App Landing Template</title>
+  <title>Citta Bhakti Nirbaya</title>
 
   <!-- Mobile Specific Metas
   ================================================== -->
@@ -17,7 +17,7 @@
   <meta name="generator" content="Themefisher Small Apps Template v1.0">
 
   <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('landing/images/favicon.png') }}" />
+  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assetts/images/cibn.png') }}" />
   
   <!-- PLUGINS CSS STYLE -->
   <link rel="stylesheet" href="{{ asset('landing/plugins/bootstrap/bootstrap.min.css') }}">
@@ -43,6 +43,9 @@
         -webkit-filter: grayscale(0%);
         opacity: 1;
     }
+    html {
+        scroll-behavior: smooth;
+    }
   </style>
 
 </head>
@@ -52,67 +55,35 @@
 
 <nav class="navbar main-nav navbar-expand-lg px-2 px-sm-0 py-2 py-lg-0">
   <div class="container">
-    <a class="navbar-brand" href="index.html"><img src="{{ asset('assetts/images/cibn.png') }}" alt="logo" style="width: 40px; padding: 3px;"></a>
+    <a class="navbar-brand font-weight-bold" href="#home">
+        <img src="{{ asset('assetts/images/cibn.png') }}" alt="logo" style="width: 50px; padding: 3px;">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="ti-menu"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown active">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Home
-            <span><i class="ti-angle-down"></i></span>
-          </a>
-          <!-- Dropdown list -->
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item active" href="index.html">Homepage</a></li>
-            <li><a class="dropdown-item" href="homepage-2.html">Homepage 2</a></li>
-            <li><a class="dropdown-item active3" href="homepage-3.html">Homepage 3</a></li>
-
-            <li class="dropdown dropdown-submenu dropright">
-              <a class="dropdown-item dropdown-toggle" href="#!" id="dropdown0301" role="button"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sub Menu</a>
-
-              <ul class="dropdown-menu" aria-labelledby="dropdown0301">
-                <li><a class="dropdown-item" href="index.html">Submenu 11</a></li>
-                <li><a class="dropdown-item" href="index.html">Submenu 12</a></li>
-              </ul>
-            </li>
-          </ul>
+        <li class="nav-item">
+          <a class="nav-link" href="#home">Home</a>
         </li>
-        <li class="nav-item dropdown @@pages">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Pages
-            <span><i class="ti-angle-down"></i></span>
-          </a>
-          <!-- Dropdown list -->
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item @@team" href="team.html">Team</a></li>
-            <li><a class="dropdown-item @@career" href="career.html">Career</a></li>
-            <li><a class="dropdown-item @@blog" href="blog.html">Blog</a></li>
-            <li><a class="dropdown-item @@blogSingle" href="blog-single.html">Blog Single</a></li>
-            <li><a class="dropdown-item @@privacy" href="privacy-policy.html">Privacy</a></li>
-            <li><a class="dropdown-item @@faq" href="FAQ.html">FAQ</a></li>
-            <li><a class="dropdown-item" href="sign-in.html">Sign In</a></li>
-            <li><a class="dropdown-item" href="sign-up.html">Sign Up</a></li>
-            <li><a class="dropdown-item" href="404.html">404</a></li>
-            <li><a class="dropdown-item" href="comming-soon.html">Coming Soon</a></li>
-
-            <li class="dropdown dropdown-submenu dropleft">
-              <a class="dropdown-item dropdown-toggle" href="#!" id="dropdown0501" role="button"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sub Menu</a>
-
-              <ul class="dropdown-menu" aria-labelledby="dropdown0501">
-                <li><a class="dropdown-item" href="index.html">Submenu 21</a></li>
-                <li><a class="dropdown-item" href="index.html">Submenu 22</a></li>
-              </ul>
-            </li>
-          </ul>
+        <li class="nav-item">
+          <a class="nav-link" href="#fitur">Fitur</a>
         </li>
-        <li class="nav-item @@about">
-          <a class="nav-link" href="about.html">About</a>
+        <li class="nav-item">
+          <a class="nav-link" href="#layanan">Layanan</a>
         </li>
-        <li class="nav-item @@contact">
-          <a class="nav-link" href="contact.html">Contact</a>
+        <li class="nav-item">
+            <a class="nav-link" href="#video">Video</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#testimonial">Testimoni</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#cta">CTA</a>
+        </li>
+        <li class="nav-item d-flex align-items-center">
+            <a class="btn btn-main-md text-white ml-lg-3 px-4 shadow-sm" href="{{ route('login') }}" style="border-radius: 50px; padding: 7px 25px; line-height: 1; font-size: 14px;">Login</a>
         </li>
       </ul>
     </div>
@@ -122,7 +93,7 @@
 <!--====================================
 =            Hero Section            =
 =====================================-->
-<section class="section gradient-banner">
+<section class="section gradient-banner" id="home">
 	<div class="shapes-container">
 		<div class="shape" data-aos="fade-down-left" data-aos-duration="1500" data-aos-delay="100"></div>
 		<div class="shape" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100"></div>
@@ -178,6 +149,7 @@
 <!--==================================
 =            Feature Grid            =
 ===================================-->
+<div id="fitur"></div>
 @foreach($features as $feature)
 <section class="feature section pt-0">
 	<div class="container">
@@ -228,14 +200,13 @@
 <!--==============================
 =            Services            =
 ===============================-->
-<section class="service section bg-gray">
+<section class="service section bg-gray" id="layanan">
 	<div class="container-fluid p-0">
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="section-title">
-					<h2>An Interface For Lifestyle</h2>
-					<p><a href="https://themefisher.com/products/small-apps-free-app-landing-page-template/">Small Apps</a> makes
-						it easy to stay on top of your Life Style. No late tasks. No gimmicks.</p>
+					<h2>{{ $serviceSection->title ?? 'An Interface For Lifestyle' }}</h2>
+					<p>{!! $serviceSection->description ?? '<a href="https://themefisher.com/products/small-apps-free-app-landing-page-template/">Small Apps</a> makes it easy to stay on top of your Life Style. No late tasks. No gimmicks.' !!}</p>
 				</div>
 			</div>
 		</div>
@@ -243,56 +214,25 @@
 			<div class="col-lg-6 align-self-center">
 				<!-- Feature Image -->
 				<div class="service-thumb left" data-aos="fade-right">
-					<img class="img-fluid" src="{{ asset('landing/images/feature/iphone-ipad.jpg') }}" alt="iphone-ipad">
+					<img class="img-fluid" src="{{ isset($serviceSection->image) ? asset($serviceSection->image) : asset('landing/images/feature/iphone-ipad.jpg') }}" alt="iphone-ipad">
 				</div>
 			</div>
 			<div class="col-lg-5 mr-auto align-self-center">
 				<div class="service-box">
 					<div class="row align-items-center">
+						@foreach($services as $service)
 						<div class="col-md-6 col-xs-12">
-							<!-- Service 01 -->
+							<!-- Service Item -->
 							<div class="service-item">
 								<!-- Icon -->
-								<i class="ti-bookmark"></i>
+								<i class="{{ $service->icon }}"></i>
 								<!-- Heading -->
-								<h3>Easy Prototyping</h3>
+								<h3>{{ $service->title }}</h3>
 								<!-- Description -->
-								<p>Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Curabitur aliquet quam id dui</p>
+								<p>{{ $service->description }}</p>
 							</div>
 						</div>
-						<div class="col-md-6 col-xs-12">
-							<!-- Service 01 -->
-							<div class="service-item">
-								<!-- Icon -->
-								<i class="ti-pulse"></i>
-								<!-- Heading -->
-								<h3>Sensor Bridge</h3>
-								<!-- Description -->
-								<p>Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Curabitur aliquet quam id dui</p>
-							</div>
-						</div>
-						<div class="col-md-6 col-xs-12">
-							<!-- Service 01 -->
-							<div class="service-item">
-								<!-- Icon -->
-								<i class="ti-bar-chart"></i>
-								<!-- Heading -->
-								<h3>Strategist</h3>
-								<!-- Description -->
-								<p>Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Curabitur aliquet quam id dui</p>
-							</div>
-						</div>
-						<div class="col-md-6 col-xs-12">
-							<!-- Service 01 -->
-							<div class="service-item">
-								<!-- Icon -->
-								<i class="ti-panel"></i>
-								<!-- Heading -->
-								<h3>Art Direction</h3>
-								<!-- Description -->
-								<p>Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Curabitur aliquet quam id dui</p>
-							</div>
-						</div>
+						@endforeach
 					</div>
 				</div>
 			</div>
@@ -305,18 +245,17 @@
 <!--=================================
 =            Video Promo            =
 ==================================-->
-<section class="video-promo section bg-1">
+<section class="video-promo section bg-1" id="video" @if(isset($videoPromo->background_image)) style="background-image: url('{{ asset($videoPromo->background_image) }}'); background-size: cover; background-position: center;" @endif>
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="content-block">
 					<!-- Heading -->
-					<h2>Watch Our Promo Video</h2>
+					<h2>{{ $videoPromo->title ?? 'Watch Our Promo Video' }}</h2>
 					<!-- Promotional Speech -->
-					<p>Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur arcu erat, accumsan id imperdiet et,
-						porttitor at sem. Vivamus </p>
+					<p>{{ $videoPromo->description ?? 'Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Vivamus' }}</p>
 					<!-- Popup Video -->
-					<a data-fancybox href="https://www.youtube.com/watch?v=jrkvirglgaQ">
+					<a data-fancybox href="{{ $videoPromo->video_url ?? 'https://www.youtube.com/watch?v=jrkvirglgaQ' }}">
 						<i class="ti-control-play video"></i>
 					</a>
 				</div>
@@ -329,123 +268,127 @@
 <!--=================================
 =            Testimonial            =
 ==================================-->
+<!--=================================
+=            Testimonial            =
+==================================-->
 <section class="section testimonial" id="testimonial">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">
+				<div class="section-title">
+					<h2>Apa Kata Mereka?</h2>
+					<p>Pengalaman nyata dari pengguna yang telah menggunakan layanan kami.</p>
+					<button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#modalTestimonial">
+						Isi Pengalaman Anda
+					</button>
+				</div>
+				
+				@if(session('success_testimonial'))
+					<div class="alert alert-success text-center">
+						{{ session('success_testimonial') }}
+					</div>
+				@endif
+
 				<!-- Testimonial Slider -->
 				<div class="testimonial-slider owl-carousel owl-theme">
-					<!-- Testimonial 01 -->
+					@forelse($testimonials as $testimonial)
+					<!-- Testimonial Item -->
 					<div class="item">
 						<div class="block shadow">
 							<!-- Speech -->
-							<p>
-								Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Donec sollicitudin molestie malesuada.
-								Donec sollicitudin molestie malesuada. Pellentesque in ipsum id orci porta dapibus. Lorem ipsum dolor
-								sit amet, consectetur adipiscing elit. Pellentesque in ipsum id orci porta dapibus. Quisque velit nisi,
-								pretium ut lacinia in, elementum id enim.
-							</p>
+							<p>{{ $testimonial->message }}</p>
 							<!-- Person Thumb -->
 							<div class="image">
-								<img src="{{ asset('landing/images/testimonial/feature-testimonial-thumb.jpg') }}" alt="image">
+								<img src="{{ $testimonial->photo ? asset($testimonial->photo) : asset('landing/images/testimonial/feature-testimonial-thumb.jpg') }}" alt="image">
 							</div>
 							<!-- Name and Company -->
-							<cite>Abraham Linkon , Themefisher.com</cite>
+							<cite>{{ $testimonial->name }} {{ $testimonial->company ? ', ' . $testimonial->company : '' }}</cite>
 						</div>
 					</div>
-					<!-- Testimonial 01 -->
+					@empty
+					<!-- Default content if empty -->
 					<div class="item">
 						<div class="block shadow">
-							<!-- Speech -->
-							<p>
-								Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Donec sollicitudin molestie malesuada.
-								Donec sollicitudin molestie malesuada. Pellentesque in ipsum id orci porta dapibus. Lorem ipsum dolor
-								sit amet, consectetur adipiscing elit. Pellentesque in ipsum id orci porta dapibus. Quisque velit nisi,
-								pretium ut lacinia in, elementum id enim.
-							</p>
-							<!-- Person Thumb -->
+							<p>Belum ada testimoni yang ditampilkan.</p>
 							<div class="image">
 								<img src="{{ asset('landing/images/testimonial/feature-testimonial-thumb.jpg') }}" alt="image">
 							</div>
-							<!-- Name and Company -->
-							<cite>Abraham Linkon , Themefisher.com</cite>
+							<cite>Admin</cite>
 						</div>
 					</div>
-					<!-- Testimonial 01 -->
-					<div class="item">
-						<div class="block shadow">
-							<!-- Speech -->
-							<p>
-								Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Donec sollicitudin molestie malesuada.
-								Donec sollicitudin molestie malesuada. Pellentesque in ipsum id orci porta dapibus. Lorem ipsum dolor
-								sit amet, consectetur adipiscing elit. Pellentesque in ipsum id orci porta dapibus. Quisque velit nisi,
-								pretium ut lacinia in, elementum id enim.
-							</p>
-							<!-- Person Thumb -->
-							<div class="image">
-								<img src="{{ asset('landing/images/testimonial/feature-testimonial-thumb.jpg') }}" alt="image">
-							</div>
-							<!-- Name and Company -->
-							<cite>Abraham Linkon , Themefisher.com</cite>
-						</div>
-					</div>
-					<!-- Testimonial 01 -->
-					<div class="item">
-						<div class="block shadow">
-							<!-- Speech -->
-							<p>
-								Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Donec sollicitudin molestie malesuada.
-								Donec sollicitudin molestie malesuada. Pellentesque in ipsum id orci porta dapibus. Lorem ipsum dolor
-								sit amet, consectetur adipiscing elit. Pellentesque in ipsum id orci porta dapibus. Quisque velit nisi,
-								pretium ut lacinia in, elementum id enim.
-							</p>
-							<!-- Person Thumb -->
-							<div class="image">
-								<img src="{{ asset('landing/images/testimonial/feature-testimonial-thumb.jpg') }}" alt="image">
-							</div>
-							<!-- Name and Company -->
-							<cite>Abraham Linkon , Themefisher.com</cite>
-						</div>
-					</div>
+					@endforelse
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+
+<!-- Modal Submission Testimonial -->
+<div class="modal fade" id="modalTestimonial" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Bagikan Pengalaman Anda</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('landing-testimonial.submit') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" name="name" class="form-control" placeholder="Contoh: Budi Santoso" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jabatan / Perusahaan (Opsional)</label>
+                        <input type="text" name="company" class="form-control" placeholder="Contoh: CEO di Tech Corp">
+                    </div>
+                    <div class="form-group">
+                        <label>Pesan / Pengalaman</label>
+                        <textarea name="message" class="form-control" rows="4" placeholder="Ceritakan pengalaman Anda menggunakan layanan kami..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto Profil (Opsional)</label>
+                        <input type="file" name="photo" class="form-control">
+                        <small class="text-muted">Ukuran maksimal 1MB (Format: jpg, png, jpeg)</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Kirim Testimoni</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--====  End of Testimonial  ====-->
 <!--====  End of Testimonial  ====-->
 
-<section class="call-to-action-app section bg-blue">
+<!--=====================================
+=            Call to Action            =
+======================================-->
+<section class="call-to-action-app section bg-blue" id="cta">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">
-				<h2>It's time to change your mind</h2>
-				<p>Download over 2 million humans .Get <a href="https://themefisher.com/products/small-apps-free-app-landing-page-template/">Small Apps</a> free forever!
-					<br>We say you won’t look back.</p>
+				<h2>{{ $ctaSection->title ?? 'Semua Mendukung Perangkat Anda' }}</h2>
+				<p>{!! $ctaSection->description ?? 'Gunakan dimanapun dan kapanpun <a href="https://themefisher.com/products/small-apps-free-app-landing-page-template/">CIBN</a> free forever! <br>Citta Bhakti Nirbaya' !!}</p>
 				<ul class="list-inline">
+					@foreach($ctaButtons as $button)
 					<li class="list-inline-item">
-						<a href="" class="btn btn-rounded-icon">
-							<i class="ti-apple"></i>
-							Iphone
+						<a href="{{ $button->link ?? '#' }}" class="btn btn-rounded-icon">
+							<i class="{{ $button->icon }}"></i>
+							{{ $button->label }}
 						</a>
 					</li>
-					<li class="list-inline-item">
-						<a href="" class="btn btn-rounded-icon">
-							<i class="ti-android"></i>
-							Android
-						</a>
-					</li>
-					<li class="list-inline-item">
-						<a href="" class="btn btn-rounded-icon">
-							<i class="ti-microsoft-alt"></i>
-							Windows
-						</a>
-					</li>
+					@endforeach
 				</ul>
 			</div>
 		</div>
 	</div>
 </section>
-
+<!--====  End of Call to Action  ====-->
 <!--============================
 =            Footer            =
 =============================-->

@@ -148,6 +148,18 @@
                             <a href="{{ route('landing-client.index') }}" class="{{ Route::is('landing-client.*') ? 'active' : '' }}">
                                 Client
                             </a>
+                            <a href="{{ route('landing-service.index') }}" class="{{ Route::is('landing-service.*') ? 'active' : '' }}">
+                                Service
+                            </a>
+                            <a href="{{ route('landing-video.index') }}" class="{{ Route::is('landing-video.*') ? 'active' : '' }}">
+                                Video Promo
+                            </a>
+                            <a href="{{ route('landing-cta.index') }}" class="{{ Route::is('landing-cta.*') ? 'active' : '' }}">
+                                CTA Section
+                            </a>
+                            <a href="{{ route('landing-testimonial.index') }}" class="{{ Route::is('landing-testimonial.*') ? 'active' : '' }}">
+                                Testimonial
+                            </a>
                         </div>
                     </li>
                     <!-- Dropdown 1 -->
