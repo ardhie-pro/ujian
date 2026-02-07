@@ -560,6 +560,11 @@
                         history.go(1);
                     };
 
+                    // 🔒 CEGAH RELOAD/EXIT (Proteksi Tambahan)
+                    window.onbeforeunload = function() {
+                        return "Anda sedang ujian! Jangan tinggalkan halaman ini.";
+                    };
+
                     const display = document.getElementById("liveTimer");
                     if (!display) return;
 
