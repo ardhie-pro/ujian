@@ -869,9 +869,9 @@
             /* ============================================================
                📈 DISC GRAPHS IMPLEMENTATION
             ============================================================ */
-            const dataLine1 = @json($discData['line1'] ?? [0,0,0,0]);
-            const dataLine2 = @json($discData['line2'] ?? [0,0,0,0]);
-            const dataLine3 = @json($discData['line3'] ?? [0,0,0,0]);
+            const dataLine1 = @json($discData['line1']);
+            const dataLine2 = @json($discData['line2']);
+            const dataLine3 = @json($discData['line3']);
 
             const labelsDISC = ['D', 'I', 'S', 'C'];
             
@@ -956,7 +956,7 @@
             /* ============================================================
                ⚡ ENERGRAM GRAPH IMPLEMENTATION
             ============================================================ */
-            const totalPoinEnergram = @json($enneagramData ?? [0,0,0,0,0,0,0,0,0]);
+            const totalPoinEnergram = @json($enneagramData);
 
             const canvasEnergram = document.getElementById('chart_energram');
             if (canvasEnergram) {
