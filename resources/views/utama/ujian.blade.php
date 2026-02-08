@@ -239,11 +239,6 @@
                 history.go(1);
             };
 
-            // 🔒 CEGAH RELOAD/EXIT (Proteksi Tambahan)
-            window.onbeforeunload = function() {
-                return "Anda sedang ujian! Jangan tinggalkan halaman ini.";
-            };
-
             const toggleBtn = document.getElementById("toggle-layout");
             const soalCol = document.getElementById("soal-col");
             const sidebarCol = document.getElementById("sidebar-col");
