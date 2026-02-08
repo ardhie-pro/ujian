@@ -34,7 +34,7 @@ class SoalMultipleChoiceController extends Controller
 
         $currentIndex = $status;
         if ($currentIndex >= count($modulArray)) {
-            return view('utama.selesai');
+            return redirect()->route('laporan.show', ['kode' => $kodeLogin]);
         }
 
         $currentModul = $modulArray[$currentIndex];
@@ -142,7 +142,7 @@ class SoalMultipleChoiceController extends Controller
         if ($newStatus >= count($modulArray)) {
             $kode->update(['status' => $newStatus, 'updated_at' => $now]);
             session(['status' => $newStatus]);
-            return view('utama.selesai');
+            return redirect()->route('laporan.show', ['kode' => $kodeLogin]);
         }
 
         // 🔹 Ambil modul berikutnya

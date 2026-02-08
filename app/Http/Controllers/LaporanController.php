@@ -145,7 +145,11 @@ class LaporanController extends Controller
             }
         }
 
-        return view('admin.laporan.show', compact('kode', 'data', 'rekapGlobal'));
+        // Calculate DISC and Enneagram if data exists
+        $discData = $this->calculateDISC($kode);
+        $enneagramData = $this->calculateEnneagram($kode);
+
+        return view('admin.laporan.show', compact('kode', 'data', 'rekapGlobal', 'discData', 'enneagramData'));
     }
 
     public function detail($kode, $user_id)
@@ -291,7 +295,89 @@ class LaporanController extends Controller
             }
         }
 
-        return view('utama.show', compact('kode', 'data', 'rekapGlobal'));
+        // Calculate DISC and Enneagram if data exists
+        $discData = $this->calculateDISC($kode);
+        $enneagramData = $this->calculateEnneagram($kode);
+
+        return view('utama.show', compact('kode', 'data', 'rekapGlobal', 'discData', 'enneagramData'));
     }
 
+
+    private function calculateDISC($kode)
+    {
+        $jawaban = DB::table('jawaban_user')
+            ->where('user_id', $kode)
+            ->where('modul', 'LIKE', '%DISC%')
+            ->get();
+
+        if ($jawaban->isEmpty()) {
+            return ['line1' => [0, 0, 0, 0], 'line2' => [0, 0, 0, 0], 'line3' => [0, 0, 0, 0]];
+        }
+
+        // Standard DISC 24-item mapping
+        $mapping = [
+            1  => [['I', 'D', 'S', 'C'], ['I', 'D', 'S', 'C']],
+            2  => [['D', 'I', 'S', 'C'], ['D', 'I', 'S', 'C']],
+            3  => [['S', 'I', 'C', 'D'], ['S', 'I', 'C', 'D']],
+            4  => [['C', 'S', 'I', 'D'], ['C', 'S', 'I', 'D']],
+            5  => [['D', 'S', 'C', 'I'], ['D', 'S', 'C', 'I']],
+            6  => [['I', 'C', 'S', 'D'], ['I', 'C', 'S', 'D']],
+            7  => [['S', 'D', 'I', 'C'], ['S', 'D', 'I', 'C']],
+            8  => [['C', 'I', 'D', 'S'], ['C', 'I', 'D', 'S']],
+            9  => [['D', 'C', 'I', 'S'], ['D', 'C', 'I', 'S']],
+            10 => [['I', 'S', 'D', 'C'], ['I', 'S', 'D', 'C']],
+        ];
+
+        $totalsP = ['D' => 0, 'I' => 0, 'S' => 0, 'C' => 0];
+        $totalsK = ['D' => 0, 'I' => 0, 'S' => 0, 'C' => 0];
+
+        foreach ($jawaban as $row) {
+            $parts = explode(',', $row->jawaban);
+            if (count($parts) < 2) continue;
+
+            $pIdx = (int) str_replace('P', '', $parts[0]);
+            $kIdx = (int) str_replace('K', '', $parts[1]);
+
+            $map = $mapping[$row->no] ?? [['D', 'I', 'S', 'C'], ['D', 'I', 'S', 'C']];
+            
+            $factorP = $map[0][$pIdx] ?? null;
+            $factorK = $map[1][$kIdx] ?? null;
+
+            if ($factorP) $totalsP[$factorP]++;
+            if ($factorK) $totalsK[$factorK]++;
+        }
+
+        $line1 = [$totalsP['D'], $totalsP['I'], $totalsP['S'], $totalsP['C']];
+        $line2 = [$totalsK['D'], $totalsK['I'], $totalsK['S'], $totalsK['C']];
+        $line3 = [
+            $line1[0] - $line2[0],
+            $line1[1] - $line2[1],
+            $line1[2] - $line2[2],
+            $line1[3] - $line2[3],
+        ];
+
+        return ['line1' => $line1, 'line2' => $line2, 'line3' => $line3];
+    }
+
+    private function calculateEnneagram($kode)
+    {
+        $jawaban = DB::table('jawaban_user')
+            ->where('user_id', $kode)
+            ->where('modul', 'LIKE', '%ENERGRAM%')
+            ->get();
+
+        if ($jawaban->isEmpty()) {
+            return [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        }
+
+        $totals = array_fill(0, 9, 0);
+        
+        foreach ($jawaban as $row) {
+            $val = (int) $row->jawaban;
+            $type = (($row->no - 1) % 9); 
+            $totals[$type] += $val;
+        }
+
+        return $totals;
+    }
 }

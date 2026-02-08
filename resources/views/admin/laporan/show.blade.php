@@ -551,9 +551,9 @@
             // Silakan ganti nilai array di bawah ini sesuai kebutuhan
             // Format: [D, I, S, C]
             
-            const dataLine1 = [10, 5, 8, 12];
-            const dataLine2 = [12, 10, 6, 8];
-            const dataLine3 = [-2, -5, 2, 4];
+            const dataLine1 = @json($discData['line1'] ?? [0,0,0,0]);
+            const dataLine2 = @json($discData['line2'] ?? [0,0,0,0]);
+            const dataLine3 = @json($discData['line3'] ?? [0,0,0,0]);
 
             // ---------------- KONFIGURASI CHART ----------------
             const labelsDISC = ['D', 'I', 'S', 'C'];
@@ -673,7 +673,7 @@
             /* ============================================================
                ⚡ ENERGRAM GRAPH IMPLEMENTATION (Poin 1 - 9)
             ============================================================ */
-            const totalPoinEnergram = [12, 15, 8, 20, 10, 18, 5, 14, 22]; 
+            const totalPoinEnergram = @json($enneagramData ?? [0,0,0,0,0,0,0,0,0]);
 
             // 4. RENDER CHART ENERGRAM
             const ctxEnergram = document.getElementById('chart_energram').getContext('2d');

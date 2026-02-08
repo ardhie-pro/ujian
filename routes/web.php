@@ -61,6 +61,7 @@ Route::get('/hasiluser/{kode}', [LaporanController::class, 'hasiluser'])->name('
 Route::get('/kode', [KodeLoginController::class, 'index'])->name('kode.login');
 Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
 
+Route::get('/laporan/{kode}', [LaporanController::class, 'show'])->name('laporan.show');
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/history', [KodeLoginController::class, 'history'])->name('history.login');
@@ -156,7 +157,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('kunci-jawaban.simpan-tanpa-kembali');
     // laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('/laporan/{kode}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::get('/laporan/{kode}/{user_id}', [LaporanController::class, 'detail'])->name('laporan.detail');
     // tarikmodul routes
     Route::get('/tarik-modul', [TarikModulController::class, 'index'])->name('tarik-modul.index');

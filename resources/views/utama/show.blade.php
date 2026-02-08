@@ -571,9 +571,145 @@
 
     </div>
 
+    <div class="container">
+        <!-- 📊 DISC GRAPHS SECTION -->
+        <div class="row">
+            <div class="history-card col-12 mb-4">
+                <div class="card-header text-white">
+                    <h5 class="mb-0">📊 Grafik DISC (Line 1 - 3)</h5>
+                </div>
+                <div class="card-body">
+                    <!-- 📋 TABEL DATA DISC (STYLED) -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped table-hover text-center align-middle shadow-sm" style="max-width: 600px; margin: 0 auto; border: 2px solid #343a40; background: white; color: black;">
+                            <thead class="bg-dark text-white text-uppercase" style="letter-spacing: 1px;">
+                                <tr>
+                                    <th class="py-3">Line</th>
+                                    <th class="py-3" style="background-color: #0d6efd;">D</th>
+                                    <th class="py-3" style="background-color: #198754;">I</th>
+                                    <th class="py-3" style="background-color: #ffc107; color: #000;">S</th>
+                                    <th class="py-3" style="background-color: #dc3545;">C</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fw-bold text-secondary">
+                                <tr>
+                                    <th class="bg-dark text-white">1</th>
+                                    <td id="val_l1_0">-</td>
+                                    <td id="val_l1_1">-</td>
+                                    <td id="val_l1_2">-</td>
+                                    <td id="val_l1_3">-</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-dark text-white">2</th>
+                                    <td id="val_l2_0">-</td>
+                                    <td id="val_l2_1">-</td>
+                                    <td id="val_l2_2">-</td>
+                                    <td id="val_l2_3">-</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-dark text-white">3</th>
+                                    <td id="val_l3_0">-</td>
+                                    <td id="val_l3_1">-</td>
+                                    <td id="val_l3_2">-</td>
+                                    <td id="val_l3_3">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row">
+                        <!-- Line 1 -->
+                        <div class="col-12 mb-5">
+                            <h5 class="text-center fw-bold">Line 1</h5>
+                            <div style="height: 400px; background: white; border-radius: 10px; padding: 10px;">
+                                <canvas id="chart_line_1"></canvas>
+                            </div>
+                        </div>
+                        <!-- Line 2 -->
+                        <div class="col-12 mb-5">
+                            <h5 class="text-center fw-bold">Line 2</h5>
+                            <div style="height: 400px; background: white; border-radius: 10px; padding: 10px;">
+                                <canvas id="chart_line_2"></canvas>
+                            </div>
+                        </div>
+                        <!-- Line 3 -->
+                        <div class="col-12">
+                            <h5 class="text-center fw-bold">Line 3</h5>
+                            <div style="height: 400px; background: white; border-radius: 10px; padding: 10px;">
+                                <canvas id="chart_line_3"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⚡ GRAFIK ENERGRAM -->
+        <div class="row">
+            <div class="history-card col-12 mb-4">
+                <div class="card-header text-white">
+                     <h5 class="mb-0">⚡ Grafik Energram (Poin 1 - 9)</h5>
+                </div>
+                <div class="card-body">
+                     <div style="height: 400px; background: white; border-radius: 10px; padding: 10px;">
+                          <canvas id="chart_energram"></canvas>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="history-card col-12">
+                <div class="card-header text-white">
+                    <h5 class="mb-0">📊 Grafik Rekap Semua Modul</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chart_global" height="140"></canvas>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="history-card col-12">
+                <div class="card-header mt-2 text-white">
+                    <h5 class="mb-5">Total Keseluruhan Semua Modul</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4 col-md-2 mb-2">
+                            <strong>Total Soal</strong>
+                            <div class="fs-5" id="total_all_soal">0</div>
+                        </div>
+                        <div class="col-4 col-md-2 mb-2">
+                            <strong>Dijawab</strong>
+                            <div class="fs-5" id="total_all_dijawab">0</div>
+                        </div>
+                        <div class="col-4 col-md-2 mb-2 text-success">
+                            <strong>Benar</strong>
+                            <div class="fs-5" id="total_all_benar">0</div>
+                        </div>
+                        <div class="col-4 col-md-2 mb-2 text-danger">
+                            <strong>Salah</strong>
+                            <div class="fs-5" id="total_all_salah">0</div>
+                        </div>
+                        <div class="col-4 col-md-2 mb-2 text-primary">
+                            <strong>Total Poin</strong>
+                            <div class="fs-5" id="total_all_poin">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     </div>
 
     <!-- 🧠 Script Filter + Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -729,6 +865,177 @@
                 XLSX.writeFile(wb, filename);
                 alert('✅ Semua tabel + rekap berhasil diekspor ke Excel!');
             });
+
+            /* ============================================================
+               📈 DISC GRAPHS IMPLEMENTATION
+            ============================================================ */
+            const dataLine1 = @json($discData['line1'] ?? [0,0,0,0]);
+            const dataLine2 = @json($discData['line2'] ?? [0,0,0,0]);
+            const dataLine3 = @json($discData['line3'] ?? [0,0,0,0]);
+
+            const labelsDISC = ['D', 'I', 'S', 'C'];
+            
+            if (typeof ChartDataLabels !== 'undefined') {
+                Chart.register(ChartDataLabels);
+            }
+
+            function createDISCChart(canvasId, label, dataValues, color) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'line', 
+                    data: {
+                        labels: labelsDISC,
+                        datasets: [{
+                            label: label,
+                            data: dataValues,
+                            borderColor: color,
+                            backgroundColor: color,
+                            borderWidth: 3,
+                            tension: 0.4, 
+                            pointRadius: 6,
+                            pointBackgroundColor: '#fff',
+                            pointBorderWidth: 2,
+                            datalabels: {
+                                align: 'top',
+                                anchor: 'start',
+                                font: { weight: 'bold', size: 14 },
+                                color: color,
+                                offset: 8
+                            }
+                        }]
+                    },
+                    options: {
+                        layout: { padding: { top: 30, bottom: 10, left: 20, right: 20 } },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false, 
+                                min: -10, 
+                                max: 15,
+                                ticks: { stepSize: 1, font: { weight: 'bold' } },
+                                grid: {
+                                    color: (context) => (context.tick.value === 0 ? '#000' : 'rgba(0,0,0,0.1)'),
+                                    lineWidth: (context) => (context.tick.value === 0 ? 2 : 1)
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 14, weight: 'bold' }, color: '#000' }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: { display: true }
+                        }
+                    }
+                });
+            }
+
+            createDISCChart('chart_line_1', 'Line 1', dataLine1, '#0d6efd');
+            createDISCChart('chart_line_2', 'Line 2', dataLine2, '#198754');
+            createDISCChart('chart_line_3', 'Line 3', dataLine3, '#dc3545');
+
+            function populateTable(line, data) {
+                 const d = document.getElementById(`val_l${line}_0`);
+                 if (d) d.textContent = data[0];
+                 const i = document.getElementById(`val_l${line}_1`);
+                 if (i) i.textContent = data[1];
+                 const s = document.getElementById(`val_l${line}_2`);
+                 if (s) s.textContent = data[2];
+                 const c = document.getElementById(`val_l${line}_3`);
+                 if (c) c.textContent = data[3];
+            }
+
+            populateTable(1, dataLine1);
+            populateTable(2, dataLine2);
+            populateTable(3, dataLine3);
+
+            /* ============================================================
+               ⚡ ENERGRAM GRAPH IMPLEMENTATION
+            ============================================================ */
+            const totalPoinEnergram = @json($enneagramData ?? [0,0,0,0,0,0,0,0,0]);
+
+            const canvasEnergram = document.getElementById('chart_energram');
+            if (canvasEnergram) {
+                const ctxEnergram = canvasEnergram.getContext('2d');
+                new Chart(ctxEnergram, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tipe 1', 'Tipe 2', 'Tipe 3', 'Tipe 4', 'Tipe 5', 'Tipe 6', 'Tipe 7', 'Tipe 8', 'Tipe 9'],
+                        datasets: [{
+                            label: 'Total Skor',
+                            data: totalPoinEnergram,
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
+                                '#FF9F40', '#E7E9ED', '#71B37C', '#EC932F'
+                            ],
+                            borderColor: '#333',
+                            borderWidth: 1,
+                            datalabels: {
+                                align: 'top',
+                                anchor: 'end',
+                                font: { weight: 'bold', size: 14 }
+                            }
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true }
+                        },
+                        plugins: {
+                            datalabels: { display: true }
+                        }
+                    }
+                });
+            }
+
+        });
+    </script>
+    <script>
+        /* ============================================================
+           🧮 TOTALAN GLOBAL (BENAR, SALAH, DIJAWAB, POIN)
+           ============================================================ */
+        let totalSoalAll = 0;
+        let totalDijawabAll = 0;
+        let totalBenarAll = 0;
+        let totalSalahAll = 0;
+        let totalPoinAll = 0;
+
+        // LOOP semua card modul
+        document.querySelectorAll('.laporan-modul').forEach(card => {
+            // ambil rekap
+            const rekap = card.querySelector('.rekap');
+            if (rekap) {
+                totalSoalAll += parseInt(rekap.querySelector('.total-soal')?.textContent || 0);
+                totalDijawabAll += parseInt(rekap.querySelector('.dijawab')?.textContent || 0);
+                totalBenarAll += parseInt(rekap.querySelector('.benar')?.textContent || 0);
+                totalSalahAll += parseInt(rekap.querySelector('.salah')?.textContent || 0);
+            }
+
+            // ambil poin dari tabel
+            card.querySelectorAll('tbody tr').forEach(tr => {
+                const poin = parseInt(tr.querySelector('td:last-child')?.textContent || 0);
+                if (!isNaN(poin)) totalPoinAll += poin;
+            });
+        });
+
+        // MASUKKAN NILAI KE HTML
+        const totalAllSoal = document.getElementById('total_all_soal');
+        if (totalAllSoal) totalAllSoal.textContent = totalSoalAll;
+        const totalAllDijawab = document.getElementById('total_all_dijawab');
+        if (totalAllDijawab) totalAllDijawab.textContent = totalDijawabAll;
+        const totalAllBenar = document.getElementById('total_all_benar');
+        if (totalAllBenar) totalAllBenar.textContent = totalBenarAll;
+        const totalAllSalah = document.getElementById('total_all_salah');
+        if (totalAllSalah) totalAllSalah.textContent = totalSalahAll;
+        const totalAllPoin = document.getElementById('total_all_poin');
+        if (totalAllPoin) totalAllPoin.textContent = totalPoinAll;
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
