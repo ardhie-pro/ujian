@@ -192,17 +192,25 @@
                             📊 Laporan Jawaban User — <span class="text-primary">Kode: {{ $kode }}</span>
                         </h4>
                     </div>
-                    <div class="d-flex gap-2 mt-5">
-                        <button id="btnExportExcel" class="btn btn-success">
-                            <i class="mdi mdi-file-excel"></i> Export ke Excel
-                        </button>
-                        <button id="btnExportPDF" class="btn btn-danger">
-                            <i class="mdi mdi-file-pdf"></i> Export ke PDF
-                        </button>
-                        <a href="{{ route('laporan.index') }}" class="btn btn-secondary">
-                            <i class="mdi mdi-arrow-left"></i> Kembali
-                        </a>
-                    </div>
+                    @if (Auth::check() && in_array(Auth::user()->status, ['admin', 'review']))
+                        <div class="d-flex gap-2 mt-5">
+                            <button id="btnExportExcel" class="btn btn-success">
+                                <i class="mdi mdi-file-excel"></i> Export ke Excel
+                            </button>
+                            <button id="btnExportPDF" class="btn btn-danger">
+                                <i class="mdi mdi-file-pdf"></i> Export ke PDF
+                            </button>
+                            <a href="{{ route('laporan.index') }}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left"></i> Kembali
+                            </a>
+                        </div>
+                    @else
+                        <div class="d-flex gap-2 mt-5">
+                            <button id="btnExportPDF" class="btn btn-danger">
+                                <i class="mdi mdi-file-pdf"></i> Simpan Sebagai PDF
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -401,10 +409,7 @@
             const dataDijawab = [];
             const dataBenar = [];
             const dataSalah = [];
-            const modul = "{{ $modul }}";
-
-
-
+            
             let index = 1;
 
             rekapList.forEach((r, i) => {
@@ -546,9 +551,9 @@
             // Silakan ganti nilai array di bawah ini sesuai kebutuhan
             // Format: [D, I, S, C]
             
-            const dataLine1 = [2, 1, 1, 13];
-            const dataLine2 = [7, 8, 4, 0];
-            const dataLine3 = [-5, -7, -3, 13];
+            const dataLine1 = [10, 5, 8, 12];
+            const dataLine2 = [12, 10, 6, 8];
+            const dataLine3 = [-2, -5, 2, 4];
 
             // ---------------- KONFIGURASI CHART ----------------
             const labelsDISC = ['D', 'I', 'S', 'C'];
@@ -668,41 +673,7 @@
             /* ============================================================
                ⚡ ENERGRAM GRAPH IMPLEMENTATION (Poin 1 - 9)
             ============================================================ */
-
-            // 1. CONFIG: MAPPING SOAL -> POIN
-            // Format: { No_Soal: Poin_Energram(1-9) }
-            // Silakan ubah angka di kanan (1-9) sesuai aturan Energram Anda.
-            // Contoh: Soal 1 masuk ke perhitungan Poin 8.
-            const mapSoalEnergram = {
-                1: 8,  2: 2,  3: 8,  4: 4,  5: 5,
-                6: 6,  7: 7,  8: 8,  9: 9,  10: 1,
-                11: 2, 12: 3, 13: 4, 14: 5, 15: 6,
-                16: 7, 17: 8, 18: 9, 19: 1, 20: 8
-            };
-
-            // 2. DATA: JAWABAN USER (DUMMY / SAMPE 20 SOAL)
-            // Format: { No_Soal: Nilai_Jawaban_User }
-            // Ganti ini dengan data real dari database nanti.
-            const jawabanUserEnergram = {
-                1: 2,  2: 3,  3: 3,  4: 1,  5: 0,
-                6: 2,  7: 3,  8: 1,  9: 2,  10: 3,
-                11: 1, 12: 2, 13: 3, 14: 1, 15: 0,
-                16: 2, 17: 1, 18: 3, 19: 2, 20: 3
-            };
-
-            // 3. LOGIC: HITUNG TOTAL POIN 1 - 9
-            const totalPoinEnergram = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // Index 0 = Poin 1, Index 8 = Poin 9
-
-            // Loop untuk hitung skor
-            Object.keys(jawabanUserEnergram).forEach(noSoal => {
-                const poinTarget = mapSoalEnergram[noSoal]; // Dapat Poin berapa (1-9)
-                const nilaiJawaban = jawabanUserEnergram[noSoal]; // Dapat nilai (misal 3)
-
-                if (poinTarget >= 1 && poinTarget <= 9) {
-                    // Tambahkan nilai ke poin yang sesuai (Ingat index array mulai dari 0)
-                    totalPoinEnergram[poinTarget - 1] += nilaiJawaban;
-                }
-            });
+            const totalPoinEnergram = [12, 15, 8, 20, 10, 18, 5, 14, 22]; 
 
             // 4. RENDER CHART ENERGRAM
             const ctxEnergram = document.getElementById('chart_energram').getContext('2d');

@@ -87,10 +87,12 @@ class KodeLoginController extends Controller
         // ambil id user yang sedang login
         $userId = Auth::id();
 
-        // update kolom status jadi pending
-        DB::table('users')->where('id', $userId)->update([
-            'status' => 'pending'
-        ]);
+        if ($userId) {
+            // update kolom status jadi pending
+            DB::table('users')->where('id', $userId)->update([
+                'status' => 'pending'
+            ]);
+        }
 
         // hapus session ujian
         Session::flush();

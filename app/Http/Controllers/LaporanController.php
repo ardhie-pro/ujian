@@ -293,4 +293,5 @@ class LaporanController extends Controller
 
         return view('utama.show', compact('kode', 'data', 'rekapGlobal'));
     }
+
 }

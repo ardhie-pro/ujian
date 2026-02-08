@@ -12,7 +12,7 @@
                     <form id="namaForm">
                         <div class="mb-3">
                             <input type="hidden" name="jawaban" class="form-control" id="username"
-                                value="{{ Auth::user()->name }}" placeholder="MASUKAN NAMA" required />
+                                value="{{ Auth::user() ? Auth::user()->name : '' }}" placeholder="MASUKAN NAMA" required />
                         </div>
 
                         <div class="text-center mt-5">

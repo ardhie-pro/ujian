@@ -571,57 +571,9 @@
 
     </div>
 
-    <div class="container">
-        <div class="row mt-5">
-            <div class="history-card col-12">
-                <div class="card-header text-white">
-                    <h5 class="mb-0">📊 Grafik Rekap Semua Modul</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="chart_global" height="140"></canvas>
-                </div>
-            </div>
-
-
-        </div>
-        <div class="row">
-            <div class="history-card col-12">
-                <div class="card-header mt-2 text-white">
-                    <h5 class="mb-5">Total Keseluruhan Semua Modul</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-4 col-md-2 mb-2">
-                            <strong>Total Soal</strong>
-                            <div class="fs-5" id="total_all_soal">0</div>
-                        </div>
-                        <div class="col-4 col-md-2 mb-2">
-                            <strong>Dijawab</strong>
-                            <div class="fs-5" id="total_all_dijawab">0</div>
-                        </div>
-                        <div class="col-4 col-md-2 mb-2 text-success">
-                            <strong>Benar</strong>
-                            <div class="fs-5" id="total_all_benar">0</div>
-                        </div>
-                        <div class="col-4 col-md-2 mb-2 text-danger">
-                            <strong>Salah</strong>
-                            <div class="fs-5" id="total_all_salah">0</div>
-                        </div>
-                        <div class="col-4 col-md-2 mb-2 text-primary">
-                            <strong>Total Poin</strong>
-                            <div class="fs-5" id="total_all_poin">0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
     </div>
 
     <!-- 🧠 Script Filter + Export -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -635,10 +587,7 @@
             const dataDijawab = [];
             const dataBenar = [];
             const dataSalah = [];
-            const modul = "{{ $modul }}";
-
-
-
+            
             let index = 1;
 
             rekapList.forEach((r, i) => {
@@ -781,43 +730,6 @@
                 alert('✅ Semua tabel + rekap berhasil diekspor ke Excel!');
             });
 
-        });
-    </script>
-    <script>
-        /* ============================================================
-                                                                                                                                                                   🧮 TOTALAN GLOBAL (BENAR, SALAH, DIJAWAB, POIN)
-                                                                                                                                                                ============================================================ */
-        let totalSoalAll = 0;
-        let totalDijawabAll = 0;
-        let totalBenarAll = 0;
-        let totalSalahAll = 0;
-        let totalPoinAll = 0;
-
-        // LOOP semua card modul
-        document.querySelectorAll('.laporan-modul').forEach(card => {
-            // ambil rekap
-            const rekap = card.querySelector('.rekap');
-            if (rekap) {
-                totalSoalAll += parseInt(rekap.querySelector('.total-soal')?.textContent || 0);
-                totalDijawabAll += parseInt(rekap.querySelector('.dijawab')?.textContent || 0);
-                totalBenarAll += parseInt(rekap.querySelector('.benar')?.textContent || 0);
-                totalSalahAll += parseInt(rekap.querySelector('.salah')?.textContent || 0);
-            }
-
-            // ambil poin dari tabel
-            card.querySelectorAll('tbody tr').forEach(tr => {
-                const poin = parseInt(tr.querySelector('td:last-child')?.textContent || 0);
-                if (!isNaN(poin)) totalPoinAll += poin;
-            });
-        });
-
-        // MASUKKAN NILAI KE HTML
-        document.getElementById('total_all_soal').textContent = totalSoalAll;
-        document.getElementById('total_all_dijawab').textContent = totalDijawabAll;
-        document.getElementById('total_all_benar').textContent = totalBenarAll;
-        document.getElementById('total_all_salah').textContent = totalSalahAll;
-        document.getElementById('total_all_poin').textContent = totalPoinAll;
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>

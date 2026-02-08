@@ -57,11 +57,13 @@ Route::get('/', function () {
     $testimonials = \App\Models\LandingTestimonial::where('is_active', true)->orderBy('order')->orderBy('created_at', 'desc')->get();
     return view('utama.landing-new', compact('banner', 'features', 'clients', 'services', 'serviceSection', 'videoPromo', 'ctaSection', 'ctaButtons', 'testimonials'));
 });
-Route::get('/history', [KodeLoginController::class, 'history'])->name('history.login');
 Route::get('/hasiluser/{kode}', [LaporanController::class, 'hasiluser'])->name('hasiluser.show');
+Route::get('/kode', [KodeLoginController::class, 'index'])->name('kode.login');
+Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
+
+
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/kode', [KodeLoginController::class, 'index'])->name('kode.login');
-    Route::post('/kode/check', [KodeLoginController::class, 'check'])->name('kode.check');
+    Route::get('/history', [KodeLoginController::class, 'history'])->name('history.login');
     Route::post('/akun/update', [KodeLoginController::class, 'update'])->name('akun.update');
 });
 

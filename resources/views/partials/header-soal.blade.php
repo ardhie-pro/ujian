@@ -12,7 +12,7 @@
            <div class="user-avatar"></div>
            <div class="text-end selamat text-md-start">
                <div class="fw-semibold">Selamat Mengerjakan,</div>
-               <small>{{ Auth::user()->name }}</small>
+               <small>{{ Auth::user() ? Auth::user()->name : 'User' }}</small>
            </div>
        </div>
    </div>

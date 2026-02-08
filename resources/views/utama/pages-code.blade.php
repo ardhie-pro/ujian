@@ -314,6 +314,7 @@
         </div>
     </div>
 
+    @auth
     <!-- Floating Action Button (FAB) -->
     <div class="fab-container">
 
@@ -330,6 +331,7 @@
         <!-- FAB Button -->
         <div class="fab-button" id="fabBtn">☰</div>
     </div>
+    @endauth
 
 
     <!-- Bootstrap JS -->
@@ -347,16 +349,16 @@
 
             <div class="mb-3">
                 <input type="text" name="username" class="form-control"
-                    value="{{ Auth::user()->name }}" placeholder="Username Baru" required>
+                    value="{{ Auth::user() ? Auth::user()->name : '' }}" placeholder="Username Baru" required>
             </div>
 
             <div class="mb-3">
                 <input type="email" name="email" class="form-control"
-                    value="{{ Auth::user()->email }}" placeholder="Email Baru" required>
+                    value="{{ Auth::user() ? Auth::user()->email : '' }}" placeholder="Email Baru" required>
             </div>
 
             <div class="mb-3">
-                <input type="password" name="password" value="{{ Auth::user()->lihatpw }}" id="pwInput" class="form-control"
+                <input type="password" name="password" value="{{ Auth::user() ? Auth::user()->lihatpw : '' }}" id="pwInput" class="form-control"
                     placeholder="Password Baru" required>
             </div>
 

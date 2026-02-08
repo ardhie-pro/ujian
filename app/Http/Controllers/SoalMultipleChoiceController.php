@@ -140,35 +140,8 @@ class SoalMultipleChoiceController extends Controller
         // }
 
         if ($newStatus >= count($modulArray)) {
-
-            $user = Auth::user(); // User yang login
-
-            // Data baru yang mau ditambahkan ke history
-            $historyBaru = $kode->kode;
-
-            // Ambil history lama DARI USER
-            $historyLama = $user->history;
-
-            // Gabungkan kalau sudah ada isi
-            if (!empty($historyLama)) {
-                $historyUpdate = $historyLama . ', ' . $historyBaru;
-            } else {
-                $historyUpdate = $historyBaru;
-            }
-
-            // Update history user
-            $user->update([
-                'history' => $historyUpdate,
-            ]);
-
-            // Update status pada tabel $kode
-            $kode->update([
-                'status'   => $newStatus,
-                'updated_at' => $now,
-            ]);
-
+            $kode->update(['status' => $newStatus, 'updated_at' => $now]);
             session(['status' => $newStatus]);
-
             return view('utama.selesai');
         }
 
