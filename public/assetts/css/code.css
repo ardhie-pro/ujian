@@ -256,6 +256,12 @@ body {
         grid-template-columns: repeat(4, 1fr);
     }
 }
+#vertical-menu-btn {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999;
+}
 
 /* ADMIN GLOBAL RESPONSIVE FIXES */
 @media (max-width: 991px) {

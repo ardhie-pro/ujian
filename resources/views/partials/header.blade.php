@@ -1,9 +1,6 @@
     <div class="header-bar d-flex justify-content-between align-items-center flex-wrap">
         <div class="header-left d-flex align-items-center">
-            <button type="button" class="btn btn-sm px-3 header-item waves-effect d-lg-none" id="vertical-menu-btn" style="color: #0E2542; font-size: 28px;">
-                <i class="bi bi-list"></i>
-            </button>
-            <div class="ms-2">
+            <div id="vertical-menu-btn" style="cursor: pointer;">
                 <img src="{{ asset('assetts/images/logo-dark.png') }}" alt="" class="img-fluid" style="max-height: 25px;" />
             </div>
         </div>
