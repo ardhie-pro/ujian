@@ -11,14 +11,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind('path.public', function() {
-            // Deteksi folder public_html jika ada di level yang sama dengan root project (hosting)
-            if (file_exists(base_path('../public_html'))) {
-                return base_path('../public_html');
-            }
-            // Fallback ke folder public default
-            return base_path('public');
-        });
+        // Tentukan path public secara dinamis
+        $publicPath = base_path('public'); // Default
+        
+        // Cek jika ada folder public_html di level yang sama dengan root project (hosting)
+        // Gunakan realpath untuk memastikan path absolut yang benar
+        $hostingPublic = realpath(base_path('../public_html'));
+        
+        if ($hostingPublic && is_dir($hostingPublic)) {
+            $publicPath = $hostingPublic;
+        }
+
+        $this->app->usePublicPath($publicPath);
     }
 
     /**
