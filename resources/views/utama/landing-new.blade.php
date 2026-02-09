@@ -13,8 +13,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Bootstrap App Landing Template">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="author" content="Themefisher">
-  <meta name="generator" content="Themefisher Small Apps Template v1.0">
+  <meta name="author" content="Citta Bhakti Nirbaya">
+  <meta name="generator" content="Citta Bhakti Nirbaya">
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assetts/images/cibn.png') }}" />
@@ -206,7 +206,7 @@
 			<div class="col-lg-12">
 				<div class="section-title">
 					<h2>{{ $serviceSection->title ?? 'An Interface For Lifestyle' }}</h2>
-					<p>{!! $serviceSection->description ?? '<a href="https://themefisher.com/products/small-apps-free-app-landing-page-template/">Small Apps</a> makes it easy to stay on top of your Life Style. No late tasks. No gimmicks.' !!}</p>
+					<p>{!! $serviceSection->description ?? 'Citta Bhakti Nirbaya memudahkan Anda untuk tetap teratur dalam gaya hidup Anda. Tidak ada tugas yang terlambat. Tidak ada gimik.' !!}</p>
 				</div>
 			</div>
 		</div>
@@ -373,7 +373,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<h2>{{ $ctaSection->title ?? 'Semua Mendukung Perangkat Anda' }}</h2>
-				<p>{!! $ctaSection->description ?? 'Gunakan dimanapun dan kapanpun <a href="https://themefisher.com/products/small-apps-free-app-landing-page-template/">CIBN</a> free forever! <br>Citta Bhakti Nirbaya' !!}</p>
+				<p>{!! $ctaSection->description ?? 'Gunakan dimanapun dan kapanpun layanan kami! <br>Citta Bhakti Nirbaya' !!}</p>
 				<ul class="list-inline">
 					@foreach($ctaButtons as $button)
 					<li class="list-inline-item">
@@ -402,13 +402,13 @@
             <!-- Social Site Icons -->
             <ul class="social-icon list-inline">
               <li class="list-inline-item">
-                <a href="https://www.facebook.com/themefisher"><i class="ti-facebook"></i></a>
+                <a href="#"><i class="ti-facebook"></i></a>
               </li>
               <li class="list-inline-item">
-                <a href="https://twitter.com/themefisher"><i class="ti-twitter"></i></a>
+                <a href="#"><i class="ti-twitter"></i></a>
               </li>
               <li class="list-inline-item">
-                <a href="https://www.instagram.com/themefisher/"><i class="ti-instagram"></i></a>
+                <a href="#"><i class="ti-instagram"></i></a>
               </li>
             </ul>
           </div>
@@ -462,11 +462,11 @@
     </div>
   </div>
   <div class="text-center bg-dark py-4">
-    <small class="text-secondary">Copyright &copy; <script>document.write(new Date().getFullYear())</script>. Designed &amp; Developed by <a href="https://themefisher.com/">Citta BahktiTI Nirbaya</a></small class="text-secondary">
+    <small class="text-secondary">Copyright &copy; <script>document.write(new Date().getFullYear())</script>. Designed &amp; Developed by Citta Bhakti Nirbaya</small>
   </div>
 
 	<div class="text-center bg-dark py-1">
-   <small> <p>Distributed By <a href="https://themewagon.com/">Themewagon</a></p></small class="text-secondary">
+   <small class="text-secondary"> <p>Distributed By Citta Bhakti Nirbaya</p></small>
   </div>
 </footer>
 
