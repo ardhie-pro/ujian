@@ -132,7 +132,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-11">
                 <div class="rounded shadow p-5 bg-white">
-                   	<h2 class="text-center mb-5 ">Client Kami</h2>
+                   	<h2 class="text-center mb-5 ">{{ $clientSection->title ?? 'Client Kami' }}</h2>
+                    @if(isset($clientSection->description))
+                        <p class="text-center mb-4">{{ $clientSection->description }}</p>
+                    @endif
                     <div class="client-slider pb-4">
                         @foreach($clients as $client)
                         <div class="item text-center">

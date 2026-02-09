@@ -38,7 +38,27 @@
     <div class="wrapper card card-animate mt-5">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <div class="title mb-0">List Client Kami</div>
-            <a href="{{ route('landing-client.create') }}" class="btn btn-primary">+ Tambah Client</a>
+            <div>
+                <button type="button" class="btn btn-info me-2" data-bs-toggle="collapse" data-bs-target="#editSection">Edit Judul Section</button>
+                <a href="{{ route('landing-client.create') }}" class="btn btn-primary">+ Tambah Client</a>
+            </div>
+        </div>
+
+        <div class="collapse mb-4" id="editSection">
+            <div class="card card-body border shadow-sm">
+                <form action="{{ route('landing-client.section.update') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Judul Section</label>
+                        <input type="text" name="title" class="form-control" value="{{ $clientSection->title ?? 'Client Kami' }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi (Opsional)</label>
+                        <textarea name="description" class="form-control" rows="2">{{ $clientSection->description ?? '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Simpan Perubahan Judul</button>
+                </form>
+            </div>
         </div>
 
         @if(session('success'))

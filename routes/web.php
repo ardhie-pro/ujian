@@ -48,14 +48,8 @@ Route::get('/download-template-soal', function () {
 Route::get('/', function () {
     $banner = \App\Models\LandingBanner::where('is_active', true)->first();
     $features = \App\Models\LandingFeature::where('is_active', true)->orderBy('order', 'asc')->get();
-    $clients = \App\Models\LandingClient::where('is_active', true)->orderBy('order', 'asc')->get();
-    $services = \App\Models\LandingService::where('is_active', true)->orderBy('order', 'asc')->get();
-    $serviceSection = \App\Models\LandingServiceSection::first();
-    $videoPromo = \App\Models\LandingVideo::first();
-    $ctaSection = \App\Models\LandingCtaSection::first();
-    $ctaButtons = \App\Models\LandingCtaButton::where('is_active', true)->orderBy('order')->get();
-    $testimonials = \App\Models\LandingTestimonial::where('is_active', true)->orderBy('order')->orderBy('created_at', 'desc')->get();
-    return view('utama.landing-new', compact('banner', 'features', 'clients', 'services', 'serviceSection', 'videoPromo', 'ctaSection', 'ctaButtons', 'testimonials'));
+    $clientSection = \App\Models\LandingClientSection::first();
+    return view('utama.landing-new', compact('banner', 'features', 'clients', 'clientSection', 'services', 'serviceSection', 'videoPromo', 'ctaSection', 'ctaButtons', 'testimonials'));
 });
 Route::get('/history', [KodeLoginController::class, 'history'])->name('history.login');
 Route::get('/hasiluser/{kode}', [LaporanController::class, 'hasiluser'])->name('hasiluser.show');
@@ -109,6 +103,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/landing-banner', [App\Http\Controllers\LandingBannerController::class, 'index'])->name('landing-banner.index');
     Route::post('/landing-banner', [App\Http\Controllers\LandingBannerController::class, 'update'])->name('landing-banner.update');
     Route::resource('landing-feature', App\Http\Controllers\LandingFeatureController::class);
+    Route::post('landing-client/section', [App\Http\Controllers\LandingClientController::class, 'updateSection'])->name('landing-client.section.update');
     Route::resource('landing-client', App\Http\Controllers\LandingClientController::class);
     Route::resource('landing-service', App\Http\Controllers\LandingServiceController::class);
     Route::post('/landing-service/section', [App\Http\Controllers\LandingServiceController::class, 'updateSection'])->name('landing-service.section.update');

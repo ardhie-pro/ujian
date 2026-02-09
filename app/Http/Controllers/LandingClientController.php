@@ -11,7 +11,23 @@ class LandingClientController extends Controller
     public function index()
     {
         $clients = LandingClient::orderBy('order')->get();
-        return view('admin.landing.client.index', compact('clients'));
+        $clientSection = \App\Models\LandingClientSection::first();
+        return view('admin.landing.client.index', compact('clients', 'clientSection'));
+    }
+
+    public function updateSection(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $section = \App\Models\LandingClientSection::first() ?? new \App\Models\LandingClientSection();
+        $section->title = $request->title;
+        $section->description = $request->description;
+        $section->save();
+
+        return redirect()->route('landing-client.index')->with('success', 'Client section updated successfully');
     }
 
     public function create()
