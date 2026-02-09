@@ -29,6 +29,26 @@
     <!-- App Css-->
     <link href="{{ asset('assetts/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
+    <style>
+        /* Global Responsive Fix for .wrapper */
+        @media (max-width: 768px) {
+            .wrapper {
+                width: 100% !important;
+                margin: 20px 0 !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+            }
+            .page-content {
+                padding: 10px !important;
+            }
+            h1 {
+                font-size: 24px !important;
+            }
+            h2 {
+                font-size: 18px !important;
+            }
+        }
+    </style>
 </head>
 
 <body data-topbar="colored">

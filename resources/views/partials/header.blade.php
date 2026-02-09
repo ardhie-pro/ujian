@@ -1,7 +1,12 @@
- <div class="header-bar d-flex justify-content-between align-items-center flex-wrap">
-     <div class="header-left">
-         <img src="{{ asset('assetts/images/logo-dark.png') }}" alt="" />
-     </div>
+    <div class="header-bar d-flex justify-content-between align-items-center flex-wrap">
+        <div class="header-left d-flex align-items-center">
+            <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect d-lg-none" id="vertical-menu-btn">
+                <i class="mdi mdi-menu"></i>
+            </button>
+            <div class="ms-2">
+                <img src="{{ asset('assetts/images/logo-dark.png') }}" alt="" class="img-fluid" style="max-height: 25px;" />
+            </div>
+        </div>
      <!-- Dropdown User -->
      <div class="dropdown mt-2 mt-md-0">
          <button class="btn d-flex align-items-center border-0 bg-transparent dropdown-toggle" type="button"

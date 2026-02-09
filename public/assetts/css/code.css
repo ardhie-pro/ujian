@@ -256,3 +256,34 @@ body {
         grid-template-columns: repeat(4, 1fr);
     }
 }
+
+/* ADMIN GLOBAL RESPONSIVE FIXES */
+@media (max-width: 991px) {
+    .wrapper {
+        width: 100% !important;
+        margin: 15px 0 !important;
+        padding: 15px !important;
+        border-radius: 8px !important;
+    }
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+    .page-content {
+        padding: 10px !important;
+    }
+    h1 {
+        font-size: 24px !important;
+    }
+    h2 {
+        font-size: 18px !important;
+    }
+    .box {
+        font-size: 12px !important;
+        padding: 8px 10px !important;
+    }
+    .btn-custom {
+        width: auto !important;
+        padding: 8px 12px !important;
+        font-size: 11px !important;
+    }
+}

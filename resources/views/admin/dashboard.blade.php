@@ -55,9 +55,18 @@
             gap: 22px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 991px) {
             .grid {
                 grid-template-columns: 1fr !important;
+            }
+            .wrapper {
+                width: 100% !important;
+                padding: 15px !important;
+                margin: 20px auto !important;
+            }
+            .btn-custom {
+                width: 80px;
+                font-size: 11px;
             }
         }
 
