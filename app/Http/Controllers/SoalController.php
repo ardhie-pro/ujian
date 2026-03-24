@@ -425,6 +425,7 @@ class SoalController extends Controller
             'word_file' => 'required|file|mimes:docx|max:20480',
         ]);
 
+        $requestedModul = $request->input('modul');
         $file = $request->file('word_file');
         $phpWord = IOFactory::load($file->getPathName());
         $sections = $phpWord->getSections();
@@ -486,7 +487,7 @@ class SoalController extends Controller
                         SoalMultipleChoice::create([
                             'no' => strip_tags($currentData['no'] ?? null),
                             'soal' => $currentData['soal'] ?? '',
-                            'modul' => strip_tags($currentData['modul'] ?? 'default'),
+                            'modul' => $requestedModul ?: strip_tags($currentData['modul'] ?? 'default'),
                             'pembahasan' => $currentData['pembahasan'] ?? null,
                             'j1' => $currentData['j1'] ?? null,
                             'j2' => $currentData['j2'] ?? null,
@@ -520,7 +521,7 @@ class SoalController extends Controller
             SoalMultipleChoice::create([
                 'no' => strip_tags($currentData['no'] ?? null),
                 'soal' => $currentData['soal'] ?? '',
-                'modul' => strip_tags($currentData['modul'] ?? 'default'),
+                'modul' => $requestedModul ?: strip_tags($currentData['modul'] ?? 'default'),
                 'pembahasan' => $currentData['pembahasan'] ?? null,
                 'j1' => $currentData['j1'] ?? null,
                 'j2' => $currentData['j2'] ?? null,
@@ -531,7 +532,10 @@ class SoalController extends Controller
             $count++;
         }
 
-        return back()->with('success', "✅ Berhasil import {$count} soal! Semua gambar otomatis ter-embed base64 di kolom HTML.");
+        return response()->json([
+            'status' => 'success',
+            'message' => "✅ Berhasil import {$count} soal! Semua gambar otomatis ter-embed base64 di kolom HTML."
+        ]);
     }
     public function deleteAll(Request $request)
     {

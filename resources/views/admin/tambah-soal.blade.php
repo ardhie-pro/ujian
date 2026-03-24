@@ -390,7 +390,7 @@
                                     @endif
                                 </div>
                                 <div class="col-2 mt-3 mb-5  p-2 ms-auto"> <!-- Tambah ms-auto -->
-                                    <form action="{{ route('soal.generate') }}" method="POST">
+                                    <form id="formGenerateSoal" action="{{ route('soal.generate') }}" method="POST">
                                         @csrf
 
                                         <input type="hidden" name="modul" value="{{ $modul }}">
@@ -676,4 +676,12 @@
 
 
 
+    <script>
+        $(document).ready(function() {
+            // Handle Generate Soal Loading
+            $('#formGenerateSoal').on('submit', function() {
+                showLoading('Sedang men-generate soal. Harap tunggu...');
+            });
+        });
+    </script>
 @endsection

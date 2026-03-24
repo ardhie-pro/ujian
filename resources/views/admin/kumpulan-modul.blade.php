@@ -149,6 +149,22 @@
 
                     <div class="card-body">
 
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" style="border-radius: 12px; border-left: 5px solid #28a745;">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <strong>Berhasil!</strong> {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert" style="border-radius: 12px; border-left: 5px solid #dc3545;">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong>Gagal!</strong> {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         <h4 class="card-title">Form Kumpulan Soal</h4>
                         <p class="card-title-desc">Untuk Mengelompokan Soal</p>
 
@@ -167,47 +183,90 @@
                             </div>
 
                             <div class="mb-3">
-                                <label>Pilih Modul</label>
+                                <label class="fw-bold mb-2">Pilih Modul</label>
 
-                                {{-- MODUL BIASA --}}
-                                @foreach ($modul as $m)
-                                    <div class="form-check">
-                                        <input class="form-check-input modul-checkbox" type="checkbox"
-                                            value="{{ $m->modul }}" @if (isset($kumpulanModul) && in_array($m->id, $kumpulanModul->modul_ids ?? [])) checked @endif>
-                                        <label class="form-check-label">{{ $m->modul }}</label>
-                                    </div>
-                                @endforeach
-
-                                {{-- GRUP DAN ISI --}}
-                                @foreach ($kAngkahilang as $k)
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input checkbox-grup"
-                                            data-grup="{{ $k->nama_grup }}">
-                                        <label class="form-check-label">{{ $k->nama_grup }}</label>
-                                    </div>
-
-                                    @php
-                                        $items = explode(', ', $k->isi);
-                                    @endphp
-
-                                    @foreach ($items as $item)
-                                        <div class="form-check ms-3">
-                                            <input type="checkbox" class="form-check-input modul-checkbox checkbox-isi"
-                                                data-parent="{{ $k->nama_grup }}" value="{{ $item }}">
-                                            <label class="form-check-label">{{ $item }}</label>
+                                <div class="modul-list-container" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+                                    {{-- MODUL BIASA --}}
+                                    <h6 class="text-muted mt-2 mb-2 p-1 border-bottom" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Modul Standar</h6>
+                                    @foreach ($modul as $m)
+                                        <div class="form-check d-flex align-items-center justify-content-between mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <input class="form-check-input modul-checkbox" type="checkbox"
+                                                    value="{{ $m->modul }}" @if (isset($kumpulanModul) && in_array($m->id, $kumpulanModul->modul_ids ?? [])) checked @endif id="modul_{{ $m->id }}">
+                                                <label class="form-check-label ms-2" for="modul_{{ $m->id }}">{{ $m->modul }}</label>
+                                            </div>
+                                            <button type="button" class="btn btn-link text-danger p-0" title="Hapus Modul" onclick="deleteStandaloneModul('{{ $m->id }}', '{{ $m->modul }}')">
+                                                <i class="bi bi-trash-fill" style="font-size: 1.1rem;"></i>
+                                            </button>
                                         </div>
                                     @endforeach
-                                @endforeach
+
+                                    {{-- GRUP DAN ISI --}}
+                                    <h6 class="text-muted mt-4 mb-2 p-1 border-bottom" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Grup Kolom (Angka Hilang)</h6>
+                                    @foreach ($kAngkahilang as $k)
+                                        <div class="form-check d-flex align-items-center justify-content-between mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <input type="checkbox" class="form-check-input checkbox-grup"
+                                                    data-grup="{{ $k->nama_grup }}" id="grup_{{ $k->id }}">
+                                                <label class="form-check-label ms-2 fw-bold" for="grup_{{ $k->id }}">{{ $k->nama_grup }}</label>
+                                            </div>
+                                            <button type="button" class="btn btn-link text-danger p-0" title="Hapus Grup" onclick="deleteGrupModul('{{ $k->nama_grup }}')">
+                                                <i class="bi bi-trash-fill" style="font-size: 1.1rem;"></i>
+                                            </button>
+                                        </div>
+
+                                        @php
+                                            $items = explode(', ', $k->isi);
+                                        @endphp
+
+                                        <div class="ms-4 border-start ps-3 mb-3">
+                                            @foreach ($items as $item)
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input modul-checkbox checkbox-isi"
+                                                        data-parent="{{ $k->nama_grup }}" value="{{ $item }}" id="isi_{{ Str::slug($item) }}">
+                                                    <label class="form-check-label" for="isi_{{ Str::slug($item) }}">{{ $item }}</label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
 
                                 <!-- hidden inputs -->
                                 <div id="modul-inputs"></div>
 
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <div class="mt-4 text-end">
+                                <a href="{{ route('kumpulan-modul.index') }}" class="btn btn-secondary me-2">Kembali</a>
+                                <button type="submit" class="btn btn-primary px-4">Simpan Kumpulan</button>
+                            </div>
                         </form>
 
                         <script>
+                            // --- Fungsi Hapus Standalone Modul ---
+                            function deleteStandaloneModul(id, name) {
+                                if (!confirm(`🚨 PERINGATAN! \n\nSemua data soal di dalam modul "${name}" akan ikut terhapus permanen. \n\nYakin ingin menghapus modul ini?`)) return;
+                                
+                                let form = document.createElement('form');
+                                form.method = 'POST';
+                                form.action = `/tarik-modul/${id}`;
+                                form.innerHTML = `@csrf @method('DELETE')`;
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
+
+                            // --- Fungsi Hapus Grup Modul ---
+                            function deleteGrupModul(name) {
+                                if (!confirm(`🚨 PERINGATAN KRITIS! \n\nGrup "${name}" dan SEMUA modul di dalamnya (beserta soalnya) akan dihapus permanen. \n\nYakin ingin menghapus grup ini?`)) return;
+                                
+                                let form = document.createElement('form');
+                                form.method = 'POST';
+                                form.action = `/destroy/${name}`;
+                                form.innerHTML = `@csrf @method('DELETE')`;
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
+
                             document.addEventListener('DOMContentLoaded', function() {
                                 const container = document.getElementById('modul-inputs');
                                 let orderCounter = 0;

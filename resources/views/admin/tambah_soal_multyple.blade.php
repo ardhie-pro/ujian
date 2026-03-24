@@ -362,15 +362,32 @@
             @endif
 
             <div class="row">
-                <form action="{{ route('soal.importWord') }}" method="POST" enctype="multipart/form-data">
+                <form id="formUploadWord" action="{{ route('soal.importWord') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="file" name="word_file" accept=".docx" required>
-                    <button type="submit" class="btn btn-primary">Upload Soal Word</button>
+                    <input type="hidden" name="modul" value="{{ $modul }}">
+                    <div class="d-flex align-items-center gap-3">
+                        <input type="file" name="word_file" accept=".docx" class="form-control" style="max-width: 300px;" required>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload Soal Word
+                        </button>
+                    </div>
                 </form>
+
+                <!-- Progress Bar Container -->
+                <div id="uploadProgressContainer" style="display:none; margin-top:20px; width: 100%;">
+                    <div class="progress" style="height: 25px; border-radius: 12px; overflow: hidden; background-color: #e9ecef; box-shadow: inset 0 1px 2px rgba(0,0,0,.1);">
+                        <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background-color: #F4C542; color: #0E2542; font-weight: bold; line-height: 25px;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <p id="uploadStatusText" class="text-center mt-2 fw-bold" style="color: #0E2542;">Sedang mengunggah... 0%</p>
+                    <div class="alert alert-warning text-center mt-2" style="border-radius: 8px; border-left: 5px solid #ffc107;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Jangan di refresh, mohon tunggu sampai proses selesai!</strong>
+                    </div>
+                </div>
 
             </div>
             <div class="row">
-                <a href="{{ route('download.template.soal') }}">
+                <a href="{{ route('download.template.soal') }}" class="text-decoration-none fw-bold text-primary">
                     📥 Download Template Soal (Word)
                 </a>
             </div>
@@ -530,12 +547,51 @@
     </div>
     <!-- End Page-content -->
 
+    <!-- Premium Upload Overlay -->
+    <div id="uploadOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(14, 37, 66, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index:10000; flex-direction:column; justify-content:center; align-items:center; color:white; text-align:center; padding: 20px;">
+        <div class="spinner-container mb-4" style="position: relative;">
+            <div class="custom-spinner" style="width: 90px; height: 90px; border: 8px solid rgba(255, 255, 255, 0.1); border-top: 8px solid #F4C542; border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 20px rgba(244, 197, 66, 0.3);"></div>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <i class="bi bi-cloud-arrow-up-fill text-warning fs-1"></i>
+            </div>
+        </div>
+        <h2 id="overlayStatusText" style="font-weight: 800; letter-spacing: 1px; font-size: 2.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Sedang Mengunggah... 0%</h2>
+        <p class="fs-4 mb-4" style="opacity: 0.9; font-weight: 300;">Mohon tunggu sampai proses selesai.</p>
+        
+        <div style="width: 100%; max-width: 600px; background: rgba(255,255,255,0.1); border-radius: 30px; overflow: hidden; height: 16px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <div id="overlayProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #F4C542, #e1b63b, #F4C542); background-size: 200% 100%; animation: gradientMove 2s linear infinite; transition: width 0.4s cubic-bezier(0.1, 0.7, 1.0, 0.1);"></div>
+        </div>
+        
+        <div class="mt-5 p-4 shadow-lg" style="background: rgba(244, 197, 66, 0.15); border: 2px solid #F4C542; border-radius: 20px; max-width: 600px; animation: pulseGlow 2s infinite;">
+            <p class="mb-1 fw-bold text-warning" style="font-size: 1.4rem;">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> PENTING: JANGAN REFRESH HALAMAN!
+            </p>
+            <p class="mb-0" style="opacity: 0.9; font-size: 1rem;">Sistem sedang mengekstrak soal dan merender gambar dari file Word Anda.</p>
+        </div>
+    </div>
 
-
+    <style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    @keyframes gradientMove {
+        0% { background-position: 100% 0%; }
+        100% { background-position: -100% 0%; }
+    }
+    @keyframes pulseGlow {
+        0% { box-shadow: 0 0 0px rgba(244, 197, 66, 0); }
+        50% { box-shadow: 0 0 30px rgba(244, 197, 66, 0.2); }
+        100% { box-shadow: 0 0 0px rgba(244, 197, 66, 0); }
+    }
+    </style>
 
     </div>
     <!-- Container-Fluid -->
     </div>
+@endsection
+
+@section('scripts')
     <script>
         // ===========================
         // CENTANG SEMUA
@@ -631,4 +687,72 @@
 
 
 
+    <script>
+        $(document).ready(function() {
+            // Handle Word Upload Loading with AJAX Progress
+            $('#formUploadWord').on('submit', function(e) {
+                e.preventDefault();
+
+                let formData = new FormData(this);
+                let overlayProgressBar = $('#overlayProgressBar');
+                let uploadOverlay = $('#uploadOverlay');
+                let overlayStatusText = $('#overlayStatusText');
+                let submitBtn = $(this).find('button[type="submit"]');
+
+                // Reset and show overlay
+                overlayProgressBar.css('width', '0%');
+                overlayStatusText.text('Sedang Mengunggah... 0%');
+                uploadOverlay.css('display', 'flex').hide().fadeIn();
+                
+                submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Memproses...');
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        let xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                let percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                if (percentComplete < 100) {
+                                    overlayProgressBar.css('width', percentComplete + '%');
+                                    overlayStatusText.text('Sedang Mengunggah... ' + percentComplete + '%');
+                                } else {
+                                    overlayProgressBar.css('width', '100%');
+                                    overlayStatusText.text('Hampir Selesai, Sedang Menyimpan Soal...');
+                                }
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            overlayProgressBar.css('width', '100%');
+                            overlayStatusText.text('Selesai! Berhasil Impor Soal.');
+                            
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            alert('Gagal: ' + response.message);
+                            uploadOverlay.fadeOut();
+                            submitBtn.prop('disabled', false).html('<i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload Soal Word');
+                        }
+                    },
+                    error: function(xhr) {
+                        let errorMsg = 'Terjadi kesalahan saat mengunggah file.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        alert(errorMsg);
+                        uploadOverlay.fadeOut();
+                        submitBtn.prop('disabled', false).html('<i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload Soal Word');
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
