@@ -212,12 +212,29 @@
                 </div>
 
                 {{-- Tombol Login --}}
-                <div class="text-end">
-                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary waves-effect waves-light" type="submit">
                         Masuk
                     </button>
                 </div>
+
+                <div class="position-relative my-4">
+                    <hr class="text-muted">
+                    <span class="position-absolute top-50 start-50 translate-middle px-3 bg-transparent text-muted" style="backdrop-filter: blur(5px);">atau</span>
+                </div>
+
+                {{-- Login Google --}}
+                <div class="d-grid">
+                    <a href="{{ route('google.login') }}" class="btn btn-light waves-effect waves-light border shadow-sm">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" class="me-2" alt="Google">
+                        Masuk dengan Google
+                    </a>
+                </div>
             </form>
+            <div class="mt-4 text-center">
+                <p class="mb-0 text-muted">Belum punya akun? <a href="{{ route('register') }}" class="fw-bold text-primary">Daftar sekarang</a></p>
+            </div>
+
         </div>
     </div>
 

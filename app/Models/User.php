@@ -27,9 +27,10 @@ class User extends Authenticatable
         'lihatpw',
         'grup',
         'history',
-
-
+        'google_id',
+        'google_token',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.

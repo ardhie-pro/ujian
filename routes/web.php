@@ -201,3 +201,13 @@ Route::get('/ujian', [SoalMultipleChoiceController::class, 'ujian'])->name('ujia
 Route::post('/next-modul', [SoalMultipleChoiceController::class, 'nextModul'])->name('next.modul');
 
 require __DIR__ . '/auth.php';
+
+Route::get('/ping', function () {
+    return response()->json(['status' => 'alive']);
+});
+
+// Google Auth
+Route::get('auth/google', [App\Http\Controllers\Auth\GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleAuthController::class, 'handleGoogleCallback']);
+
+

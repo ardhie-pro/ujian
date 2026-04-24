@@ -97,18 +97,32 @@
                         </div>
 
                         {{-- Tombol Register --}}
-                        <div class="text-end">
-                            <button class="btn btn-success w-md waves-effect waves-light" type="submit">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success waves-effect waves-light" type="submit">
                                 Daftar Sekarang
                             </button>
                         </div>
 
-                        <div class="mt-3 text-center">
+                        <div class="position-relative my-4">
+                            <hr class="text-muted">
+                            <span class="position-absolute top-50 start-50 translate-middle px-3 bg-white text-muted">atau daftar dengan</span>
+                        </div>
+
+                        {{-- Register Google --}}
+                        <div class="d-grid">
+                            <a href="{{ route('google.login') }}" class="btn btn-light waves-effect waves-light border shadow-sm">
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" class="me-2" alt="Google">
+                                Google
+                            </a>
+                        </div>
+
+                        <div class="mt-4 text-center">
                             <p class="text-muted mb-0">Sudah punya akun?
                                 <a href="{{ route('login') }}" class="text-primary fw-semibold">Masuk di sini</a>
                             </p>
                         </div>
                     </form>
+
                 </div>
 
             </div>

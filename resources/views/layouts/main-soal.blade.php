@@ -20,6 +20,18 @@
 
     @yield('content2')
 
+    <script src="{{ asset('assetts/libs/jquery/jquery.min.js') }}"></script>
+    <script>
+        // Heartbeat to prevent session expiration
+        setInterval(function() {
+            fetch('/ping').then(response => {
+                if (response.status === 419) {
+                    window.location.reload();
+                }
+            }).catch(error => console.log('Ping failed'));
+        }, 1000 * 60 * 10); // Every 10 minutes
+    </script>
 </body>
+
 
 </html>
