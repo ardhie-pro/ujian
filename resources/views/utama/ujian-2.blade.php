@@ -656,7 +656,7 @@
                     }
                 });
             </script>
-            <!-- <script>
+            <script>
                 document.addEventListener("DOMContentLoaded", function() {
 
                     let windowBlurred = false;
@@ -729,7 +729,7 @@
                     });
 
                 });
-            </script> -->
+            </script>
 
 
             <style>
